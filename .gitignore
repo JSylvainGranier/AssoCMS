@@ -6,3 +6,4 @@
 /sessions/*
 /.project
 .DS_Store
+includes/config.php
