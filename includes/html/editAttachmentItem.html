@@ -1,0 +1,29 @@
+<table style="width: 100%;">
+	<tr>
+		<td style="width: 280px; text-align: right;"><img
+			src="$thumbnail$"></td>
+		<td>
+			<form id="$id$-form">
+				<input type="text" name="originalFileName"
+					value="$originalFileName$" placeholder="Nom du fichier"
+					onkeyup="updateInBackground('$id$');" $disabled$ /> <input
+					type="text" name="description" value="$description$"
+					placeholder="Description" onkeyup="updateInBackground('$id$');" $disabled$ />
+				<input type="number" name="ordre" value="$ordre$"
+					placeholder="Ordre" onkeyup="updateInBackground('$id$');" $disabled$  />
+				<label for="public-$id$">Visible par tout le monde</label> <input
+					type="checkbox" id="public-$id$" name="public" value="public"
+					onchange="updateInBackground('$id$');" $publicChecked$ $disabled$ />
+			</form>
+		</td>
+		<td>
+			<!-- 
+			 <input type="button" value="Enregistrer"  onclick="updateAttachment('$id$');"><br />
+			 --> <img src="ressources/template/ajax.gif" id="$id$-ajaxLoader"
+			style="width: 32px; height: 32px; visibility: hidden;"> <img
+			src="ressources/template/warning.png" id="$id$-ajaxError"
+			style="width: 32px; height: 32px; visibility: hidden;"> <input
+			type="button" value="Supprimer" onclick="deleteAttachment('$id$');"$disabled$>
+		</td>
+	</tr>
+</table>

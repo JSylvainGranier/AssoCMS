@@ -1,0 +1,116 @@
+article {
+	
+	text-align: justify;
+}
+
+
+label {
+	margin: 5px;
+}
+
+header {
+	position: absolute;
+	top : 5px;
+	right: 5px;
+}
+
+.homeTitle {
+	text-align: center;
+}
+
+h2 {
+	font-size: 1.2em;
+}
+
+body{
+	font-family: sans-serif;
+}
+
+
+a:VISITED {
+	color: blue;
+}
+
+
+
+
+#trombiContainer td {
+	border-bottom: 1px solid gray;
+	border-right: 1px solid gray;
+}
+
+hr {
+	border : solid 1px gray;
+}
+
+a > img{
+    border: 0;
+}
+
+a > div > img{
+    border: 0;
+}
+
+.pageListItem{margin-bottom: 25px;
+}
+
+.barre{
+	text-decoration: line-through;
+}
+
+.inListAnnulation{
+	text-decoration: none;
+	font-weight: bold;
+	float: right;
+	display: block;
+	text-align: center;
+	width: 30%;
+	
+}
+
+.notPublished{
+	background-color: #BEB5B5;
+	opacity: 0.8;
+}
+
+
+.brouillon::BEFORE{
+	font-style: italic;
+	content: "Cette page est en brouillon. Les membres de l'association et les visiteurs ne peuvent pas la voir.";
+	
+}
+
+.propose::BEFORE{
+	font-style: italic;
+	content: "Cette page est en cours de proposition. Vous devez attendre la validation par un gestionnaire. Après cela, les autres membres de l'association pouront voir votre page.";
+	
+}
+
+.listEmptyItem{
+	list-style: none;
+	font-style: italic;
+}
+
+.headerCatName{
+	display: block;
+	font-size: 10pt;
+	font-weight: normal;
+	
+}
+
+.pageListItem{
+	border-left: solid 4px gray;
+	list-style: none;
+	padding-left: 5px;
+	margin-left: -30px;
+}
+
+.intro{
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+.contactSection{
+	padding-top : 15px;
+	padding-bottom: 15px;
+}

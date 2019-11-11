@@ -1,0 +1,8 @@
+/documents/pages/*
+/documents/cache/*
+/documents/trombi/*
+/documents/lostUploadedFiles/*
+/documents/tmp/*
+/sessions/*
+/.project
+.DS_Store

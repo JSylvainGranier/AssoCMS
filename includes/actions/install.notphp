@@ -1,0 +1,27 @@
+<?php
+try {
+	$page->setStandardOuputDisabled ( true );
+	
+	echo "<p>Création BDD : " . Persistant::createTables () . "</p>";
+	
+	/* @var $persRoot Personne */
+	
+	$persRoot = new Personne ();
+	$persRoot->nom = "Administrateur";
+	$persRoot->addRole ( Roles::$SUPER_ADMIN );
+	$persRoot->email = MAIL_FORM;
+	$persRoot->setPassword ( md5 ( "inCoucou les Shtroupfs!" ) );
+	$persRoot->save ();
+	
+	echo "<p>Administrateur : " . MAIL_FORM . " : 'in'</p>";
+	
+	$cat = new Categorie ();
+	$cat->nom = "Randonnées";
+	$cat->backgroundImage = "rando.jpg";
+	$cat->save ();
+} catch ( Exception $e ) {
+	echo "Oups.." . $e->getMessage ();
+}
+
+?>
+

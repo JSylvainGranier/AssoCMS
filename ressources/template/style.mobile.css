@@ -1,0 +1,240 @@
+
+article {
+	background-image: url("alpha-90.png");
+	background-repeat: repeat;
+	display: inline-block;
+	width: 98%;
+	margin : 0px;
+	text-align: justify;
+	padding: 0.5em;
+	padding-bottom: 2em;
+	padding-top : 2em;
+}
+
+footer {
+	display: inline-block;
+	width: 100%;
+	float: right;
+	margin : 0px;
+	text-align: center;
+	padding: 0.5em;
+	font-size: 9pt;
+}
+
+footer p {
+	margin: 0px;
+	padding: 0px;
+	padding-bottom: 3px;
+	}
+
+input {
+	padding: 5px;
+}
+
+input[type=text] {
+	display: block;
+	width: 100%;
+}
+
+
+label {
+	margin: 5px;
+}
+
+fieldset {
+	margin-bottom: 2em;
+}
+
+legend {
+	font-weight: bold;
+	padding: 5px;
+}
+
+header {
+	position: absolute;
+	top : 5px;
+	right: 5px;
+}
+
+html {
+	
+	width: 100%;
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	
+	background-color : gray;
+	background-image: url("alpha-70.png"), url("background.png");
+	background-repeat : repeat;
+	background-position: center;
+	background-attachment: fixed;
+	
+}
+
+
+
+body {
+	
+	height: 100%;
+	margin: 0px;
+	padding: 0px;
+	display: block;
+	box-align: center;
+	box-pack: center;
+	transform: translate3d(0, 0, 0);
+	
+}
+
+a:VISITED {
+	color: blue;
+}
+
+.logo{
+	
+}
+
+.notification {
+	margin : 15px;
+	padding: 35px;
+	background-color: #D49F6A;
+	border: solid 3px #804A15;
+}
+
+.notification:empty {
+   display: none;
+}
+
+.emailOnScreen{
+	width: 100%;
+}
+
+.tombiImage.lazy { 
+   width: 200px;
+   height: 250px;
+}
+
+.trombiCell{
+	text-align: center;
+	display: inline-block;
+	border : solid 1px gray;
+	padding: 5px;
+	margin : 15px;
+	
+}
+
+.trombiCell table {
+	width: 230px;
+	height: 290px;
+	border: none !important;
+}
+
+.trombiCell td{
+	vertical-align: middle;
+	border: none !important;
+}
+
+.tombiFile{
+	display: inline-block;
+	max-width : 100%;
+}
+
+
+.trombiCell a{
+}
+
+
+.pageListItem h4{
+	padding-bottom: 5px;
+	margin: 0px;
+	
+}
+
+.pageListItem p {
+	padding: 0px;
+	margin: 0px;
+	
+}
+
+.reactionContainer{
+	margin-bottom: 15px;
+	margin-left: 15px;
+	
+}
+
+.reactionHeader{
+	margin-left: -15px;
+	margin-bottom: 4px;
+	display: block;
+	font-size: 0.8em;
+	font-weight: bold;
+	
+}
+
+.pageAroundLink {
+	font-size: 11pt;
+}
+
+.pageAroundLinkLeft {
+	float: left;
+}
+
+.pageAroundLinkRight {
+	float: right;
+}
+
+
+.calendarYearNavigationItem{
+	padding: 5px;
+}
+
+.adminLink {
+	padding : 7px;
+	background-color : #B1ACAC;
+	border : 1px solid #7F7D7D;
+	color : #0A0A0A;
+	text-decoration: none;
+	transition: background-color 0.3s;
+}
+
+.adminLink:VISITED {
+	color : #0A0A0A;
+	text-decoration: none;
+}
+
+.adminLink:ACTIVE {
+	color : #0A0A0A;
+	text-decoration: none;
+}
+
+.adminLink:HOVER {
+	background-color : #EEC7C7;
+	border : 1px solid #C48F8F;
+
+}
+
+.loginInvitationContainer{
+	text-align: center;
+	font-size: 11pt;
+	margin-top: 15px;
+	border-top : solid 1px gray;
+}
+
+.clicForCoordinates{
+	font-size: 0.8em;
+}
+
+.printContainer{
+	text-align : center;
+	font-size: 3em;
+}
+
+.forceDownloadLink{
+	font-size: 0.8em;
+	padding-bottom: 5px;
+}
+
+.attachmentListContainer table{
+	margin-bottom : 15px;
+}
+
+

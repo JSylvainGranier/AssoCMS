@@ -1,0 +1,362 @@
+<h3>Fichiers joints $intro$</h3>
+
+<div id="attachmentFormContainer">
+	<div id="attachmentForm">
+		<h3 id="addFilesSection">Ajouter des fichiers</h3>
+		<input type="file" multiple="multiple" id="newFilesInput"
+			onnotchange="startSendNewFiles();">
+		(Taille max : 15 Mo par fichier).
+		<div id="progressBarContainer" style='visibility : hidden;'>
+			Transfert global : 
+			<progress id='progressBar' ></progress>
+		</div>
+		
+		<div id="currentUploadDiv"></div>
+		
+		<p>$backButton$</p>
+	</div>
+</div>
+
+<div id="attachmentListContainer">$attachmentList$</div>
+
+
+<script type="text/javascript" src="ressources/resumable.js"></script>
+
+<script type="text/javascript">
+
+window.onbeforeunload = function (){
+	if(resumable.progress() > 0 && resumable.progress() < 1){
+		return "Si vous quittez la page maintenant, certains fichiers ne seront pas envoyés.";
+	} else {
+		return null;
+	}
+}
+
+var atchFormContainerHeight = 0;
+window.onload = function(){
+	atchFormContainerHeight = getAbsoluteHeight(atchFormContainer);
+}
+
+
+var atchForm = document.getElementById("attachmentForm");
+var atchFormContainer = document.getElementById("attachmentFormContainer");
+
+function getAbsoluteHeight(el) {
+	  // Get the DOM Node if you pass in a string
+	  el = (typeof el === 'string') ? document.querySelector(el) : el; 
+
+	  var styles = window.getComputedStyle(el);
+	  var margin = parseFloat(styles['marginTop']) +
+	               parseFloat(styles['marginBottom']);
+
+	  return Math.ceil(el.offsetHeight + margin);
+	}
+
+var fixmeTop = atchForm.getBoundingClientRect().top
+window.onscroll = function() {
+
+    var currentScroll = window.scrollY;
+    if (currentScroll >= fixmeTop) {
+    	atchFormContainer.style.height = atchFormContainerHeight + "px";
+    	atchForm.style.position = "fixed";
+    	atchForm.style.bottom = "0px";
+    	atchForm.style.right = "0px";
+    	atchForm.style.zIndex = "1500";
+    	atchForm.classList.add("likeArticle");
+    } else {
+    	atchForm.style.position = "static";
+    	atchForm.classList.remove("likeArticle");
+    }
+
+};
+
+function backToPublication(){
+	history.back();
+}
+
+function progressBarVisibility(on){
+	document.getElementById("progressBarContainer").style.visibility = on ? "visible" : "hidden";
+}
+
+function setProgressBarValue(id, done){
+	var pgb = document.getElementById(id);
+	if(typeof pgb !== "undefinded" && pgb != null){
+		if(done == 0 || done == 1){
+			progressBarVisibility(false);
+		} else {
+			progressBarVisibility(true)
+			pgb.value = done;
+		}
+	}
+}
+
+var createAttachment = function(chunk){
+	console.debug("CHK")
+	console.debug(chunk.fileObj.idAttachment);
+	console.debug(chunk);
+	
+	document.getElementById("newFilesInput").disabled = true;
+    
+    if(!chunk.fileObj.idAttachment && chunk.preprocessState == 1){
+    	var formData = new FormData();
+    	console.debug("Créer l'attachment");
+    	formData.append('size', chunk.fileObj.file.size);
+    	formData.append('name', chunk.fileObj.file.name);
+    	formData.append('type', chunk.fileObj.file.type);
+    	formData.append('idPage', '$idPage$');
+
+    	var success = function(jsonRep){
+    		if(jsonRep.error){
+    			chunk.fileObj.cancel();
+    			
+    			var container = document.getElementById("attachmentListContainer");
+    			var aFileDiv = document.createElement("DIV");
+    			aFileDiv.innerHTML = "<p>"+jsonRep.error+"</p>";;
+    			container.appendChild(aFileDiv);
+    			
+    		} else {
+    			chunk.fileObj.idAttachment = jsonRep.idAttachment;
+    		}
+    		chunk.preprocessFinished();
+    	}
+    	
+    	postNewFileMetaData(success, callbackError, formData);
+    } else {
+    	console.debug("Attachemnt déjà créé");
+    	chunk.preprocessFinished();
+    }
+
+	
+	
+}
+
+var resumable = new Resumable({
+	target:'index.php?attachmentManager&action=uploadFileChunk', 
+	query:function(resumableFile){
+		return {"idAttachment":resumableFile.idAttachment}; 
+	},
+	chunkSize:512*1024,
+	forceChunkSize: true,
+	preprocess:createAttachment,
+	simultaneousUploads:1,
+	testChunks:false
+  
+});
+
+resumable.on('fileSuccess', function(file, message){
+    console.debug('fileSuccess',file);
+    
+    var container = document.getElementById("attachmentListContainer");
+	var aFileDiv = document.createElement("DIV");
+	aFileDiv.id = file.idAttachment+"-container";
+	aFileDiv.innerHTML = message;
+	container.appendChild(aFileDiv);
+	
+	var noContent = document.getElementById("noAttachmentYet");
+	if(noContent != null){
+		noContent.innerHTML = "";
+	}
+	
+  });
+  
+resumable.on('fileProgress', function(file){
+    var currentDiv = document.getElementById("currentUploadDiv");
+    currentDiv.innerHTML = "Transfert du fichier "+file.fileName+", "+Math.round(file.progress()*100)+"%";
+  });
+  
+resumable.on('fileBeforeAdd', function(file){
+    //console.debug('fileBeforeAdd', file);
+    	
+});
+
+resumable.on('fileAdded', function(file, event){
+	
+	
+	setTimeout(function(){
+		document.getElementById("newFilesInput").disabled = resumable.isUploading()
+	}, 500 );
+    console.debug('fileAdded', event);
+  });
+  
+resumable.on('filesAdded', function(array){
+	resumable.upload();
+    console.debug('filesAdded', array);
+    document.getElementById("newFilesInput").disabled = true;
+  });
+  
+resumable.on('fileRetry', function(file){
+    console.debug(file);
+  });
+  
+resumable.on('fileError', function(file, message){
+    console.debug('fileError', file, message);
+  });
+  
+resumable.on('uploadStart', function(){
+    console.debug('uploadStart');
+    document.getElementById("newFilesInput").disabled = true;
+  });
+  
+resumable.on('complete', function(){
+    console.debug('complete');
+    document.getElementById("newFilesInput").disabled = false;
+    document.getElementById("currentUploadDiv").innerHTML = "Tous les transferts sont terminés.";
+    resumable.cancel();
+  });
+  
+resumable.on('progress', function(){
+    setProgressBarValue("progressBar", resumable.progress());
+  });
+  
+resumable.on('error', function(message, file){
+    console.debug('error', message, file);
+  });
+  
+resumable.on('pause', function(){
+    console.debug('pause');
+  });
+  
+resumable.on('cancel', function(){
+    console.debug('cancel');
+    document.getElementById("newFilesInput").disabled = false;
+  });
+
+resumable.assignBrowse(document.getElementById('newFilesInput'));
+
+
+function updateAttachment(metaFile){
+	var callbackSuccess = function (html){
+		var container = document.getElementById(metaFile+"-container");
+		container.innerHTML = html;
+	}
+	var form = document.getElementById(metaFile+"-form");
+	var formData = new FormData(form);
+	
+	postForHtml("index.php?attachmentManager&action=update&id="+metaFile, callbackSuccess, callbackError, formData);
+}
+
+var backgroundUpdateTimers = [];
+function updateInBackground(idAttachment){
+	var existingTimer = backgroundUpdateTimers[idAttachment];
+	if(existingTimer != "undefined"){
+		clearTimeout(existingTimer);
+		
+	}
+	
+	var ajaxLoader = document.getElementById(idAttachment+"-ajaxLoader");
+	var ajaxError = document.getElementById(idAttachment+"-ajaxError");
+	ajaxError.style.visibility = "hidden";
+	
+	var callbackSuccess = function (html){
+		ajaxLoader.style.visibility = "hidden";
+		ajaxError.style.visibility = "hidden";
+	}
+	
+	var callbackError = function (html){
+		ajaxLoader.style.visibility = "hidden";
+		ajaxError.style.visibility = "visible";
+		console.log(html);
+	}
+	
+	var toExecuteInSeconds = function(){
+		ajaxLoader.style.visibility = "visible";
+		
+		timerIndex = backgroundUpdateTimers.indexOf(idAttachment);
+		
+		if (timerIndex > -1) {
+			backgroundUpdateTimers.splice(timerIndex, 1);
+		}
+		
+		var form = document.getElementById(idAttachment+"-form");
+		var formData = new FormData(form);
+		
+		postForHtml("index.php?attachmentManager&action=update&id="+idAttachment, callbackSuccess, callbackError, formData);
+	}
+	
+	var updateTimer = setTimeout(toExecuteInSeconds, 1000);
+	backgroundUpdateTimers[idAttachment] = updateTimer;
+}
+
+var callbackError = function(err) {
+	alert(err);
+}
+
+function deleteAttachment(metaFile){
+	var cfm = confirm("Voulez-vous vraiment supprimer ce fichier joint ?");
+	if(cfm){
+		
+		var callbackSuccess = function (html){
+			var container = document.getElementById(metaFile+"-container");
+			container.innerHTML = html;
+			
+			setTimeout(function(){container.innerHTML = ""; }, 3000);
+			
+		}
+		
+		postForHtml("index.php?attachmentManager&action=delete&id="+metaFile, callbackSuccess, callbackError, true);
+	}
+}
+	
+function postNewFileMetaData(callbackSuccess, callbackError, postData){
+	var xhr;
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xhr=new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xhr=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+     
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4){
+        	if (xhr.status == 200 || xhr.status == 0) {
+        		try{
+	        		callbackSuccess(JSON.parse(xhr.responseText));
+        		} catch ( i) {
+					alert("Oups : "+i);
+					console.log(xhr.responseText);
+				}
+        	} else {
+        		callbackError(xhr.status);
+        	}
+        } else {
+        	console.log(xhr.readyState);
+   		}
+    };
+
+   	xhr.open("POST", "index.php?attachmentManager&action=uploadNewFileMetaData", true);
+   	//xhr.setRequestHeader('Content-Type','multipart/form-data');
+   	xhr.send(postData);
+}
+	
+function postForHtml(url, callbackSuccess, callbackError, postData){
+	var xhr;
+	if (window.XMLHttpRequest){// code for IE7+, Firefox, Chrome, Opera, Safari
+		xhr=new XMLHttpRequest();
+	} else {// code for IE6, IE5
+		xhr=new ActiveXObject("Microsoft.XMLHTTP");
+	}
+     
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4){
+        	if (xhr.status == 200 || xhr.status == 0) {
+        		try{
+	        		callbackSuccess(xhr.responseText);
+        		} catch ( i) {
+					alert("Oups : "+i);
+				}
+        	} else {
+        		callbackError(xhr.status);
+        	}
+        } else {
+        	console.log(xhr.readyState);
+   		}
+    };
+    
+     
+   	xhr.open("POST", url, true);
+   	//xhr.setRequestHeader('Content-Type','multipart/form-data');
+   	xhr.send(postData);
+}
+
+
+
+</script>

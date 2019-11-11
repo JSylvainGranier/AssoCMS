@@ -1,0 +1,44 @@
+<script src="ressources/tinymce/tinymce.min.js"></script>
+
+
+<form method="POST" action="index.php?save">
+
+	<input type='hidden' name='class' value='$classToEdit$' /> <input
+		type='hidden' name='id' value='$idToEdit$' /> <input type='hidden'
+		name='redirectAction' value='$redirectAction$' /> $inputs$ <input
+		type='submit' value='Envoyer' />
+</form>
+
+<script>
+
+	tinymce.init({selector:'textarea',  
+		menubar : false, 
+		statusbar : true, 
+		document_base_url: "$SITE_ROOT$",
+		remove_script_host: false,
+		relative_urls: false,
+		browser_spellcheck : true,
+		resize: true,
+		plugins: ["preview","link"],
+		toolbar: [
+		          "undo redo | styleselect fontsizeselect | bold italic underline | link unlink | preview",
+		          "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | removeformat"
+		      ]
+	}
+	);
+	
+	var desableEditor = function() {
+		
+		var editors = tinymce.editors;
+		
+		for(var i = 0; i < editors.length; i++){
+			
+			tinymce.execCommand('mceRemoveEditor', false, editors[i].id);
+		}
+		
+	};
+	
+	</script>
+
+<button onclick="desableEditor();">Désactiver l'éditeur
+	graphique.</button>

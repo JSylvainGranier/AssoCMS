@@ -1,0 +1,81 @@
+<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="ressources/tinymce/langs/fr_FR.js"></script>
+
+<h3>$titrePage$</h3>
+
+<form method="POST" action="index.php?save">
+
+	<input type='hidden' name='class' value='Page' /> <input type='hidden'
+		name='id' value='$id$' />
+
+	<p>
+		<label for='titre'>Titre</label><input type='text' name='titre'
+			id='titre' value='$titre$'>
+	</p>
+
+	<p>
+		<label for='introduction'>Description rapide</label>
+		<textarea type='text' name='introduction' id='introduction'>$intro$</textarea>
+	</p>
+
+	<p>
+		<label for='suite'>Détails complémentaires</label>
+		<textarea type='text' name='suite' id='suite' rows="20">$suite$</textarea>
+	</p>
+
+	<p>
+		Page classée dans la catégorie '$categorie$' <input type='hidden'
+			name="categorieClassement" value="$idCategorie$">
+	</p>
+
+	<p>
+		<label for='allowReactions'>Autoriser les membres à réagir à
+			cette page : </label> <label for='allowReactionsTRUE'>Oui</label> <input
+			type='radio' $allowReactionsTrue$ name='allowReactions'
+			id='allowReactionsTRUE' value='1'>&nbsp;&nbsp;&nbsp; <label
+			for='allowReactionsFALSE'>Non</label> <input type='radio'
+			$allowReactionsFalse$ name='allowReactions' id='allowReactionsFALSE'
+			value='0'>
+	</p>
+
+	<p>
+		<label for='allowMemberAttachments'>Autoriser les membres à
+			ajouter leurs documents sur cette page : </label> <label
+			for='allowMemberAttachmentsTRUE'>Oui</label> <input type='radio'
+			$allowMemberAttachmentsTrue$ name='allowMemberAttachments'
+			id='allowMemberAttachmentsTRUE' value='1'>&nbsp;&nbsp;&nbsp;
+		<label for='allowMemberAttachmentsFALSE'>Non</label> <input
+			type='radio'
+			$allowMemberAttachmentsFalse$ name='allowMemberAttachments'
+			id='allowMemberAttachmentsFALSE' value='0'>
+	</p>
+
+
+	<p>
+		<label for='etat'>Visibilité : </label> $publicationState$
+	</p>
+
+
+	$order$ $displayInMenu$ $autor$ <input type='submit'
+		value='$sendButtonLabel$' />
+</form>
+
+<script>
+	tinymce.init({selector:'textarea',  
+		menubar : false, 
+		statusbar : true, 
+		document_base_url: "$SITE_ROOT$",
+		remove_script_host: false,
+		relative_urls: false,
+		browser_spellcheck : true,
+		resize: true,
+		plugins: ["preview","link","image" ],
+		toolbar: [
+		          "undo redo | styleselect fontsizeselect | bold italic underline | image | link unlink | preview",
+		          "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | removeformat"
+		      ]
+	}
+	);
+	
+	</script>
+

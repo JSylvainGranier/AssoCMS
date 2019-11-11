@@ -1,0 +1,59 @@
+<style>
+	article {
+		background-image: none;
+		display: inline-block;
+		width: 80% !important;
+		float: left !important;
+		margin: 10px;
+		margin-left: 10%;
+		text-align: justify;
+		padding: 0.5em;
+		padding-bottom: 2em;
+	}
+	
+	.lower{
+		font-size : 0.6em;
+	}
+	
+</style>
+
+<h1>
+	<i class="fa fa-exclamation-triangle" aria-hidden="true"> </i> 
+	<i class="fa fa-frown-o" aria-hidden="true"></i>
+	<i class="fa fa-chain-broken" aria-hidden="true"></i>
+	<i class="fa fa-ban" aria-hidden="true"></i>
+	<i class="fa fa-fire-extinguisher" aria-hidden="true"></i>
+	<br />
+	<span class="lower">Oups, c'est une erreur...</span>
+</h1>
+
+<p>$erreurSimple$</p>
+
+<p>$erreurSent$</p>
+
+<input type='button' value="Voir les détails de l'erreur"
+	onclick="this.style.display = 'none'; document.getElementById('details').style.display = 'block';" />
+
+<div id="details" style="display: none;">
+
+
+	<p>REFERER</p>
+	<pre>$REFERER$</pre>
+	<p>ARGS</p>
+	<pre>$ARGS$</pre>
+	<p>ACTIONS</p>
+	<pre>$ACTIONS$</pre>
+	<p>$LOOP$</p>
+	<p>SESSION</p>
+	<pre>$SESSION$</pre>
+	<p>STACK TRACE</p>
+	<pre>$STACK$</pre>
+</div>
+
+<h2>Que faire ensuite ?</h2>
+<p>
+	Vous pouvez <a href="$SITE_ROOT$">retourner à la page d'accueil</a>.
+</p>
+<p>
+	Ou essayer de <a href="javascript:history.back()">revenir à la page précédente</a>.
+</p>

@@ -1,0 +1,29 @@
+<div class='loginInvitationContainer'>
+	<p>
+		<b>Vous êtes membre de l'association ? Connectez-vous pour voir
+			tous les éléments !</b>
+	</p>
+
+	<form action="$SITE_ROOT$index.php?login&phase=loggingIn" method="post"
+		id="form" onsubmit="return replacePassword('pw');">
+
+		<label for="login">eMail :</label> <input id="login" type="text"
+			name="login" value="$login$"
+			style="width: 200px; display: inline-block;" /> <label
+			for="visiblepw">Mot de passe :</label> <input id="visiblepw"
+			type="password" name="visiblepw" style="width: 200px;" /> <input
+			type="submit" value="Se connecter"
+			style="font-weight: bold; font-size: 1.2em;"> <input id="pw"
+			type="hidden" name="pw" /> <input name="requestBeforeLogin"
+			value="$currentUrl$" type="hidden" />
+
+
+
+
+
+
+	</form>
+</div>
+
+
+

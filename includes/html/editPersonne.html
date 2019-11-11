@@ -1,0 +1,136 @@
+<h3>Modification du profil</h3>
+
+
+
+<form method="POST" action="index.php?save">
+
+	<input type='hidden' name='class' value='Personne' /> <input
+		type='hidden' name='idPersonne' value='$idPersonne$' /> <input
+		type='hidden' name='id' value='$idPersonne$' /> <input type='hidden'
+		name='redirectAction' value='show' />
+
+
+	<p>
+		<label for='civilite'>Civilite</label> <select name='civilite'
+			id='civilite'>
+			<option $selectedMonsieur$>Monsieur</option>
+			<option $selectedMadame$>Madame</option>
+			<option $selectedMAndM$>Monsieur et Madame</option>
+		</select>
+	</p>
+
+	<p>
+		<label for='nom'>Nom</label><input type='text' name='nom' id='nom'
+			value='$nom$'>
+	</p>
+
+	<p>
+		<label for='prenom'>Prenom</label><input type='text' name='prenom'
+			id='prenom' value='$prenom$'>
+	</p>
+
+	<fieldset>
+		<legend>Contact</legend>
+		<p>
+			<label for='email'>Adresse eMail (utilisée pour la connexion au site)</label><input type='text'
+				name='email' id='email' value='$email$'>
+		</p>
+
+		<p>
+			<label for='allowEmails'>J'autorise le site $site_title$ à
+				m'envoyer des eMails à cette adresse concernant l'actualité de
+				l'association : </label>
+		</p>
+		<p style="text-align: right;">
+			<label for='allowEmailsTRUE'>OUI</label><input type='radio'
+				name='allowEmails' id='allowEmailsTRUE' value='1'$allowEmailsTrue$>&nbsp;&nbsp;<label
+				for='allowEmailsFALSE'>NON</label><input type='radio'
+				name='allowEmails' id='allowEmailsFALSE' value='0'$allowEmailsFalse$>&nbsp;&nbsp;
+		</p>
+
+		<p>
+			<label for='telFixe'>Téléphone Fixe</label><input type='text'
+				name='telFixe' id='telFixe' value='$telFixe$'>
+		</p>
+
+		<p>
+			<label for='telPortable'>Téléphone Portable</label><input type='text'
+				name='telPortable' id='telPortable' value='$telPortable$'>
+		</p>
+
+		<p>
+			Adresse : <br /> <input type='text' name='adrL1' id='adrL1'
+				value='$adrL1$' placeholder="Ligne 1"><br /> <input
+				type='text' name='adrL2' id='adrL2' value='$adrL2$'
+				placeholder="Ligne 2"><br /> <input type='text'
+				name='adrL3' id='adrL3' value='$adrL3$' placeholder="Ligne 3"><br />
+			<input type='text' name='adrCP' id='adrCP' value='$adrCP$'
+				placeholder="CP"> &nbsp; <input type='text' name='adrVille'
+				id='adrVille' value='$adrVille$' placeholder="Ville">
+		</p>
+	</fieldset>
+
+	<fieldset>
+		<legend>Confidentialité</legend>
+
+		<p>Les données personnelles (nom de famille, téléphones, adresse,
+			email, photo, ...) sont visibles par les autres membres de
+			l'association lorsqu'ils se connectent au site avec leur identifiant
+			et mot de passe.</p>
+
+		<p>Des personnes extérieures à l'association qui visitent ce site
+			ne verront que votre prénom et les activités que vous organiez dans
+			l'association.</p>
+
+		<p>
+			<label for='allowMembersVisitProfile'>J’accepte que les
+				autres membres de l’association puissent consulter mes coordonnées
+				dans le trombinoscope : </label>
+		</p>
+		<p style="text-align: right;">
+			<label for='allowMembersVisitProfileTRUE'>OUI</label><input
+				type='radio' name='allowMembersVisitProfile'
+				id='allowMembersVisitProfileTRUE' value='1'$allowMembersVisitProfileTrue$>&nbsp;&nbsp;<label
+				for='allowMembersVisitProfileFALSE'>NON</label><input type='radio'
+				name='allowMembersVisitProfile' id='allowMembersVisitProfileFALSE'
+				value='0'$allowMembersVisitProfileFalse$>&nbsp;&nbsp;
+		</p>
+
+	</fieldset>
+	
+	<fieldset>
+		<legend>Droit à l'image</legend>
+		
+		<p>
+			<label for='allowPublishMyFace'>J’accepte la publication d'image où je suis présent(e) : </label>
+		</p>
+		
+		<p style="text-align: right;">
+			<label for='allowPublishMyFaceTRUE'>OUI</label><input
+				type='radio' name='allowPublishMyFace'
+				id='allowPublishMyFaceTRUE' value='1'$allowPublishMyFaceTrue$>&nbsp;&nbsp;<label
+				for='allowPublishMyFaceFALSE'>NON</label><input type='radio'
+				name='allowPublishMyFace' id='allowPublishMyFaceFALSE'
+				value='0'$allowPublishMyFaceFalse$>&nbsp;&nbsp;
+		</p>
+		
+	</fieldset>
+
+
+	<fieldset style="display: $gestionMemberVisibility$;">
+		<legend>Gestion</legend>
+		<p>
+			<label for='wantPaperRecap'>Récapitulatif mensuel envoyé par
+				courrier papier</label><label for='wantPaperRecapTRUE'>OUI</label><input
+				type='radio' name='wantPaperRecap' id='wantPaperRecapTRUE' value='1'$wantPaperRecapTrue$>&nbsp;&nbsp;<label
+				for='wantPaperRecapFALSE'>NON</label><input type='radio'
+				name='wantPaperRecap' id='wantPaperRecapFALSE' value='0'$wantPaperRecapFalse$>&nbsp;&nbsp;
+		</p>
+		$rolesSelect$
+
+	</fieldset>
+
+
+	<input type="submit" value="Enregistrer">
+
+</form>

@@ -1,0 +1,36 @@
+<div id="reactionModule">
+	<h4>Réactions</h4>
+	$reactionList$
+
+	<p id="reactionFormTitle">Rédiger mon commentaire :</p>
+	<form method="post" action="index.php?save">
+		<input type="hidden" name="id" value="$id$" id="reactionIdInput" /> <input
+			type="hidden" name="page" value="$idPage$" /> <input type="hidden"
+			name="auteur" value="$idAuteur$" /> <input type="hidden"
+			name="class" value="Reaction" />
+		<p>
+			<textarea name="message" id="reactionMessageInput"
+				style="width: 100%;" rows="5" placeholder="Mon message..."></textarea>
+			<input type="submit" value="Envoyer" style="float: right;">
+		</p>
+	</form>
+
+	<script type="text/javascript">
+
+function br2nl(str) {
+    return str.replace(/<br\s*\/?>/mg,"\n");
+}
+
+var editReaction = function(idReaction){
+	
+	var message = document.getElementById("reactionId"+idReaction).innerHTML;
+	document.getElementById("reactionIdInput").value = idReaction;
+	document.getElementById("reactionMessageInput").value = br2nl(message);
+	document.getElementById("reactionFormTitle").innerHTML = "Corriger mon commentaire :";
+	document.getElementById("reactionFormTitle").scrollIntoView();
+	
+}
+
+</script>
+
+</div>

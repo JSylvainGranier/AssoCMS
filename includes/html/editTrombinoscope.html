@@ -1,0 +1,324 @@
+<h3>Modification de la photo du trombinoscope</h3>
+
+
+<script
+	src="https://ajax.googleapis.com/ajax/libs/prototype/1.7.0.0/prototype.js"
+	type="text/javascript"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/scriptaculous/1.9.0/scriptaculous.js"
+	type="text/javascript"></script>
+<script src="ressources/cropper.js" type="text/javascript"></script>
+<script type="text/javascript">
+var canSendPic = true;
+var fileSizeValidation = function(){
+	
+	if(canSendPic === false){
+		noFileApiWarning();
+		return false;
+	}
+	
+	var fileInput = document.getElementById("trombiFile");
+
+	if (fileInput.files != null && fileInput.files[0] != null){
+		var fileSize = fileInput.files[0].size;
+		var maxFileSize = $maxUploadByte$;
+		if(fileSize > maxFileSize){
+			
+			alert("L'image que vous essayez d'utiliser dépasse la taille limite des $fileSize$ Mo.\nEssayez de réduire l'image, ou choisissez-en une autre.");
+			fileInput.value="";
+			return false;
+		}
+		
+		
+		if(fileInput.files[0].type !== "image/jpeg"){
+			
+			alert("La photo du trombinoscope doit être au format JPEG.\nEssayez de convertir l'image dans un fichier de moins de 2 Mo, ou choisissez-en une autre.");
+			fileInput.value="";
+			return false;
+		}
+		
+		
+
+		readURL(fileInput);
+		return true;
+		
+	} else {
+		noFileApiWarning();
+		
+	}
+	
+	return false;
+}
+
+var noFileApiWarning = function(){
+	canSendPic = false;
+	alert("Désolé, votre navigateur internet n'est pas en mesure d'envoyer votre photo dans le trombinoscope.\n Utilisez un autre navigateur internet (tel que Firefox, Chrome ou Safari) ou envoyez-nous là à l'adresse suivante : $emailManuel$");
+}
+
+</script>
+<form method="POST" action="index.php?save"
+	enctype="multipart/form-data" onsubmit="return canSendPic;">
+
+	<input type='hidden' name='class' value='Trombinoscope' /> <input
+		type='hidden' name='idPersonne' value='$idPersonne$' /> <input
+		type='hidden' name='id' value='$idPersonne$' />
+
+
+
+	<div
+		style="width: 100%; text-align: center; padding: 0px; margin: 0px;"
+		id="trombiFileContainer">
+		$tombiImgTag$ <br /> <span id="trombiDeleteLink">$trombiDeleteLink$</span>
+	</div>
+
+	<input type="hidden" name="x1" id="x1" /> <input type="hidden"
+		name="y1" id="y1" /> <input type="hidden" name="x2" id="x2" /> <input
+		type="hidden" name="y2" id="y2" /> <input type="hidden" name="width"
+		id="width" /> <input type="hidden" name="height" id="height" /> <input
+		type="hidden" name="widthRadio" id="widthRadio" />
+
+
+	<fieldset>
+		<legend>Pour changer ma photo :</legend>
+		<ol>
+			<li>Choisir la nouvelle photo dans votre ordinateur (max
+				$fileSize$ Mo, format JPEG, 2500 × 1900 pixels maximum) : <br /> 
+				<input
+					type="file" name="trombiFile" id="trombiFile"
+					onchange="return fileSizeValidation();">
+			</li>
+			<li>Lorsque votre nouvelle photo s'affiche, ajustez le masque à
+				votre visage à l'aide des cubes gris.<br /> 
+				<img
+					src="ressources/exempleResize.jpg" style="zoom: 70%;">
+			</li>
+			<li>Enregistrez, en bas de la page.</li>
+		</ol>
+		<p>Vous n'y arrivez pas ? Envoyez votre photo par email à cette adresse : <a href='mailto:$emailManuel$'>$emailManuel$</a></p>
+	</fieldset>
+
+
+	<fieldset>
+		<legend>Confidentialité</legend>
+
+		<p>La photo du trombinoscope est visible uniquement par les autres
+			membres de l'association lorsqu'ils se connectent au site avec leur
+			identifiant et mot de passe.</p>
+
+		<p>Des personnes extérieures à l'association qui visitent ce site
+			ne verront pas cette photo.</p>
+
+	</fieldset>
+
+	<input type="submit" value="Enregistrer">
+
+</form>
+
+<script type="text/javascript" charset="utf-8">
+
+
+function readURL(input) {
+
+    if (input.files && input.files[0]) {
+    	
+    	
+        var reader = new FileReader();
+
+        reader.onload = function (e) {
+        	var image = new Image();
+
+            image.src = reader.result;
+			
+            var container = document.getElementById('trombiFileContainer');
+    		var containerWidth = container.offsetWidth;
+    		var containerHeight = container.offsetHeight;
+            
+    		//console.log("Taille du container : "+containerWidth+" x "+containerHeight);
+    		
+            image.onload = function() {
+                
+            	//console.log("Taille de l'image : "+image.width+" x "+image.height);
+            	
+                var imgTag = document.getElementById('trombiImage');
+            	
+            	imgTag.src = image.src;
+            	
+            	var widthRatio = 1;
+            	
+            	var width = image.width;
+            	var height = image.height;
+            	
+            	if(width > containerWidth){
+            		
+            		widthRatio = Number((containerWidth / width).toFixed(2));
+
+            		width = width * widthRatio;
+            		height = height * widthRatio;
+            		
+            		//console.log("Taille redimentionnée : "+width+" x "+height);
+            		
+            		
+            		
+            	} else {
+            		//console.log("Pas de redimentionnement.");
+            	}
+            	
+            	imgTag.style.width = width+'px';
+        		imgTag.style.height = height+'px';
+            	
+            	document.getElementById("widthRadio").value = widthRatio;
+            	
+            	CropImageManager.setImage(imgTag.src, width, height);
+            	            	
+            };
+        	
+        	
+        }
+
+        reader.readAsDataURL(input.files[0]);
+    	document.getElementById("trombiDeleteLink").innerHTML = "";
+        
+        
+    } 
+}
+
+
+// setup the callback function
+function onEndCrop( coords, dimensions ) {
+
+	var x1 = coords.x1;
+	var y1 = coords.y1;
+	var x2 = coords.x2;
+	var y2 = coords.y2;
+	
+	var width = dimensions.width;
+	var height = dimensions.height;
+
+
+	var ratio = parseFloat(document.getElementById("widthRadio").value);
+	if(ratio < 1){
+		x1 = coords.x1/ratio;
+		y1 = coords.y1/ratio;
+		x2 = coords.x2/ratio;
+		y2 = coords.y2/ratio;
+	
+		width = dimensions.width/ratio;
+		height = dimensions.height/ratio;
+	}
+	
+	console.log(ratio);
+	console.log(coords);
+	console.log(dimensions);
+	
+	
+	
+	$( 'x1' ).value = x1;
+	$( 'y1' ).value = y1;
+	$( 'x2' ).value = x2;
+	$( 'y2' ).value = y2;
+	$( 'width' ).value = width;
+	$( 'height' ).value = height; 
+	
+	console.log("From x:"+x1+" y:"+y1+"  to x:"+x2+" y:"+y2+"  width:"+width+"  height:"+height);
+
+}
+
+
+
+/**
+ * A little manager that allows us to swap the image dynamically
+ *
+ */
+var CropImageManager = {
+	/**
+	 * Holds the current Cropper.Img object
+	 * @var obj
+	 */
+	curCrop: null,
+	
+	/**
+	 * Initialises the cropImageManager
+	 *
+	 * @access public
+	 * @return void
+	 */
+	init: function() {
+		this.attachCropper();
+	},
+	
+	/**
+	 * Handles the changing of the select to change the image, the option value
+	 * is a pipe seperated list of imgSrc|width|height
+	 * 
+	 * @access public
+	 * @param obj event
+	 * @return void
+	 */
+	onChange: function( e ) {
+		var vals = $F( Event.element( e ) ).split('|');
+		this.setImage( vals[0], vals[1], vals[2] ); 
+	},
+	
+	/**
+	 * Sets the image within the element & attaches/resets the image cropper
+	 *
+	 * @access private
+	 * @param string Source path of new image
+	 * @param int Width of new image in pixels
+	 * @param int Height of new image in pixels
+	 * @return void
+	 */
+	setImage: function( imgSrc, w, h ) {
+		/*
+		*/
+		this.removeCropper();
+		$( 'trombiImage' ).src = imgSrc;
+		$( 'trombiImage' ).width = w;
+		$( 'trombiImage' ).height = h;
+		this.attachCropper();
+	},
+	
+	/** 
+	 * Attaches/resets the image cropper
+	 *
+	 * @access private
+	 * @return void
+	 */
+	attachCropper: function() {
+		if( this.curCrop == null ) this.curCrop = new Cropper.Img( 'trombiImage', { 
+			onEndCrop: onEndCrop,
+			displayOnInit: true,
+			onloadCoords: { x1: 10, y1: 10, x2: 210, y2: 110 },
+			ratioDim: { x: 100, y: 120 }
+			} );
+		else this.curCrop.reset();
+	},
+	
+	/**
+	 * Removes the cropper
+	 *
+	 * @access public
+	 * @return void
+	 */
+	removeCropper: function() {
+		if( this.curCrop != null ) {
+			this.curCrop.remove();
+			this.curCrop = null;
+		}
+	},
+	
+	/**
+	 * Resets the cropper, either re-setting or re-applying
+	 *
+	 * @access public
+	 * @return void
+	 */
+	resetCropper: function() {
+		this.attachCropper();
+	}
+};
+
+
+</script>
+
+

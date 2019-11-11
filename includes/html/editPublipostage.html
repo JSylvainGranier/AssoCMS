@@ -1,0 +1,181 @@
+<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="ressources/tinymce/langs/fr_FR.js"></script>
+
+
+<h3>Edition Publipostage</h3>
+
+
+<form method="POST" action="index.php?save">
+
+	<input type='hidden' name='class' value='Publipostage' /> <input
+		type='hidden' name='id' value='$id$' />
+
+	<p>
+		<label for='objet'>Objet du message</label><input type='text'
+			name='objet' id='objet' value='$objet$'>
+	</p>
+
+	<div style="display: none;" id="wizardDiv">
+		<h4>Import de texte</h4>
+		<p>
+			<i>Utilisez les filtres pour trouver le contenu que vous
+				souhaitez importer dans le message.</i>
+		</p>
+		<table style="width: 100%; border-spacing: 10px;">
+			<tr>
+				<td style="width: 30%; vertical-align: top;">
+					<p>
+						Rechercher parmi<br /> <input type="checkbox" id="searchKindPage"
+							onchange="performWizSearch();"> <label
+							for="searchKindPage">les Pages</label><br /> <input
+							type="checkbox" id="searchKindRdv" onchange="performWizSearch();">
+						<label for="searchKindRdv">les Rendez-vous à venir</label>
+					</p>
+					<p>
+						Dans la section<br /> <select name="searchSection"
+							id="searchSection" style="width: 100%;"
+							onchange="performWizSearch();"> $wizOptions$
+						</select>
+					</p>
+				</td>
+				<td style="width: 70%; vertical-align: top;">
+					<p>
+						Résultat : <br /> <select name="searchResult" id="searchResult"
+							multiple="multiple" style="width: 100%; height: 90px;">
+						</select> <br />
+					</p>
+					<p style="text-align: center;">
+						<input type="button" value="Ouvrir"
+							onclick="openSearchResult(this);" />&nbsp;<input type="button"
+							value="Importer la sélection"
+							onclick="importSearchResults(this);" />
+					</p>
+				</td>
+			</tr>
+		</table>
+
+	</div>
+	<p style="text-align: right;">
+		<input type="button" value="Importer du texte"
+			id="wizardShowHideButton" onclick="toggleWizard(this);" />
+	</p>
+	<p>
+		<label for='message'>Message</label>
+		<textarea class="publipostageArea" type='text' name='message'
+			id='message' rows="40">$message$</textarea>
+	</p>
+
+	<input type='submit' value='Enregistrer' />
+</form>
+
+<script>
+	tinymce.init({selector:'textarea',  
+		menubar : false, 
+		statusbar : true, 
+		document_base_url: "$SITE_ROOT$",
+		remove_script_host: false,
+		relative_urls: false,
+		browser_spellcheck : true,
+		resize: true,
+		plugins: ["preview","link"],
+		toolbar: [
+		          "undo redo | styleselect fontsizeselect | bold italic underline | link unlink | preview",
+		          "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | removeformat"
+		      ]
+	}
+	);
+	
+	
+	
+	var toggleWizard = function (wzbButton){
+		var wizardDiv = document.getElementById("wizardDiv");
+		
+		if(wizardDiv.style.display == "none"){
+			wizardDiv.style.display = "block";
+			wzbButton.value = "Masquer l'assistant d'import";
+		} else {
+			wizardDiv.style.display = "none";
+			wzbButton.value = "Importer du texte";
+		}
+		
+	}
+	
+	var performWizSearch = function(){
+		var searchKindPage = document.getElementById("searchKindPage");
+		var searchKindRdv = document.getElementById("searchKindRdv");
+		var searchSection = document.getElementById("searchSection");
+		
+		var kind = "";
+		if(searchKindPage.checked){
+			kind += "P";
+		}
+		if(searchKindRdv.checked){
+			kind += "R";
+		}
+		
+		var cat = searchSection.options[searchSection.selectedIndex].value;
+		
+		var url = "index.php?ajaxPublipostageWiz&kind="+kind+"&cat="+cat;
+		
+		
+		var searchResult = document.getElementById("searchResult");
+		searchResult.innerHTML = "";
+		
+		callServeur(url, wizSearchReturn, alert, true);
+		searchResultsHolder.length = 0;
+		
+	}
+	
+	var wizSearchReturn = function(jsonArray){
+		
+		for(var i = 0; i<jsonArray.length; i++){
+			aRow = jsonArray[i];
+			
+			
+			searchResult.options[i] = new Option(aRow.listTitle, aRow.id);
+			searchResultsHolder[aRow.id] = aRow;
+		}
+	}
+	
+	var searchResultsHolder = new Array();
+	
+	var openSearchResult = function(){
+		var searchResultSelector = document.getElementById("searchResult");
+		if (searchResultSelector.selectedOptions.length == 1){
+			var aSearchResult = searchResultsHolder[searchResultSelector.selectedOptions[0].value];
+			var cls = aSearchResult.class;
+			var id = aSearchResult.id;
+			var url = "index.php?show&class="+cls+"&id="+id;
+			open(url);
+		} else {
+			alert("Vous devez choisir un seul résultat pour pouvoir l'ouvrir.");
+		}
+		
+	}
+	
+	var importSearchResults = function(){
+		var searchResultSelector = document.getElementById("searchResult");
+		if (searchResultSelector.selectedOptions.length == 0){
+			alert("Vous devez choisir au moins un résultat pour pouvoir l'importer dans le corps du message.");
+		} else {
+			var selectedResults = searchResultSelector.selectedOptions;
+			for (var i = 0; i < selectedResults.length; i++){
+				var aSearchResult = searchResultsHolder[selectedResults[i].value];
+				var titre = "";
+				var intro = "";
+				if(aSearchResult.longDate != null){
+					titre = "<h4>"+aSearchResult.longDate+"</h4>";
+					intro = "<p>"+aSearchResult.htmlTitle+"<br />"+aSearchResult.introduction+"</p>"; 
+				} else {
+					titre = "<p>"+aSearchResult.htmlTitle+"</p>";
+					intro = aSearchResult.introduction;
+				}
+				
+				
+				tinymce.activeEditor.execCommand('mceInsertContent', false, titre +" "+ intro);
+			}
+		}
+	}
+	
+	</script>
+

@@ -1,0 +1,152 @@
+<script src="http://tinymce.cachefly.net/4.1/tinymce.min.js"></script>
+<script src="ressources/tinymce/langs/fr_FR.js"></script>
+
+<h3>$titrePage$</h3>
+
+<form method="POST" action="index.php?save">
+
+	<input type='hidden' name='class' value='Evenement' /> <input
+		type='hidden' name='id' value='$id$' />
+
+	<p>
+		<label for='titre'>Titre</label><input type='text' name='titre'
+			id='titre' value='$titre$'>
+	</p>
+
+	<p>
+		<label for='dateDebut'>Début</label> <input type="datetime"
+			name='dateDebut' id='dateDebut' value='$dateDebut$'>
+		&nbsp;&nbsp;&nbsp; <label for='dateFin'>Fin</label><input
+			type="datetime" name='dateFin' id='dateFin' value='$dateFin$'>
+
+		<br /> <i>Note : s'il n'y a pas d'heure, mettre '00:00';</i>
+
+	</p>
+
+	<p style="display: none;">
+		<label for='emplacement'>Lieux où se déroule le rendez-vous</label><input
+			type='text' name='emplacement' id='emplacement' value='$emplacement$'>
+	</p>
+
+	<p>
+		<label for='introduction'>Description rapide</label>
+		<textarea type='text' name='introduction' id='introduction'>$intro$</textarea>
+	</p>
+
+	<p>
+		<label for='suite'>Détails complémentaires</label>
+		<textarea type='text' name='suite' id='suite' rows="20">$suite$</textarea>
+	</p>
+
+	<p>
+		<label for='organisateur'>Organisé par</label> $orangisateur1Select$
+		et $orangisateur2Select$
+	</p>
+
+
+	<p>
+		Rendez-vous dans la catégorie '$categorie$' <input type='hidden'
+			name="categorieClassement" value="$idCategorie$">
+	</p>
+
+	<p>
+		<label for='allowReactions'>Autoriser les membres à réagir à
+			ce rendez-vous : </label> <label for='allowReactionsTRUE'>Oui</label> <input
+			type='radio' $allowReactionsTrue$ name='allowReactions'
+			id='allowReactionsTRUE' value='1'>&nbsp;&nbsp;&nbsp; <label
+			for='allowReactionsFALSE'>Non</label> <input type='radio'
+			$allowReactionsFalse$ name='allowReactions' id='allowReactionsFALSE'
+			value='0'>
+	</p>
+
+	<p>
+		<label for='allowMemberAttachments'>Autoriser les membres à
+			ajouter leurs documents sur cette page : </label> <label
+			for='allowMemberAttachmentsTRUE'>Oui</label> <input type='radio'
+			$allowMemberAttachmentsTrue$ name='allowMemberAttachments'
+			id='allowMemberAttachmentsTRUE' value='1'>&nbsp;&nbsp;&nbsp;
+		<label for='allowMemberAttachmentsFALSE'>Non</label> <input
+			type='radio'
+			$allowMemberAttachmentsFalse$ name='allowMemberAttachments'
+			id='allowMemberAttachmentsFALSE' value='0'>
+	</p>
+
+	<p>
+		<label for='etat'>Visibilité : </label> $publicationState$
+	</p>
+
+
+	<input type='submit' value='$sendButtonLabel$' />
+</form>
+
+<script>
+	tinymce.init({selector:'textarea',  
+		menubar : false, 
+		statusbar : true, 
+		document_base_url: "$SITE_ROOT$",
+		remove_script_host: false,
+		relative_urls: false,
+		browser_spellcheck : true,
+		resize: true,
+		plugins: ["preview","link", "image"],
+		toolbar: [
+		          "undo redo | styleselect fontsizeselect | bold italic underline | image | link unlink | preview",
+		          "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | removeformat"
+		      ]
+	}
+	);
+	
+
+
+    var picker1 = new Pikaday(
+    {
+        numberOfMonths: 1,
+        format: 'D/MM/YYYY HH:mm',
+        field: document.getElementById('dateDebut'),
+        firstDay: 1,
+        showTime: true,
+        showSeconds: false,
+        use24hour: true,
+        i18n: {
+            previousMonth : 'Avant',
+            nextMonth     : 'Après',
+            months        : ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
+            weekdays      : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+            weekdaysShort : ['DI','LU','MA','ME','JE','VE','SA'],
+            midnight      : 'Minuit',
+            noon          : 'Midi'
+        },
+	    onClose : function(){
+	    	if(picker2.getDate() == null || picker2.getDate().getTime() < this.getDate().getTime()){
+	    		picker2.setDate(this.getDate())
+	    		
+	    	}
+	    }
+    });
+    
+    var picker2 = new Pikaday(
+    	    {
+    	        numberOfMonths: 1,
+    	        format: 'D/MM/YYYY HH:mm',
+    	        field: document.getElementById('dateFin'),
+    	        firstDay: 1,
+    	        showTime: true,
+    	        showSeconds: false,
+    	        use24hour: true,
+    	        i18n: {
+    	            previousMonth : 'Avant',
+    	            nextMonth     : 'Après',
+    	            months        : ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
+    	            weekdays      : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
+    	            weekdaysShort : ['DI','LU','MA','ME','JE','VE','SA'],
+    	            midnight      : 'Minuit',
+    	            noon          : 'Midi'
+    	        }
+    	    
+    	    });
+
+       
+    
+	
+	</script>
+

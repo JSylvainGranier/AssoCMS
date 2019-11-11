@@ -1,0 +1,25 @@
+<h1>$listTitle$</h1>
+<style>
+table {
+	border-spacing: 0px;
+	border-collapse: separate;
+}
+
+.altColor {
+	background-color: lightgray;
+}
+</style>
+<p>$introduction$</p>
+
+<form method="post" action="index.php?save">
+	<input type="hidden" name="class" value="$class$"> <input
+		type="hidden" name="attachmentClass" value="$attachmentClass$">
+	<input type="hidden" name="attachmentId" value="$attachmentId$">
+
+	<table>$rowZone$
+	</table>
+
+	<input type="submit" value="Enregistrer">
+
+</form>
+

@@ -1,0 +1,48 @@
+<h1>
+	<span class='headerCatName'>Publipostage</span>$objet$
+</h1>
+<h2>
+	<a href="index.php?edit&class=Publipostage&id=$id$">Modifier le
+		message</a>
+</h2>
+
+
+$message$
+
+<hr />
+<h1>Destinataires</h1>
+<h2>
+	<a href="index.php?edit&class=PublipostageDestinataire&id=$id$">Modifier
+		les destinataires</a>
+</h2>
+
+<p>$total$ personnes au total, avec :
+<ul>
+	<li>$totalEmail$ personnes par eMail</li>
+	<li>$totalMail$ personnes par courrier postal</li>
+	<li>$totalBoth$ personnes par email et courrier postal</li>
+
+	$noContactMode$
+</ul>
+</p>
+<a href="index.php?export&class=PublipostageDestinataire&id=$id$"
+	target="_blank">Exporter les destinataires</a>
+(Pour une utilisation à l'extérieur du site)
+
+<h1>Expédition</h1>
+
+<p>Le publipostage a été envoyé par eMail : $sentByEmail$</p>
+<p>
+	<a href="index.php?export&class=Publipostage&mode=email&id=$id$">Tester
+		par email avec moi</a>
+</p>
+<p>
+	<a
+		href="index.php?export&class=Publipostage&mode=email&realExpedition=true&id=$id$"
+		onclick="return confirm('Envoyer cette publication à $totalEmail$ personnes ?')">Envoyer
+		les email</a>
+</p>
+<p>
+	<a href="index.php?export&class=Publipostage&mode=mail&id=$id$"
+		target="_blank">Voir le courrier postal</a>
+</p>

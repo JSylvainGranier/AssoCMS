@@ -1,0 +1,27 @@
+ErrorDocument 500 /visa/index.php?error=500
+ErrorDocument 404 /visa/index.php?error=404
+ErrorDocument 403 /visa/index.php?error=403
+
+<IfDefine Free>
+php 1
+
+ErrorDocument 500 /index.php?error=500
+ErrorDocument 404 /index.php?error=404
+ErrorDocument 403 /index.php?error=403
+
+</IfDefine>
+
+Options -Indexes -FollowSymLinks
+
+<Files "*.php"> 
+     Order Deny,Allow 
+     Deny from All 
+</Files>
+ 
+<Files "index.php"> 
+     Order Deny,Allow 
+     Allow from All 
+</Files>
+
+
+

@@ -1,0 +1,34 @@
+<p class="center">
+	VISA 30 - Association Loi 1901<br />
+	185, Ancienne Route d'Anduze 30900 NÎMES
+</p>
+<p class="center">
+	N° SIRET : 3892838390001    Code A.P.E. : 9499Z <br />
+	Agrément préfectoral Jeunesse et Education Populaire : 30/JEP/159/1994
+</p>
+<p class="center">
+	Copyright © Visa 30 association loi 1901
+</p>
+<p class="center" id="contactContainer">
+	
+</p>
+<script type="text/javascript" >
+	
+	{ coded = "eD9OyZ@pNff.pN"
+	  key = "xRFt9e8IJ5KbCazqXrVfiUEoMnjOkm3NPpD10h42BuSAyYwgd7ZTsvHcGQL6Wl"
+	  shift=coded.length
+	  link=""
+	  for (i=0; i<coded.length; i++) {
+	    if (key.indexOf(coded.charAt(i))==-1) {
+	      ltr = coded.charAt(i)
+	      link += (ltr)
+	    }
+	    else {     
+	      ltr = (key.indexOf(coded.charAt(i))-shift+key.length) % key.length
+	      link += (key.charAt(ltr))
+	    }
+	  }
+	document.getElementById("contactContainer").innerHTML = "<a href='mailto:"+link+"'>Contact</a>" ;
+	}
+	
+	</script>

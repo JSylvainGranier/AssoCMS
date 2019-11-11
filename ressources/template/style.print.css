@@ -1,0 +1,45 @@
+nav, header, .notification, footer, .attachmentListContainer, .printContainer, .clicForCoordinates, .loginInvitationContainer {
+	display: none;
+	visibility: hidden;
+}
+
+body{
+	zoom : 70%;
+}
+
+#alphaContainer{
+	display: none;
+}
+
+.pageListItem h4{
+	padding-bottom: 5px;
+	margin: 0px;
+	
+}
+
+.pageListItem p {
+	padding: 0px;
+	margin: 0px;
+	
+}
+
+#reactionModule{
+	display: none;
+}
+
+.pageAroundLink{
+	display: none;
+}
+
+.calendarYearNavigationItem{
+	display: none;
+}
+
+.readMoreLink{
+	display: none;
+}
+
+.adminLink {
+	display: none;
+}
+
