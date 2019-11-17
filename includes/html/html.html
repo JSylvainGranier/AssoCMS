@@ -152,21 +152,5 @@ html { $backgroundImage$
 	$php_errors$
 
 
-	<script>
-		var mailPoolingEffort = function(){
-			var callBackFnc = function(){};
-			callServeur('$SITE_ROOT$/index.php?mailSpool&action=run&mode=console', 
-					callBackFnc, 
-					callBackFnc, 
-					true 
-					)
-		}
-		try{
-			setInterval(mailPoolingEffort, 60000);
-			mailPoolingEffort();
-		} catch (e) { }
-		
-	 
-	</script>
 </body>
 </html>

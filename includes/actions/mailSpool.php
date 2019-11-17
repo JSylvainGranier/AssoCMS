@@ -7,7 +7,7 @@ if (array_key_exists ( "action", $ARGS )) {
 	throw new Exception ( "Aucune action indiquée !" );
 }
 
-if ($action == "run") {
+if ($action == "runLocal") {
 	$retText = "";
 	$inConsoleMode = array_key_exists ( "mode", $ARGS ) && $ARGS ["mode"] == "console";
 	

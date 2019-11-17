@@ -33,7 +33,6 @@ $notAthNeedForActions = array (
 		"exception",
 		"error",
 		"install",
-		"mailSpool",
 		"mailStorage",
 		"sitemap",
 		"unsuscribe"
