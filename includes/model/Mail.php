@@ -39,7 +39,7 @@ class Mail extends HasMetaData {
 		return $sent . " @ " . $this->destinataire . " : " . $this->objet;
 	}
 	protected function getNaturalOrderColumn() {
-		return "objet";
+		return "idMail";
 	}
 	
 	/**
