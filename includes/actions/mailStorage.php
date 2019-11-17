@@ -8,13 +8,14 @@ if (array_key_exists ( "action", $ARGS )) {
 	throw new Exception ( "Aucune action indiquée !" );
 }
 
+$SPOOL_SIZE = Param::getValue ( PKeys::$MAIL_SPOOL_SIZE, 0 );
 $MAX_TENTATIVES = Param::getValue ( PKeys::$MAIL_MAX_TENTATIVES, 3 );
 
 if($action == "list"){
 	//Retourne la liste des mails non vérouillés pour l'envoie.
 	
 	$mail = new Mail ();
-	$mailList = $mail->getNextSpoolContent ( 1000, $MAX_TENTATIVES );
+	$mailList = $mail->getNextSpoolContent ( $SPOOL_SIZE, $MAX_TENTATIVES );
 	
 	
 	foreach ( $mailList as $aMail ) {
@@ -33,7 +34,7 @@ if($action == "list"){
 	//Retourne les informations pour l'envoi d'un mail, et vérouille ce mail pour qu'un autre processus ne l'envoie pas en prallèle.
 	$idMail = $ARGS["idMail"];
 	$mail = new Mail ($idMail);
-	$mail->nbTentatives = $MAX_TENTATIVES+1;
+	$mail->nbTentatives += 1;
 	$mail->save();
 	
 	$email = new SmartPage ( "emailBody.html" );
@@ -46,13 +47,8 @@ if($action == "list"){
 		
 	$html = $email->buildPage ( false );
 
-	$emailCorpus .= "Content-type: text/html;charset=utf-8\r\n\r\n";
-		
-	$emailCorpus .= $html;
-		
 	
-	
-	echo $emailCorpus;
+	echo $html;
 	
 } else if($action == "confirm"){
 	//Confirme l'envoi du mail.
