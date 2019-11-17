@@ -12,6 +12,8 @@ function errHandler($errno, $errstr, $errfile, $errline) {
 }
 set_error_handler ( "errHandler" );
 
+phpinfos();
+return;
 
 require_once 'includes/includeAll.php';
 require_once 'documents/ipexclusion.php';
