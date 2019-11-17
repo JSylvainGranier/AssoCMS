@@ -8,6 +8,8 @@ if (array_key_exists ( "action", $ARGS )) {
 	throw new Exception ( "Aucune action indiquée !" );
 }
 
+$MAX_TENTATIVES = Param::getValue ( PKeys::$MAIL_MAX_TENTATIVES, 3 );
+
 if($action == "list"){
 	//Retourne la liste des mails non vérouillés pour l'envoie.
 	
@@ -15,7 +17,7 @@ if($action == "list"){
 	$mailList = $mail->getNextSpoolContent ( 1000, $MAX_TENTATIVES );
 	
 	foreach ( $mailList as $aMail ) {
-		echo "<p>Mail n°{$aMail->getPrimaryKey()}</p>\r\n";
+		echo "{$aMail->getPrimaryKey()}|{$aMail->expediteur}|{$aMail->destinataire}|{$aMail->object}\r\n";
 	}
 	
 	
@@ -26,6 +28,8 @@ if($action == "list"){
 	$mail = new Mail ($idMail);
 	$mail->nbTentatives = $MAX_TENTATIVES+1;
 	$mail->save();
+	echo $mail->message;
+	
 } else if($action == "confirm"){
 	//Confirme l'envoi du mail.
 	$idMail = $ARGS["idMail"];
