@@ -68,6 +68,7 @@ if($action == "list"){
 } else if($action == "unlock"){
 	//Enlève le vérou pour l'envoi d'un mail (probablement que l'envoi du mail n'a pas fonctionné)
 	$idMail = $ARGS["idMail"];
+	$mail = new Mail ($idMail);
 	$mail->nbTentatives = $mail->nbTentatives+1;
 	
 	if($mail->nbTentatives % 2 == 0){
