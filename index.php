@@ -17,7 +17,7 @@ require_once 'includes/includeAll.php';
 require_once 'documents/ipexclusion.php';
 
 header ( 'Content-Type: text/html; charset=utf-8' );
-header('Access-Control-Allow-Origin: versatile-resistors.000webhostapp.com');
+header('Access-Control-Allow-Origin: https://versatile-resistors.000webhostapp.com/*');
 
 $method = $_SERVER ['REQUEST_METHOD'];
 
