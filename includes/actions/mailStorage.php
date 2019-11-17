@@ -15,8 +15,7 @@ if($action == "list"){
 	$mailList = $mail->getNextSpoolContent ( 1000, $MAX_TENTATIVES );
 	
 	foreach ( $mailList as $aMail ) {
-		$result = $aMail->send () ? "envoyé" : "ERREUR!";
-		$retText .= "<p>Mail n°{$aMail->getPrimaryKey()} : {$result}</p>";
+		echo "<p>Mail n°{$aMail->getPrimaryKey()}</p>\r\n";
 	}
 	
 	
@@ -24,11 +23,20 @@ if($action == "list"){
 } else if($action == "getAndLock"){
 	//Retourne les informations pour l'envoi d'un mail, et vérouille ce mail pour qu'un autre processus ne l'envoie pas en prallèle.
 	$idMail = $ARGS["idMail"];
+	$mail = new Mail ($idMail);
+	$mail->nbTentatives = $MAX_TENTATIVES+1;
+	$mail->save();
 } else if($action == "confirm"){
 	//Confirme l'envoi du mail.
 	$idMail = $ARGS["idMail"];
+	$mail = new Mail ($idMail);
+	$mail->sent = true;
+	$mail->save();
 } else if($action == "unlock"){
 	//Enlève le vérou pour l'envoi d'un mail (probablement que l'envoi du mail n'a pas fonctionné)
 	$idMail = $ARGS["idMail"];
+	$mail = new Mail ($idMail);
+	$mail->nbTentatives = 1;
+	$mail->save();
 	
 }
