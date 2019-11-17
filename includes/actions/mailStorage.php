@@ -19,6 +19,15 @@ if($action == "list"){
 	
 	
 	foreach ( $mailList as $aMail ) {
+		
+		if($aMail->nbTentatives % 2 == 0){
+			//C'est pair, on va le traiter.
+		}
+		else{
+			//C'est inpair, quelqu'un l'a déjà appelé, et je n'ai pas encore la réponse.
+			continue;
+		}
+		
 		$destinataire = $aMail->destinataire;
 		
 		if (defined ( "MAIL_REDIRECTION_TO" )) {
@@ -34,7 +43,7 @@ if($action == "list"){
 	//Retourne les informations pour l'envoi d'un mail, et vérouille ce mail pour qu'un autre processus ne l'envoie pas en prallèle.
 	$idMail = $ARGS["idMail"];
 	$mail = new Mail ($idMail);
-	$mail->nbTentatives += 1;
+	$mail->nbTentatives = $mail->nbTentatives+1;
 	$mail->save();
 	
 	$email = new SmartPage ( "emailBody.html" );
@@ -59,8 +68,19 @@ if($action == "list"){
 } else if($action == "unlock"){
 	//Enlève le vérou pour l'envoi d'un mail (probablement que l'envoi du mail n'a pas fonctionné)
 	$idMail = $ARGS["idMail"];
+	$mail->nbTentatives = $mail->nbTentatives+1;
+	
+	if($mail->nbTentatives % 2 == 0){
+		//C'est pair, libéré pour un futur traitement.
+	}
+	else{
+		//C'est inpair, alors que je fais un unlcok. 
+		//J'ajoute encore un de plus pour que ça devienne pair pour qu'un prochain passage fonctionne avec ce mail.
+		$mail->nbTentatives = $mail->nbTentatives+1;
+	}
+	
+	
 	$mail = new Mail ($idMail);
-	$mail->nbTentatives = 1;
 	$mail->save();
 	
 }
