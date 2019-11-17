@@ -12,7 +12,7 @@ function errHandler($errno, $errstr, $errfile, $errline) {
 }
 set_error_handler ( "errHandler" );
 
-phpinfos();
+phpinfo();
 return;
 
 require_once 'includes/includeAll.php';
