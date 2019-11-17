@@ -16,8 +16,15 @@ if($action == "list"){
 	$mail = new Mail ();
 	$mailList = $mail->getNextSpoolContent ( 1000, $MAX_TENTATIVES );
 	
+	
 	foreach ( $mailList as $aMail ) {
-		echo "{$aMail->getPrimaryKey()}|{$aMail->expediteur}|{$aMail->destinataire}|{$aMail->object}\r\n";
+		$destinataire = $aMail->destinataire;
+		
+		if (defined ( "MAIL_REDIRECTION_TO" )) {
+			$destinataire = MAIL_REDIRECTION_TO;
+		}
+		
+		echo "{$aMail->getPrimaryKey()}|{$aMail->expediteur}|{$destinataire}|{$aMail->objet}\r\n";
 	}
 	
 	
@@ -28,7 +35,24 @@ if($action == "list"){
 	$mail = new Mail ($idMail);
 	$mail->nbTentatives = $MAX_TENTATIVES+1;
 	$mail->save();
-	echo $mail->message;
+	
+	$email = new SmartPage ( "emailBody.html" );
+		
+	$email->appendBody ( $mail->message );
+		
+	$email->append ( "style", file_get_contents ( "ressources/template/style.css" ) );
+		
+	$email->append ( "style", file_get_contents ( "ressources/template/emailStyle.css" ) );
+		
+	$html = $email->buildPage ( false );
+
+	$emailCorpus .= "Content-type: text/html;charset=utf-8\r\n\r\n";
+		
+	$emailCorpus .= $html;
+		
+	
+	
+	echo $emailCorpus;
 	
 } else if($action == "confirm"){
 	//Confirme l'envoi du mail.
