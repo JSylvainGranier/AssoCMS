@@ -80,8 +80,6 @@ if($action == "list"){
 		$mail->nbTentatives = $mail->nbTentatives+1;
 	}
 	
-	
-	$mail = new Mail ($idMail);
 	$mail->save();
 	
 }
