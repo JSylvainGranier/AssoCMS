@@ -18,9 +18,11 @@ function sendSimpleMail($object, $message, $to, $immediately = false) {
 	
 	$mail->save ();
 	
+	/*
 	if ($immediately) {
 		return $mail->send ();
 	}
+	*/
 }
 function isConsistent($str) {
 	if (is_null ( $str )) {
