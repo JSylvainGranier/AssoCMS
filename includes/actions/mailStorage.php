@@ -34,7 +34,12 @@ if($action == "list"){
 			$destinataire = MAIL_REDIRECTION_TO;
 		}
 		
-		echo "{$aMail->getPrimaryKey()}|{$aMail->expediteur}|{$destinataire}|{$aMail->objet}\r\n";
+		$expediteur = $aMail->expediteur;
+		if(is_null($expediteur)){
+			$expediteur = MAIL_FORM;
+		}
+		
+		echo "{$aMail->getPrimaryKey()}|{$expediteur}|{$destinataire}|{$aMail->objet}\r\n";
 	}
 	
 	
