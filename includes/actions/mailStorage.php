@@ -22,9 +22,12 @@ if($action == "list"){
 		
 		if($aMail->nbTentatives % 2 == 0){
 			//C'est pair, on va le traiter.
-		}
-		else{
+		} else{
 			//C'est inpair, quelqu'un l'a déjà appelé, et je n'ai pas encore la réponse.
+			continue;
+		}
+		
+		if($aMail->destinataire == "EMAIL_ON_ERROR"){
 			continue;
 		}
 		
