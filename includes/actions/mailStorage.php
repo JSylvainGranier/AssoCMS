@@ -64,6 +64,7 @@ if($action == "list"){
 		
 	$html = $email->buildPage ( false );
 
+	$html = $mail->message;
 	
 	echo $html;
 	
