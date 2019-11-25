@@ -62,6 +62,7 @@ class SmartPage {
 		$this->asset ( "footer", $credits );
 		
 		$this->asset ( "site_root", SITE_ROOT );
+		$this->asset ( "EMAIL_WORKER_URL", EMAIL_WORKER_URL );
 		$this->asset ( "site_title", SITE_TITLE );
 		$this->asset ( "site_domain", SITE_DOMAIN );
 		$this->asset ( "site_path", SITE_PATH );
