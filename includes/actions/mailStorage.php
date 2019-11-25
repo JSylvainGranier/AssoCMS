@@ -58,9 +58,9 @@ if($action == "list"){
 		
 	$email->appendBody ( $mail->message );
 		
-	$email->append ( "style", file_get_contents ( "ressources/template/style.css" ) );
+	//$email->append ( "style", file_get_contents ( "ressources/template/style.css" ) );
 		
-	$email->append ( "style", file_get_contents ( "ressources/template/emailStyle.css" ) );
+	//$email->append ( "style", file_get_contents ( "ressources/template/emailStyle.css" ) );
 		
 	$html = $email->buildPage ( false );
 
