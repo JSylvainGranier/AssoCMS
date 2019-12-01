@@ -15,10 +15,15 @@ if($action == "list"){
 	//Retourne la liste des mails non vérouillés pour l'envoie.
 	
 	$mail = new Mail ();
-	$mailList = $mail->getNextSpoolContent ( $SPOOL_SIZE, $MAX_TENTATIVES );
+	$mailList = $mail->getNextSpoolContent ( 20, $MAX_TENTATIVES );
 	
+	$nbSpoolItemsLeft = $SPOOL_SIZE;
 	
 	foreach ( $mailList as $aMail ) {
+		
+		if($nbSpoolItemsLeft <= 0){
+			continue;
+		}
 		
 		if($aMail->nbTentatives % 2 == 0){
 			//C'est pair, on va le traiter.
@@ -30,6 +35,8 @@ if($action == "list"){
 		if($aMail->destinataire == "EMAIL_ON_ERROR"){
 			continue;
 		}
+		
+		$nbSpoolItemsLeft--;
 		
 		$destinataire = $aMail->destinataire;
 		
