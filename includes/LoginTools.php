@@ -18,7 +18,7 @@ function sendReactivationProcedure($email, $genToken) {
 }
 
 /* @var $personne Personne */
-function prepareUserSession($personne) {
+function prepareUserSession($personne, $session = null) {
 	$_SESSION ["userLogin"] = $personne->email;
 	$_SESSION ["userName"] = $personne->prenom;
 	$_SESSION ["userId"] = $personne->idPersonne;
@@ -33,13 +33,25 @@ function prepareUserSession($personne) {
 	
 	$_SESSION ["userCategories"] = $categIdList;
 	
-	$personne->lastConnexionDate = new MyDateTime ();
-	$longSessionTk = $personne->buildNewLongSessionToken ();
-	$personne->save ();
 	
-	setcookie ( 'LSTK', $longSessionTk, time () + 60 * 60 * 24 * 365, SITE_PATH, SITE_DOMAIN );
+	if(is_null($session)){
+		$session = new Session();
+		$session->fkIdPersonne = $personne->idPersonne;
+		$session->longSessionToken = md5 ( $personne->email . date ( "U" ) );
+		$session->save();
+	}
+	
+		
+	setcookie ( 'LSTK', $session->longSessionToken, time () + 60 * 60 * 24 * 365, SITE_PATH, SITE_DOMAIN );
 }
 function removeLongSessionCookie() {
+	
+	$session = new Session();
+	$session = $session->findByLongSessionToken($_COOKIE['LSTK']);
+	if(! is_null($session)){
+		$session->delete();
+	}
+	
 	setcookie ( 'LSTK', null, time () - 60 * 60 * 24 * 5, SITE_PATH, SITE_DOMAIN );
 }
 function destroyUserSession() {

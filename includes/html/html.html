@@ -70,31 +70,18 @@
 <link rel="stylesheet" type="text/css" media="only print"
 	href="$SITE_ROOT$/ressources/template/style.print.css" />
 
-
-<link rel="stylesheet" type="text/css" media="screen and (min-width: 800px)"
-	href="$SITE_ROOT$/ressources/template/menu.large.css" />
-	
-<link rel="stylesheet"
-  media="only screen and (max-width: 799px)" 
-  href="$SITE_ROOT$/ressources/template/menu.mini.css" />
+<link rel="stylesheet" type="text/css" href="$SITE_ROOT$/ressources/sticky.css" />
+<link rel="stylesheet" type="text/css" href="$SITE_ROOT$/ressources/sidebar.css" />
   
-<link rel="stylesheet" type="text/css" media="screen and (min-width: 800px)"
+<link rel="stylesheet" type="text/css" 
 	href="$SITE_ROOT$/ressources/template/style.screen.css" />
 	
-<link rel="stylesheet" type="text/css" 
-	media="only screen and (max-width: 799px)" 
-	href="$SITE_ROOT$/ressources/template/style.mobile.css" />
-	
+
 
 <link rel="stylesheet"
 	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
 
-<!--[if lte IE 9]>
-<link rel="stylesheet" type="text/css" media="screen"
-	href="$SITE_ROOT$/ressources/template/style.screen.css" />
-<link rel="stylesheet" type="text/css" media="screen"
-	href="$SITE_ROOT$/ressources/template/menu.large.css" />
-<![endif]-->
+
 
 $linkZone$
 
@@ -133,20 +120,29 @@ html { $backgroundImage$
 </head>
 <body >
 
-	<article>$globalNotifZone$ $body$</article>
+	 <aside class="sidebar">
+        <nav>
+            $menu$
+        </nav>
+    </aside>
 
-	<nav>
-			<input type="checkbox" id="show-menu" role="button">
-			<label for="show-menu" class="navTitle">MENU</label>
-		$menu$
-	</nav>
+	<article>$globalNotifZone$ $body$
+	
+	
+	</article>
 
+
+	
+	
+	
 	<footer>
 		<div class="printContainer">
 			<a href="javascript:window.print()" title="Imprimer"><i
 				class="fa fa-print"></i></a>
 		</div>
 		$footer$
+		
+		
 	</footer>
 
 	$php_errors$
@@ -168,5 +164,7 @@ html { $backgroundImage$
 		
 	 
 	</script>
+	
+
 </body>
 </html>

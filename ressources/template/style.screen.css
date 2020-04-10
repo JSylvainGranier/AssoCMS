@@ -2,11 +2,8 @@
 article {
 	background-image: url("alpha-90.png");
 	background-repeat: repeat;
-	display: inline-block;
-	width: 73%;
-	float: right;
+	display: block;
 	margin : 10px;
-	margin-right : 10px;
 	text-align: justify;
 	padding: 0.5em;
 	padding-bottom: 2em;
@@ -16,7 +13,7 @@ article {
 	background-image: url("alpha-90.png");
 	background-repeat: repeat;
 	display: inline-block;
-	width: 73%;
+	width: 85%;
 	float: right;
 	margin : 10px;
 	margin-right : 10px;

@@ -454,7 +454,7 @@ abstract class Persistant {
 		preg_match(Persistant::$idCheckRegex, $id, $safeId);
 		if(array_key_exists(0, $safeId)){
 			
-			if ($safeId[0] == $id){
+			if ($safeId[0] == abs($id)){
 				$sqlId = $this->toSql ( $id );
 				$query = "select * from {$this->getTableName()} where {$this->getPrimaryKeyColumnName()} = {$sqlId}";
 					

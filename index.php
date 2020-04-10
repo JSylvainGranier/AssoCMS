@@ -11,6 +11,22 @@ function errHandler($errno, $errstr, $errfile, $errline) {
 	);
 }
 set_error_handler ( "errHandler" );
+//Et là, on traite les erreurs fatales de PHP.
+function fatalErrHandler()
+{
+	$error = error_get_last();
+	//check if it's a core/fatal error, otherwise it's a normal shutdown
+	if ($error !== NULL && in_array($error['type'], array(E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING,E_RECOVERABLE_ERROR))) {
+		$html = file_get_contents("includes/html/erreurFatale.html");
+		
+		$html = str_ireplace("--err--", print_r($error, true), $html);
+		
+		echo $html;
+		die;
+		
+	}
+}
+register_shutdown_function("fatalErrHandler");
 
 
 require_once 'includes/includeAll.php';
@@ -55,15 +71,21 @@ try {
 	securePost();
 	
 	if (array_key_exists ( "LSTK", $_COOKIE ) && ! Roles::isMembre ()) {
-		$personne = new Personne ();
-		$personne = $personne->findByLongSessionToken ( $_COOKIE ["LSTK"] );
+		$longSession = new Session();
+		$longSession = $longSession->findByLongSessionToken($_COOKIE ["LSTK"]);
 		
+		$personne = null;
+		
+		if(! is_null ( $longSession )){
+			$personne = new Personne($longSession->fkIdPersonne+0);
+			$longSession->nbReUse++;
+			$longSession->save();
+		}
+
 		if (! is_null ( $personne )) {
-			prepareUserSession ( $personne );
-			
+			prepareUserSession ( $personne, $longSession );
 			$page->appendNotification ( "Bon retour parmi nous, " . $_SESSION ["userName"] . " !".getTrombiMessageFor($personne), 15 );
 		} else {
-			
 			removeLongSessionCookie ();
 		}
 	}

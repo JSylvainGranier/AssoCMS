@@ -8,6 +8,12 @@ $homeTitle = Param::getValue ( PKeys::$HOME_TITLE, "Bienvenue sur le site de l'a
 $homeText = Param::getValue ( PKeys::$HOME_TEXT, $defaultText );
 $homeActivityDays = Param::getValue ( PKeys::$HOME_ACTIVITY_NBJOURS, 5 );
 
+if (Roles::isGestionnaireGlobal ()) {
+    $homeText .= "<a class='penEditor' href='index.php?edit&class=param&id=HOME_TEXT'><i class='fa fa-pencil' aria-hidden='true'></i></a> ";
+    $homeTitle .= "<a class='penEditor' href='index.php?edit&class=param&id=HOME_TITLE'><i class='fa fa-pencil' aria-hidden='true'></i></a> ";
+}
+
+
 $page->asset ( "title", $homeTitle );
 $page->asset ( "text", $homeText );
 $page->asset ( "days", $homeActivityDays );

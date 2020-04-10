@@ -8,6 +8,7 @@ class Categorie extends HasMetaData {
 	public $ordre;
 	public $textePresentation;
 	public $pageList;
+	public $iconClass;
 	public $autoAffiliate = false;
 	
 	/* @var $personneGestionnaire Personne */
@@ -26,6 +27,7 @@ class Categorie extends HasMetaData {
 			$pk->setPrimaryKey ( true );
 			
 			$nom = new SqlColumnMappgin ( "nom", "Nom catégorie", SqlColumnTypes::$VARCHAR, 50 );
+			$iconClass = new SqlColumnMappgin ( "iconClass", "Icone de la catégorie", SqlColumnTypes::$VARCHAR, 50 );
 			$nom->isNullable = false;
 			$ordre = new SqlColumnMappgin ( "ordre", "Ordre d'affichage", SqlColumnTypes::$INTEGER );
 			$cRuban = new SqlColumnMappgin ( "couleurRuban", "Couleur normale du ruban", SqlColumnTypes::$VARCHAR, 15 );
@@ -48,7 +50,8 @@ class Categorie extends HasMetaData {
 					$cRubanHover,
 					$bkgImg,
 					$autoAffiliate,
-					$gestionnaire 
+					$gestionnaire,
+			         $iconClass
 			);
 			
 			Categorie::$memberDeclaration = array_merge ( Categorie::$memberDeclaration, HasMetaData::getMembersDeclaration () );

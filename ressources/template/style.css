@@ -114,3 +114,41 @@ a > div > img{
 	padding-top : 15px;
 	padding-bottom: 15px;
 }
+
+.penEditor, .penEditor:VISITED, .penEditor:ACTIVE  {
+	color : gray !important;
+	font-size : 0.7em !important;
+	
+}
+
+.penEditor:HOVER {
+	color : black !important;
+	
+}
+
+.catCollection a, .catCollection a:ACTIVE, .catCollection a:VISITED {
+	color : black !important;
+}
+
+.catCollection a:HOVER {
+	color : blue !important;
+}
+
+.mustLoginToViewThis {
+	background: repeating-linear-gradient(
+	  45deg,
+	  #FFFEE9,
+	  #FFFEE9 10px,
+	  #E4E2C1 10px,
+	  #E4E2C1 20px
+	);
+	color : #94926B;
+	font-weight: bold;
+	
+}
+
+.mustLoginToViewThis a, .mustLoginToViewThis a:ACTIVE, .mustLoginToViewThis a:VISITED {
+	color : #94926B !important;
+	text-decoration: none !important;
+}
+

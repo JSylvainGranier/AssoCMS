@@ -12,7 +12,7 @@ $page->asset ( "catName", $cat->nom );
 $page->asset ( "catId", $cat->getPrimaryKey () );
 $page->setTitle ( $cat->nom );
 
-$list = $instance->getFilteredInCategorie ( $cat->getPrimaryKey (), false );
+$list = $instance->getAllInCategorie ( $cat->getPrimaryKey (), false );
 
 if (count ( $list ) > 0) {
 	$tag = "pagesList";

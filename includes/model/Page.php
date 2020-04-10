@@ -234,6 +234,58 @@ class Page extends HasMetaData {
 		
 		return $filter;
 	}
+	/**
+	 * Retourne vrai si la page courante peut-être montrée à l'utilisateur courant
+	 * si non, false.
+	 */
+	public function canBeShown(){
+	    if (Roles::isSuperAdmin ()) {
+	        return true;
+	    } else if (Roles::isGestionnaireGlobal ()) {
+	        
+	        //$filter .= " etat >= " . PageEtat::$PROPOSE . " or ( etat = " . PageEtat::$BROUILLON . " and fkAuteur = {$_SESSION["userId"]} )";
+	        
+	        return ($this->etat >= PageEtat::$PROPOSE) || ($this->etat = PageEtat::$BROUILLON && $this->auteur->idPersonne == $_SESSION["userId"] ) ;
+	    } else if (Roles::isGestionnaireOfCategorie ( $this->categorieClassement )) {
+	        
+	        //$filter .= " etat >= " . PageEtat::$PROPOSE . " or ( etat = " . PageEtat::$BROUILLON . " and fkAuteur = ".thisUserId()." )";
+	        
+	        return ($this->etat >= PageEtat::$PROPOSE) || ($this->etat = PageEtat::$BROUILLON && $this->auteur->idPersonne == thisUserId() ) ;
+	        
+	    } else if (Roles::isMembre ()) {
+	        
+	        $accesCategorie = $this->etat = PageEtat::$ACCESS_CATEGORIE;
+	        
+	        
+	        if($accesCategorie){
+	            
+	            $accesCategorie = false;
+	            
+	            $autorisedCat = "";
+	            $catSize = count ( $_SESSION ["userCategories"] );
+	            for($idx = 0; $idx < $catSize; $idx ++) {
+	                if($_SESSION ["userCategories"] [$idx] == $this->getCategorieClassement()->idCategorie){
+	                    $accesCategorie = true;
+	                }
+	            }
+	            
+	        }
+	        
+	        
+	        
+	        //$filter .= " etat >= " . PageEtat::$ACCESS_MEMBRE . " ";
+	        //$filter .= " OR fkAuteur = ".thisUserId();
+	        //if (strlen ( $autorisedCat ) > 0)
+	        //    $filter .= " OR ( etat = " . PageEtat::$ACCESS_CATEGORIE . " and fkCategorie in ({$autorisedCat}) )";
+	        
+	            return ($this->etat >= PageEtat::$ACCESS_MEMBRE) || ($this->getAuteur()->idPersonne == thisUserId() ) || $accesCategorie ;
+	    } else {
+	        //$filter .= " etat >= " . PageEtat::$ACCESS_PUBLIC;
+	        return ($this->etat >= PageEtat::$ACCESS_PUBLIC);
+	    }
+	}
+	
+	
 	public function delete() {
 		$idPage = $this->getPrimaryKey ();
 		

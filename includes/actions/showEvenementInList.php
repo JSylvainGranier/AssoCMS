@@ -3,6 +3,11 @@ if (! isset ( $tag )) {
 	$tag = "body";
 }
 
+if(!$evenement->getPage()->canBeShown() && $evenement->getPage ()->etat > PageEtat::$PROPOSE){
+    $page->append ( $tag, "<li class='pageListItem mustLoginToViewThis'><a href='index.php?login&phase=notLogged'>Vous devez vous connecter pour voir ce rendez-vous...</a></li>" );
+    return;
+}
+
 $evtTile = $evenement->getPage ()->titre;
 
 if (isset ( $displayCategorie ) && $displayCategorie) {

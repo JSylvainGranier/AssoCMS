@@ -53,7 +53,7 @@ if (array_key_exists ( "categorie", $ARGS )) {
 	$title = "Calendrier complet ";
 }
 
-$query .= " and " . Page::getSqlFilterForPagePublicationState ();
+//$query .= " and " . Page::getSqlFilterForPagePublicationState ();
 $query .= " order by dateDebut asc";
 $listEvt = $evenement->getObjectListFromQuery ( $query );
 

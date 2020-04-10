@@ -115,7 +115,8 @@ class Evenement extends HasMetaData {
 			$catFilter = " and pg.fkCategorie = {$idCategorie} ";
 		}
 		
-		$etatFilter = Page::getSqlFilterForPagePublicationState ();
+		//$etatFilter = Page::getSqlFilterForPagePublicationState ();
+		$etatFilter = " 1 = 1";
 		
 		$myMaxDate = new MyDateTime ();
 		$myMaxDate->date = mktime ( 23, 59, 59, date ( 'n' ), date ( "t" ), date ( 'Y' ) );

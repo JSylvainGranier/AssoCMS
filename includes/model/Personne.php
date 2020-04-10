@@ -19,9 +19,7 @@ class Personne extends HasMetaData {
 	public $allowPublishMyFace = true;
 	public $passwordHash;
 	public $generationToken;
-	protected $longSessionToken;
 	public $note;
-	public $lastConnexionDate;
 	public $roles;
 	public $pageAuteurList;
 	public $categoriesAffilies;
@@ -68,9 +66,7 @@ class Personne extends HasMetaData {
 					$allowPublishMyFace,
 					new SqlColumnMappgin ( "passwordHash", null, SqlColumnTypes::$VARCHAR, "255" ),
 					new SqlColumnMappgin ( "generationToken", null, SqlColumnTypes::$VARCHAR, "255" ),
-					new SqlColumnMappgin ( "longSessionToken", null, SqlColumnTypes::$VARCHAR, "255" ),
 					new SqlColumnMappgin ( "note", "Note", SqlColumnTypes::$LONGTEXT ),
-					new SqlColumnMappgin ( "lastConnexionDate", "Date dernière connexion", SqlColumnTypes::$DATETIME ),
 					new SqlColumnMappgin ( "roles", "Rôles dans l'application", SqlColumnTypes::$VARCHAR, 150 ),
 					new SqlColumnMappgin ( "dontWantUseTrombi", "Ne veut pas utiliser le trombi", SqlColumnTypes::$DATETIME ),
 					new SqlColumnMappgin ( "cantUploadTrombiFile", "Ne parviens pas à utiliser le trombi", SqlColumnTypes::$DATETIME )
@@ -129,7 +125,7 @@ class Personne extends HasMetaData {
 		return $this->getOneObjectOrNullFromQuery ( $sql );
 	}
 	public function findByLongSessionToken($tk) {
-		$sql = "select * from personne where longSessionToken = '{$tk}'";
+		$sql = "select pers.* from personne pers join sessions ses on ses.fkIdPersonne = pers.idPersonne  where ses.longSessionToken = '{$tk}'";
 		
 		return $this->getOneObjectOrNullFromQuery ( $sql );
 	}
@@ -184,20 +180,6 @@ class Personne extends HasMetaData {
 		$this->roles = $r;
 	}
 	
-	/**
-	 * Génère, s'affecte et retourne un longSessionToken.
-	 */
-	public function buildNewLongSessionToken() {
-		$this->longSessionToken = md5 ( $this->email . date ( "U" ) );
-		return $this->longSessionToken;
-	}
-	
-	/**
-	 * Supprime le longSessionToken
-	 */
-	public function removeLongSessionToken() {
-		$this->longSessionToken = null;
-	}
 	
 	/**
 	 * Retourne la liste des pages dont la personne est l'auteur.

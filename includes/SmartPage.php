@@ -106,76 +106,106 @@ class SmartPage {
 		$this->appendBody ( $r );
 	}
 	public function getMenu() {
-		$r = '<ul  class="nav">';
+	    /*
+	     *  <ul class="sidebar__nav">
+                <li>
+                    <a href="#" class="sidebar__nav__link">
+                        <i class="mdi mdi-fingerprint"></i>
+                        <span class="sidebar__nav__text">Fingerprint</span>
+                    </a>
+                </li>
+	     * 
+	     */
+		$r = '<ul class="sidebar__nav">';
 		
-		$r .= '<li class="nav-item"><a  href="$site_root$index.php?home"><div class="logo nav-link"><img src="$site_root$/ressources/template/logo.png" style="width: 50%;" /></div></a></li>' . "\r\n";
+		
+		$r .= '<li><a class="sidebar__nav__link" href="$site_root$index.php?home"><i><img src="$site_root$/ressources/template/logo-white.png" style="width: 2.1rem;" /></i><span class="sidebar__nav__text">VISA30</span></a></li>';
 		
 		$catRoot = new Categorie ();
 		$catList = $catRoot->getAll ();
 		
 		$pageRoot = new Page ();
 		
+		$menuItems = array();
+		/*
 		if (! is_null ( $catList ))
 			foreach ( $catList as $aCat ) {
-				/* @var $aCat Categorie */
-				$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?list&class=Page&categorie=' . $aCat->getPrimaryKey () . '">' . $aCat->nom . '</a>' . "\r\n";
-				
-				$pageList = $pageRoot->getFilteredInCategorie ( $aCat->getPrimaryKey (), false, true );
-				
-				$eventCount = $aCat->getNombreEvenementFutur ();
-				
-				if (count ( $pageList ) > 0 || $eventCount > 0) {
-					$r .= "<ul class='accordion'>\r\n";
-					
-					if (count ( $pageList ) > 0) {
-						foreach ( $pageList as $aPage ) {
-							/* @var $aPage Page */
-							$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?show&class=Page&id=' . $aPage->getPrimaryKey () . '">' . $aPage->getTitre () . '</a>' . "\r\n";
-							$r .= "</li>\r\n";
-						}
-					}
-					
-					if ($eventCount > 0) {
-						$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?show&class=Calendrier&categorie=' . $aCat->getPrimaryKey () . '">RDV ' . $aCat->nom . '</a>' . "\r\n";
-					}
-					
-					$r .= "</ul>\r\n";
-				}
-				
-				$r .= "</li>\r\n";
+				$menuItems[] = array('url' => '$site_root$index.php?list&class=Page&categorie=' . $aCat->getPrimaryKey (), 
+				                    'text' => $aCat->nom,
+				                    'classicon' => $aCat->iconClass
+				                );
 			}
+		*/
 		
-		$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?photobook">Album photo</a></li>' . "\r\n";
+		$menuItems[] = array('url' => '$site_root$index.php?list&class=Categorie',
+		    'text' => 'Sections',
+		    'classicon' => 'fa fa-star-half-o'
+		);
 		
-		$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?trombinoscope">Trombinoscope</a></li>' . "\r\n";
+		$menuItems[] = array('url' => '$site_root$index.php?show&class=Calendrier',
+		    'text' => 'Calendrier',
+		    'classicon' => 'fa fa-calendar-check-o'
+		);
+
+		$menuItems[] = array('url' => '$site_root$index.php?photobook',
+		    'text' => 'Album photo',
+		    'classicon' => 'fa fa-camera-retro'
+		);
 		
-		$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?show&class=Calendrier">Calendrier</a></li>' . "\r\n";
+		$menuItems[] = array('url' => '$site_root$index.php?trombinoscope',
+		    'text' => 'Trombinoscope',
+		    'classicon' => 'fa fa-users'
+		);
 		
-		if (Roles::canManageCategories ()) {
-			$r .= '<li class="nav-item"><a class="nav-link" href="$site_root$index.php?edit&class=Categorie">[Ajouter]</a></li>' . "\r\n";
-		}
 		
-		$r .= '<li class="nav-item"><hr /></li>' . "\r\n";
+		
 		
 		if (Roles::isMembre ()) {
-			
-			$r .= '<li class="nav-item"><a class="nav-link" href="index.php?show&class=Personne">Mon Compte</a>' . "\r\n";
-			
-			$r .= "<ul class='accordion'>\r\n";
-			
-			$r .= '<li class="nav-item"><a class="nav-link" href="index.php?login&phase=loggingOff">Se déconnecter</a></li>' . "\r\n";
+		    
+		    $menuItems[] = array('url' => '',
+		        'text' => '',
+		        'classicon' => ''
+		    );
+		    
+		    $menuItems[] = array('url' => '$site_root$index.php?show&class=Personne',
+		        'text' => 'Mon Compte',
+		        'classicon' => 'fa fa-user'
+		    );
+		    
+		    $menuItems[] = array('url' => '$site_root$index.php?login&phase=loggingOff',
+		        'text' => 'Se déconnecter',
+		        'classicon' => 'fa fa-sign-out'
+		    );
+		    
 			
 			if (Roles::isSuperAdmin ()) {
-				$r .= '<li class="nav-item"><a class="nav-link" href="index.php?superAdminMenu">Administration</a></li>' . "\r\n";
+				
+				$menuItems[] = array('url' => '$site_root$index.php?superAdminMenu',
+				    'text' => 'Administration',
+				    'classicon' => 'fa fa-cogs'
+				);
+				
 			}
 			
 			if (Roles::isGestionnaireGlobal ()) {
-				$r .= '<li class="nav-item"><a class="nav-link" href="index.php?list&class=Publipostage">Publipostage</a></li>' . "\r\n";
+			    $menuItems[] = array('url' => '$site_root$index.php?list&class=Publipostage',
+			        'text' => 'Publipostage',
+			        'classicon' => 'fa fa-envelope-o'
+			    );
+			    
+			    
 			}
 			
-			$r .= "</li></ul>\r\n";
 		} else {
-			$r .= '<li class="nav-item"><a class="nav-link" href="index.php?login&phase=notLogged">Se connecter</a></li>' . "\r\n";
+		    $menuItems[] = array('url' => '$site_root$index.php?login&phase=notLogged',
+		        'text' => 'Se connecter',
+		        'classicon' => 'fa fa-user'
+		    );
+		}
+		
+		foreach ($menuItems as $mit){
+		    $r .= '<li><a class="sidebar__nav__link" href="'.$mit['url'].'"><i class="'.$mit['classicon'].'"></i>
+                        <span class="sidebar__nav__text">' .$mit['text']. '</span></a>' . "</li>\r\n";
 		}
 		
 		$r .= "</ul>\r\n";
