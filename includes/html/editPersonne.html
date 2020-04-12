@@ -28,6 +28,11 @@
 		<label for='prenom'>Prenom</label><input type='text' name='prenom'
 			id='prenom' value='$prenom$'>
 	</p>
+	
+	<p>
+		<label for='dateNaissance'>Date de naissance</label><input type='date' name='dateNaissance'
+			id='dateNaissance' value='$dateNaissance$'>
+	</p>
 
 	<fieldset>
 		<legend>Contact</legend>
@@ -126,6 +131,14 @@
 				for='wantPaperRecapFALSE'>NON</label><input type='radio'
 				name='wantPaperRecap' id='wantPaperRecapFALSE' value='0'$wantPaperRecapFalse$>&nbsp;&nbsp;
 		</p>
+		<p>
+			<label for='allowedToConnect'>Peut utiliser ses identifiants pour se connecter</label><label for='allowedToConnectTRUE'>OUI</label><input
+				type='radio' name='allowedToConnect' id='allowedToConnectTRUE' value='1' $allowedToConnectTrue$>&nbsp;&nbsp;<label
+				for='allowedToConnectFALSE'FALSE'>NON</label><input type='radio'
+				name='allowedToConnect' id='allowedToConnectFALSE' value='0' $allowedToConnectFalse$>&nbsp;&nbsp;
+		</p>
+		
+		
 		$rolesSelect$
 
 	</fieldset>

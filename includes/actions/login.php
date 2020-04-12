@@ -60,13 +60,21 @@ if (! $stopScript) {
 			$personne = $personne->matchLogin ( $ARGS ["login"], $ARGS ["pw"] );
 			
 			if (! is_null ( $personne )) {
+			    
+			    if($personne->allowedToConnect){
+			        prepareUserSession ( $personne );
+			        
+			        // Maintenant que l'utilisateur est loggué, s'il essayais de faire quelque chose avant, on le fait maintenant.
+			        restaureActionBeforeLogin ();
+			        
+			        $page->appendNotification ( "Bonjour " . $_SESSION ["userName"] . " !" . getTrombiMessageFor($personne), 15 );
+			    } else {
+			        $page->appendBody ( file_get_contents ( "includes/html/ath-notLogged.html" ) );
+			        $page->asset ( "login", $ARGS ["login"] );
+			        $page->appendNotification ( "Vos identifiants sont corrects, mais votre compte n'est pas encore activé. <br />Votre compte sera actif dès que votre inscription sera validée." );
+			    }
 				
-				prepareUserSession ( $personne );
 				
-				// Maintenant que l'utilisateur est loggué, s'il essayais de faire quelque chose avant, on le fait maintenant.
-				restaureActionBeforeLogin ();
-				
-				$page->appendNotification ( "Bonjour " . $_SESSION ["userName"] . " !" . getTrombiMessageFor($personne), 15 );
 			} else {
 				
 				$page->appendBody ( file_get_contents ( "includes/html/ath-notLogged.html" ) );

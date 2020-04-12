@@ -44,7 +44,23 @@ foreach ( $membersDeclaration as $aColumn ) {
 			} else if ($aColumn->sqlType == SqlColumnTypes::$INTEGER && ! is_null ( $fieldValue )) {
 				$object->$fieldName = $fieldValue + 0;
 			} else if ($aColumn->sqlType == SqlColumnTypes::$DATETIME && ! is_null ( $fieldValue )) {
-				$object->$fieldName = MyDateTime::createFromFormat ( "j/m/y H:i", $fieldValue );
+			    try {
+				    $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue );
+			    } catch (Exception $p){
+			        try {
+			            $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue );
+			        } catch (Exception $p){
+			            try {
+			                $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue." 00:00" );
+			            } catch (Exception $p){
+			                try {
+			                    $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue." 00:00" );
+			                } catch (Exception $p){
+			                    throw $p;
+			                }
+			            }
+			        }
+			    }
 			} else if ($aColumn->sqlType == SqlColumnTypes::$BOOLEAN) {
 				if ($fieldValue == "1") {
 					$object->$fieldName = true;

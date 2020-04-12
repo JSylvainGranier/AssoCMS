@@ -5,6 +5,7 @@ class SqlColumnTypes {
 	public static $BOOLEAN = "boolean";
 	public static $DATETIME = "datetime";
 	public static $LONGTEXT = "longtext";
+	public static $NUMERIC = "numeric";
 	private static $liste;
 	public static function getListe() {
 		if (is_null ( SqlColumnTypes::$liste )) {
@@ -13,7 +14,8 @@ class SqlColumnTypes {
 					SqlColumnTypes::$INTEGER,
 					SqlColumnTypes::$BOOLEAN,
 					SqlColumnTypes::$DATETIME,
-					SqlColumnTypes::$LONGTEXT 
+					SqlColumnTypes::$LONGTEXT,
+			        SqlColumnTypes::$NUMERIC
 			);
 		}
 		

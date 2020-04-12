@@ -45,7 +45,9 @@ $page->asset ( $civiliteSelectedField, "selected='selected'" );
 
 $page->asset ( "telFixe", protectInputValueApostrophe ( $user->telFixe ) );
 $page->asset ( "telPortable", protectInputValueApostrophe ( $user->telPortable ) );
-
+if(! is_null($user->dateNaissance)){
+    $page->asset ( "dateNaissance", protectInputValueApostrophe ( $user->dateNaissance->format('d/m/Y') ) );
+}
 $page->asset ( "adrL1", protectInputValueApostrophe ( $user->adrL1 ) );
 $page->asset ( "adrL2", protectInputValueApostrophe ( $user->adrL2 ) );
 $page->asset ( "adrL3", protectInputValueApostrophe ( $user->adrL3 ) );
@@ -73,6 +75,13 @@ if ($user->allowPublishMyFace) {
 } else {
 	$page->asset ( "allowPublishMyFaceFalse", "checked" );
 }
+
+if ($user->allowedToConnect) {
+    $page->asset ( "allowedToConnectTrue", "checked" );
+} else {
+    $page->asset ( "allowedToConnectFalse", "checked" );
+}
+
 
 // Récapitulatif papier
 

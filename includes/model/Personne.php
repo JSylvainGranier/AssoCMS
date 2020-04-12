@@ -25,6 +25,8 @@ class Personne extends HasMetaData {
 	public $categoriesAffilies;
 	public $dontWantUseTrombi;
 	public $cantUploadTrombiFile;
+	public $dateNaissance;
+	public $allowedToConnect;
 	public function getPrimaryKey() {
 		return $this->idPersonne;
 	}
@@ -61,6 +63,7 @@ class Personne extends HasMetaData {
 					new SqlColumnMappgin ( "adrVille", "Ville", SqlColumnTypes::$VARCHAR, "38" ),
 					new SqlColumnMappgin ( "trombiFile", "Fichier dans le tombinoscope", SqlColumnTypes::$VARCHAR, "150" ),
 					new SqlColumnMappgin ( "wantPaperRecap", "Demande un bulletin papier", SqlColumnTypes::$BOOLEAN ),
+			        new SqlColumnMappgin ( "allowedToConnect", "La personne est autorisée à se connecter", SqlColumnTypes::$BOOLEAN ),
 					$allowEmail,
 					$allowProfile,
 					$allowPublishMyFace,
@@ -69,8 +72,11 @@ class Personne extends HasMetaData {
 					new SqlColumnMappgin ( "note", "Note", SqlColumnTypes::$LONGTEXT ),
 					new SqlColumnMappgin ( "roles", "Rôles dans l'application", SqlColumnTypes::$VARCHAR, 150 ),
 					new SqlColumnMappgin ( "dontWantUseTrombi", "Ne veut pas utiliser le trombi", SqlColumnTypes::$DATETIME ),
-					new SqlColumnMappgin ( "cantUploadTrombiFile", "Ne parviens pas à utiliser le trombi", SqlColumnTypes::$DATETIME )
-					
+					new SqlColumnMappgin ( "cantUploadTrombiFile", "Ne parviens pas à utiliser le trombi", SqlColumnTypes::$DATETIME ),
+			        new SqlColumnMappgin ( "dateNaissance", "Date de naissance", SqlColumnTypes::$DATETIME, "60" ),
+			    
+			
+			    
 			);
 			
 			Personne::$memberDeclaration = array_merge ( Personne::$memberDeclaration, HasMetaData::getMembersDeclaration () );

@@ -36,6 +36,14 @@ if (Roles::canAdministratePersonne ()) {
 	} else if($user->cantUploadTrombiFile){
 		$page->asset ( "trombiPref", "A indiqué ne pas parvenir à utilisez le trombinoscope le ".$user->cantUploadTrombiFile->formatLocale() );
 	}
+	if(! is_null($user->dateNaissance)){
+    	$page->asset ( "dateNaissance", "Date de naissance : <b>" . $user->dateNaissance->format("d/m/Y") . "</b>" );
+	} else {
+	    $page->asset ( "dateNaissance", "Date de naissance : <i>non renseigné</i>" );
+	}
+	$page->asset ( "allowedToConnect", "Peut utiliser ses identifiants pour se connecter : <b>" . ($user->allowedToConnect ? "oui" : "non") . "</b>" );
+	
+	
 }
 
 if (Roles::isGestionnaireCategorie () || (Roles::isMembre () && $user->allowMembersVisitProfile) || $sameUserAsActor) {
