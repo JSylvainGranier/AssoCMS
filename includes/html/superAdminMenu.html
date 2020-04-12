@@ -1,6 +1,48 @@
-<li class="nav-item"><a class="nav-link" href="index.php?list&class=param" >Paramètres</a></li>
-<li class="nav-item"><a class="nav-link" href="index.php?passwordUnset" onclick="return confirm('Lancer les mails de rappel pour le mot de passe ?');">Mail Password</a></li>
-<li class="nav-item"><a class="nav-link" href="index.php?list&class=Mail">Mail Spooler</a></li>
-<li class="nav-item"><a class="nav-link" href="index.php?configuration">Configuration</a></li>
-<li class="nav-item"><a class="nav-link" href="index.php?list&class=Erreur">Erreurs</a></li>
+
+<style>
+
+article li {
+	list-style: none;
+	margin : 8px;
+
+}
+
+article ul {
+	margin-bottom: 25px;
+}
+
+article i {
+	width : 1.5em;
+}
+
+</style>
+
+<h1>Administration</h1>
+
+<ul >
+<li>
+	<b>Inscriptions</b>
+	<ul >
+		<li ><i class="fa fa-shopping-cart" aria-hidden="true"></i><a  href="index.php?list&class=Produit">Liste des produits</a></li>
+		<li ><i class="fa fa-check-square-o" aria-hidden="true"></i><a  href="index.php?list&class=Inscription">Liste des inscriptions</a></li>
+		<li ><i class="fa fa-credit-card" aria-hidden="true"></i><a  href="index.php?list&class=Reglement">Règlements</a></li>
+	</ul>
+
+</li>
+
+<li ><i class="fa fa-wrench" aria-hidden="true"></i><a  href="index.php?configuration">Configuration générale</a></li>
+<li ><i class="fa fa-envelope-o" aria-hidden="true"></i><a  href="index.php?list&class=Mail">Boite d'envoi des emails</a></li>
+
+<li>
+	<b>Admnistration avancée</b>
+	<ul >
+		<li ><i class="fa fa-sliders" aria-hidden="true"></i><a  href="index.php?list&class=param" >Paramètres</a></li>
+		<li ><i class="fa fa-unlock-alt" aria-hidden="true"></i><a  href="index.php?passwordUnset" onclick="return confirm('Lancer les mails de rappel pour le mot de passe ?');">Envoyer un email de rappel à toutes les personnes qui n'ont pas configuré leur mot de passe</a></li>
+		<li ><i class="fa fa-exclamation-triangle" aria-hidden="true"></i><a  href="index.php?list&class=Erreur">Erreurs</a></li>
+	</ul>
+
+</li>
+
+
+</ul>
 				
