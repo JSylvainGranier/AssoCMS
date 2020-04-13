@@ -9,6 +9,9 @@ class InscriptionPersonneProduit extends HasMetaData {
     public $inscription;
     public $personne; 
     public $produit;
+    public $dateAcceptationConditionsLegales;
+    public $conditionsLegales;
+    public $quantite;
     
     public function getPrimaryKey() {
     }
@@ -33,7 +36,10 @@ class InscriptionPersonneProduit extends HasMetaData {
                 $pk,
                 $inscription,
                 $personne,
-                $produit
+                $produit,
+                new SqlColumnMappgin ( "dateAcceptationConditionsLegales", "Date d'acception des conditions", SqlColumnTypes::$DATETIME ),
+                new SqlColumnMappgin ( "conditionsLegales", "Conditions légales acceptées", SqlColumnTypes::$LONGTEXT ),
+                new SqlColumnMappgin ( "quantite", "Quantité souscrite", SqlColumnTypes::$NUMERIC )
             );
             
             InscriptionPersonneProduit::$memberDeclaration = array_merge ( InscriptionPersonneProduit::$memberDeclaration, HasMetaData::getMembersDeclaration () );

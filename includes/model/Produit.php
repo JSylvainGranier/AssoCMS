@@ -3,6 +3,7 @@ class Produit extends HasMetaData {
     public $idProduit;
     public $libelle;
     public $politiqueTarifaire; //{tarif unique, 22€, fonction de l'age : 0-12 : 13€, 13-21€ : 19€, 22-110 : 27€}
+    public $conditionsLegales;
     public $debutDisponibilite;
     public $finDisponibilite;
     public $quantiteDisponible;
@@ -23,6 +24,7 @@ class Produit extends HasMetaData {
                 $pk,
                 new SqlColumnMappgin ( "libelle", "Libellé du produit", SqlColumnTypes::$VARCHAR, 255 ),
                 new SqlColumnMappgin ( "politiqueTarifaire", "Politique tarifaire", SqlColumnTypes::$LONGTEXT ),
+                new SqlColumnMappgin ( "conditionsLegales", "Conditions légales à accepter lors de la souscription", SqlColumnTypes::$LONGTEXT ),
                 new SqlColumnMappgin ( "debutDisponibilite", "Disponible entre le ", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "finDisponibilite", "Et le", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "quantiteDisponible", "Quantité disponible", SqlColumnTypes::$INTEGER ),
@@ -37,6 +39,6 @@ class Produit extends HasMetaData {
         return "Produit ".$this->libelle;
     }
     protected function getNaturalOrderColumn() {
-        return "debutDisponibilité";
+        return "debutDisponibilite";
     }
 }
