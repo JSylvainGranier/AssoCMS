@@ -54,4 +54,8 @@ class InscriptionPersonneProduit extends HasMetaData {
         return "idIPP";
     }
     
+    public function getTableName() {
+        return "inscription_personne_produit";
+    }
+    
 }

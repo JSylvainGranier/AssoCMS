@@ -137,6 +137,16 @@ class SmartPage {
 			}
 		*/
 		
+		$produit = new Produit();
+		if ($produit->hasInscriptionsOuvertesEnCeMoment()){
+		    $menuItems[] = array('url' => '$site_root$index.php?list&class=InscriptionsOuvertes',
+		        'text' => 'Inscriptions',
+		        'classicon' => 'fa fa-pencil-square-o'
+		    );
+		}
+		
+		
+		
 		$menuItems[] = array('url' => '$site_root$index.php?list&class=Categorie',
 		    'text' => 'Sections',
 		    'classicon' => 'fa fa-star-half-o'

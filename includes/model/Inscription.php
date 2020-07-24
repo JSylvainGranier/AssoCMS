@@ -46,6 +46,7 @@ class Inscription extends HasMetaData {
         return "debut";
     }
     
+   
 }
 
 

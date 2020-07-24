@@ -7,6 +7,8 @@ class Produit extends HasMetaData {
     public $debutDisponibilite;
     public $finDisponibilite;
     public $quantiteDisponible;
+    public $produitGroup;
+    public $produitOrdre = 0;
     
     public function getPrimaryKey() {
         return $this->idProduit;
@@ -28,6 +30,8 @@ class Produit extends HasMetaData {
                 new SqlColumnMappgin ( "debutDisponibilite", "Disponible entre le ", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "finDisponibilite", "Et le", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "quantiteDisponible", "Quantité disponible", SqlColumnTypes::$INTEGER ),
+                new SqlColumnMappgin ( "produitGroup", "Identifiant du groupe de produit", SqlColumnTypes::$INTEGER ),
+                new SqlColumnMappgin ( "produitOrdre", "Ordre du produit dans le groupe", SqlColumnTypes::$INTEGER, 0 ),
             );
             
             Produit::$memberDeclaration = array_merge ( Produit::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -40,5 +44,13 @@ class Produit extends HasMetaData {
     }
     protected function getNaturalOrderColumn() {
         return "debutDisponibilite";
+    }
+    
+    public function hasInscriptionsOuvertesEnCeMoment(){
+        $q = "select count(*) from produit where debutDisponibilite < now() and finDisponibilite > now() and produitOrdre = 0;";
+        $resultSet = $this->ask($q);
+        while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
+            return $data["count(*)"] > 0;
+        }
     }
 }
