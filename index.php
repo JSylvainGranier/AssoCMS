@@ -51,7 +51,9 @@ $notAthNeedForActions = array (
 		"install",
 		"mailStorage",
 		"sitemap",
-		"unsuscribe"
+		"unsuscribe",
+        "selfCreateAccountCheckEmail",
+        "selfCreateAccountSubmitRequest"
 );
 
 $maxLoop = 5;
@@ -82,9 +84,11 @@ try {
 			$longSession->save();
 		}
 
-		if (! is_null ( $personne )) {
+		if (! is_null ( $personne ) ) {
 			prepareUserSession ( $personne, $longSession );
-			$page->appendNotification ( "Bon retour parmi nous, " . $_SESSION ["userName"] . " !".getTrombiMessageFor($personne), 15 );
+			if(!Roles::isInvite ()){
+    			$page->appendNotification ( "Bon retour parmi nous, " . $_SESSION ["userName"] . " !".getTrombiMessageFor($personne), 15 );
+			}
 		} else {
 			removeLongSessionCookie ();
 		}
@@ -92,7 +96,7 @@ try {
 	
 	do {
 		
-		$isIdentifiedUser = Roles::isMembre ();
+	    $isIdentifiedUser = Roles::isMembre () || Roles::isInvite ()  ;
 		$ARGS = array_shift ( $ACTIONS );
 				
 		if (is_null ( $ARGS )) {

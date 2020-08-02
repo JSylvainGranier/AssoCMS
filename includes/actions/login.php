@@ -67,7 +67,7 @@ if (! $stopScript) {
 			        // Maintenant que l'utilisateur est loggué, s'il essayais de faire quelque chose avant, on le fait maintenant.
 			        restaureActionBeforeLogin ();
 			        
-			        $page->appendNotification ( "Bonjour " . $_SESSION ["userName"] . " !" . getTrombiMessageFor($personne), 15 );
+			        $page->appendNotification ( "Bonjour " . $_SESSION ["userName"] . " !" . getTrombiMessageFor($personne), 15 );   
 			    } else {
 			        $page->appendBody ( file_get_contents ( "includes/html/ath-notLogged.html" ) );
 			        $page->asset ( "login", $ARGS ["login"] );
@@ -176,24 +176,34 @@ if (! $stopScript) {
 			
 			// Une correspondance est trouvée :
 			if (! is_null ( $personne )) {
+
+			    if($personne->allowedToConnect){
+			        // Génération d'un token à envoyer par email
+			        $generationTk = "Oups !";
+			        if(is_null($personne->generationToken)){
+			            $generationTk = $personne->clearPasswordAndGetGenerationToken ();
+			            $personne->save ();
+			        } else {
+			            $generationTk = $personne->generationToken;
+			        }
+			        sendReactivationProcedure ( $personne->email, $generationTk );
+			        
+			        $message = "Un eMail vous à été envoyé à l'adresse {$ARGS["login"]}. <br />";
+			        $message .= "Consultez votre boite aux lettres (et les SPAMS). <br />";
+			        $message .= "Vous y trouverez toutes les instructions pour récupérer de votre Espace Membre.";
+			        
+			        $page->appendNotification ( $message );
+			        
+			        $ARGS ["redirectAction"] = "home";
+			    } else {
+			        
+			        $page->appendNotification ( "Votre compte est tout nouveau, mais pas encore activé. <br />Votre compte sera actif dès que votre inscription sera validée." );
+			        
+			        
+			        $ARGS ["redirectAction"] = "home";
+			    }
+			    
 				
-				// Génération d'un token à envoyer par email
-				$generationTk = "Oups !";
-				if(is_null($personne->generationToken)){
-					$generationTk = $personne->clearPasswordAndGetGenerationToken ();
-					$personne->save ();
-				} else {
-					$generationTk = $personne->generationToken;
-				}
-				sendReactivationProcedure ( $personne->email, $generationTk );
-				
-				$message = "Un eMail vous à été envoyé à l'adresse {$ARGS["login"]}. <br />";
-				$message .= "Consultez votre boite aux lettres (et les SPAMS). <br />";
-				$message .= "Vous y trouverez toutes les instructions pour récupérer de votre Espace Membre.";
-				
-				$page->appendNotification ( $message );
-				
-				$ARGS ["redirectAction"] = "home";
 			} else {
 				
 				$message = "L'adresse eMail '{$ARGS["login"]}' n'existe pas dans le site. <br />Vérifiez l'orthographe de l'adresse que vous avez saisie, ou essayez avec une autre adresse si vous en possédez plusieurs.";

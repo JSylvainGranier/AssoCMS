@@ -27,6 +27,7 @@ class Personne extends HasMetaData {
 	public $cantUploadTrombiFile;
 	public $dateNaissance;
 	public $allowedToConnect;
+	public $idFamille;
 	public function getPrimaryKey() {
 		return $this->idPersonne;
 	}
@@ -39,6 +40,9 @@ class Personne extends HasMetaData {
 			$pk = new SqlColumnMappgin ( "idPersonne", null, SqlColumnTypes::$INTEGER, "5" );
 			$pk->setPrimaryKey ( true );
 			
+			$idFamille = new SqlColumnMappgin ( "idFamille", null, SqlColumnTypes::$INTEGER, "5" );
+			$idFamille->setPrimaryKey ( true );
+			
 			$allowProfile = new SqlColumnMappgin ( "allowMembersVisitProfile", "Autorise les membres de l'association a voir les informations personnelles sur le trombino", SqlColumnTypes::$BOOLEAN );
 			$allowProfile->defaultValue = true;
 			
@@ -50,6 +54,7 @@ class Personne extends HasMetaData {
 			
 			Personne::$memberDeclaration = array (
 					$pk,
+			        $idFamille,
 					new SqlColumnMappgin ( "nom", "Nom", SqlColumnTypes::$VARCHAR, "60" ),
 					new SqlColumnMappgin ( "prenom", "Prenom", SqlColumnTypes::$VARCHAR, "60" ),
 					new SqlColumnMappgin ( "civilite", "Civilité [Monsieur|Madame|Monsieur et Madame]", SqlColumnTypes::$VARCHAR, "18" ),
@@ -136,6 +141,36 @@ class Personne extends HasMetaData {
 		return $this->getOneObjectOrNullFromQuery ( $sql );
 	}
 	
+	public function getAllNoAllowedToConnect(){
+        $query = "select * from personne where allowedToConnect = '0' ";
+        $order = $this->getNaturalOrderColumn ();
+        if (! is_null ( $order )) {
+            $query .= " order by {$order} ASC ";
+        }
+        $objList = $this->getObjectListFromQuery ( $query );
+        return $objList;
+	}
+	
+	public function getAllNotAllowPublishMyFace(){
+	    $query = "select * from personne where allowPublishMyFace = '0' ";
+	    $order = $this->getNaturalOrderColumn ();
+	    if (! is_null ( $order )) {
+	        $query .= " order by {$order} ASC ";
+	    }
+	    $objList = $this->getObjectListFromQuery ( $query );
+	    return $objList;
+	}
+	
+	public function getAllPersonnesInFamily($idFamille){
+	    $query = "select * from personne where idFamille = ".$idFamille;
+	    $order = $this->getNaturalOrderColumn ();
+	    if (! is_null ( $order )) {
+	        $query .= " order by {$order} ASC ";
+	    }
+	    $objList = $this->getObjectListFromQuery ( $query );
+	    return $objList;
+	}
+	
 	/**
 	 * Dans le cadre d'un procédure de régénération du
 	 * mot de passe, efface l'ancien mot de passe (ce qui
@@ -211,6 +246,16 @@ class Personne extends HasMetaData {
 		$catList = array_merge ( $catList, $cat->getAutoAffiliateCategories () );
 		
 		return $catList;
+	}
+	
+	public function getNextIdFamilleAvailable(){
+	    $q = "select max(idFamille) from personne";
+	    
+	    $resultSet = $this->ask($q);
+	    while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
+	        return $data["max(idFamille)"]+1;
+	    }
+	    
 	}
 	
 	/**

@@ -1,0 +1,401 @@
+<style>
+
+.personnesContainerLayout, #personnesContainer {
+	display : flex;
+	flex-direction: row;
+	justify-content: space-evenly;
+	flex-wrap: nowrap;
+	align-items : center;
+
+}
+
+.personneTile {
+	border : solid 1px gray;
+	padding : 5px;
+	margin : 5px;
+	min-width: 20rem;
+}
+
+#domiciliationFieldSet,  .personneTile{
+	text-align: left;
+}
+
+#domiciliationFieldSet label, .personneTile label {
+	display : block;
+}
+
+#domiciliationFieldSet input, .personneTile input {
+	width : 90%;
+	display: inline-block;
+	
+}
+
+
+*[error-advice]:after {
+	color : red !important;
+    content: '\A' attr(error-advice);
+    white-space: pre-wrap;
+}
+
+.creationError {
+	border : solid 1px #bf190d;
+	background-color: #e3887f;
+
+
+}
+
+.creationSuccess {
+	border : solid 1px #52bf48;
+	background-color: #c4e0c3;
+
+}
+
+#slefCreationResultContainer {
+	padding : 2em;
+	
+}
+
+</style>
+
+<script type="text/javascript">
+
+var maybeARobot = true;
+
+var onloadRecaptchaCallback = function(){
+	grecaptcha.render('g-recaptcha', {
+        'sitekey' : '6LcJTbkZAAAAAKfQlRWM-1WU1Bx2Uv9-cRzFRw-P',
+        'callback' : function(e){
+        	if(e && e.length > 20){
+        		maybeARobot = false;
+        	}
+        },
+        'expired-callback' : function(e){
+        	maybeARobot = true;
+        },
+      });
+}
+
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadRecaptchaCallback&render=explicit"  ></script>
+
+<h1>Nouvelle adhésion à $site_title$</h1>
+
+
+<fieldset>
+	<legend>Avant de poursuivre ... </legend>
+	<p>Afin de nous protéger menaces du web, nous avons besoin de savoir si vous êtes un robot :</p>
+	
+		<div id="g-recaptcha" ></div>
+		<button onclick="maybeARobot = false;">Débug : je ne suis pas un robot</button>
+</fieldset>
+
+
+<fieldset>
+	<legend>Personnes concernées</legend>
+	<div class="personnesContainerLayout">
+		<div id="personnesContainer">
+		</div>
+		<div>
+			<button onclick="addOtherPerson();">Ajouter une autre personne</button>
+		</div>
+	</div>
+</fieldset>
+
+<template id="personneTile">
+<div class="personneTile">
+	<h2 personneTitre>personneTitre</h2>
+	<p>
+		<label>Civilité : <select name='civilite'>
+				<option>Monsieur</option>
+				<option>Madame</option>
+		</select></label>
+	<p>
+	<p>
+		<label>Nom : <br/>
+		<input name="nom" type="text" placeholder="Nom" /></label>
+	<p>
+	<p>
+		<label>Prénom : <br/>
+			<input name="prenom" type="text" placeholder="Prénom" /></label>
+	<p>
+	<p>
+		<label>Date de naissance : <br/>
+			<input name="dateNaissance" type="date" placeholder="jj/mm/aaaa" /></label>
+	<p>
+	<p>
+		<label>Adresse eMail : <br/>
+			<input type='text' name='login' placeholder="Email, qui sera ensuite utilisé pour la connexion au site" onchange="validateEmailAvailable(this.value)">
+		</label>
+	</p>
+	<p>
+		<label>Mot de passe : <br/>
+			<input type='password' name='visiblepw' placeholder="Mot de passe utilisé pour la connexion" >
+			<input type='hidden' name='pw' >
+		</label>
+	</p>
+	<p>
+		<label>Téléphone Portable : <br/>
+		<input type='text' name='telPortable' placeholder="Téléphone portable"></label>
+	</p>
+	<center><button style="visibility : hidden;" onclick="removePerson(this.parentNode.parentNode);">Enlever cette personne</button></center>
+</div>
+</template>
+
+<script type="text/javascript">
+
+var addPersonne = function(persLabel, canRemove){
+	  var template = document.querySelector("#personneTile");
+
+	  var persList = document.querySelector("#personnesContainer");
+	  var clone = document.importNode(template.content, true);
+	  var title = clone.querySelector("h2[personneTitre]");
+	  title.innerHTML = persLabel;
+
+	  if(canRemove){
+		  var rmvBtn = clone.querySelector("button");
+		  rmvBtn.style.visibility = "visible";
+	  }
+	  
+	  persList.appendChild(clone);
+	  
+	  
+}
+
+addPersonne("Vous-même", false);
+var indexPersonne = 1;
+
+var addOtherPerson = function(){
+	indexPersonne++;
+	addPersonne("Personne "+indexPersonne, true);
+}
+
+var removePerson = function(divPersonne){
+	indexPersonne--;
+	divPersonne.parentNode.removeChild(divPersonne);
+}
+
+var validateEmailAvailable = function(email){
+	
+	if(maybeARobot){
+		alert("Êtes-vous un robot ? ");
+		return;
+	}
+	
+	
+	callServeurPostJson("index.php?selfCreateAccountCheckEmail", function(reponse){
+		console.log(reponse);
+		if(reponse && reponse.available == false){
+			alert("L'adresse email "+email+" est déjà utilisée. \r\nIl semble que vous ayez déjà un compte chez $site_title$ !")
+		}
+		
+	}, function(e){console.log(e);}, {login : email});
+	
+
+
+}
+
+window.uidCounter = 0;
+window.uniqueId = function(){
+    return 'myid-' + window.uidCounter++
+}
+
+var convertInputToJson = function(inputsNodeList){
+	var rep = {};
+	var fnc = function(input){
+		if(input.uniqueid === undefined){
+			input.uniqueid = uniqueId();
+			input.setAttribute("uniqueid", input.uniqueid);
+		}
+		if(input.type == "checkbox"){
+			rep[input.name] = {uid : input.uniqueid, value: input.checked};
+		} else {
+			rep[input.name] = {uid : input.uniqueid, value: input.value};
+		}
+	}
+	inputsNodeList.forEach(fnc);
+	
+	return rep;
+}
+
+var selfCreateAccountStart = function(button){
+	
+	if(maybeARobot){
+		alert("Êtes-vous un robot ? ");
+		return;
+	}
+	
+	document.querySelectorAll("[error-advice]").forEach(function(field){
+		field.removeAttribute("error-advice");
+	});
+	
+	document.getElementById("slefCreationResultContainer").innerHTML = "";
+	document.getElementById("slefCreationResultContainer").className = "";
+	
+	var email = document.querySelector("input[name='login']");
+	
+	if(email && email.value && email.value.lenght > 0){
+		if(!confirm("Est-ce que votre adresse email est bien "+email+" ?")){
+			return;
+		}
+	}
+	
+	var originalButtonText = button.innerText;
+	button.disabled = true;
+	button.innerHTML = "Enregistrement en cours...";
+	
+	var jpost = {};
+	
+	jpost.domiciliation = convertInputToJson(document.getElementById("domiciliationFieldSet").querySelectorAll("input"));
+	jpost.allowance = convertInputToJson(document.getElementById("allowanceFieldSet").querySelectorAll("input"));
+	jpost.personnes = [];
+	
+	document.querySelectorAll(".personneTile").forEach(function(item){
+		var persJson = convertInputToJson(item.querySelectorAll("input, select")) ;
+		persJson.pw = {uid : uniqueId(), value : hashPassword(persJson.visiblepw.value)}
+		persJson.visiblepw.value = "";
+		
+		jpost.personnes.push(persJson);
+	});
+	
+	
+	var releaseButton = function(originalButton, originalButtonText){
+		originalButton.disabled = false;
+		originalButton.innerHTML = originalButtonText;
+	}
+	
+	callServeurPostJson("index.php?selfCreateAccountSubmitRequest", function(reponse){
+		console.log(reponse);
+		
+		traiterSoumissionReponse(reponse);
+		
+		releaseButton(button, originalButtonText);
+	}, function(e){console.log(e); releaseButton(button, originalButtonText);}, jpost);
+	
+}
+
+var traiterSoumissionReponse = function(json){
+	var targetMessage = document.getElementById("slefCreationResultContainer");
+		
+	var hasRejectedFields = false;	
+
+	for (var prop in json.fieldsRejected) {
+	    if (Object.prototype.hasOwnProperty.call(json.fieldsRejected, prop)) {
+	    	var field = document.querySelector("[uniqueid='"+prop+"']");
+	    	field.parentNode.setAttribute("error-advice", json.fieldsRejected[prop]);
+	    	hasRejectedFields = true;
+	    }
+	}
+	
+	if(hasRejectedFields) {
+		targetMessage.innerHTML = "Il semble qu'il y ait quelques erreurs... <br/> Vérifiez les champs marqués d'une annotation rouge, puis essayez à nouveau. ";
+		targetMessage.className = "creationError";
+	} else if(json.error){
+		targetMessage.innerHTML = "Une erreur c'est produite en enregistrant votre demande, et probablement que vous n'y êtes pour rien ;-(";
+		targetMessage.className = "creationError";
+	} else {
+		
+		var submitButton = document.querySelector("button[onclick='selfCreateAccountStart(this)']");
+		submitButton.parentNode.removeChild(submitButton);
+		
+		var lien = "<a href='index.php?list&class=InscriptionsOuvertes'>Cliquez ici pour poursuivre votre inscription</a>";
+		
+		
+		setCookie('LSTK', json.longSessionToken, 1);
+		
+		var phrase = document.querySelectorAll(".personneTile").length == 1 
+				? "Votre compte vient d'être créé."
+				: "Vos comptes sont créés.";
+		
+		
+		
+		targetMessage.innerHTML = "<h1>Félicitation !</h1><p>"+phrase+"</p><p>"+lien+"</p>";
+		targetMessage.className = "creationSuccess";
+		
+		document.querySelectorAll("fieldset").forEach(function(fs){fs.parentNode.removeChild(fs)});
+		
+	}
+	
+}
+
+function setCookie(cname, cvalue, exdays) {
+	  var d = new Date();
+	  d.setTime(d.getTime() + (exdays*24*60*60*1000));
+	  var expires = "expires="+ d.toUTCString();
+	  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+	}
+
+</script>
+
+<fieldset id="domiciliationFieldSet">
+	<legend>Domiciliation</legend>
+	<p>
+		<label>Téléphone Fixe : <input type='text' name='telFixe' placeholder="Téléphone fixe">
+		</label>
+	</p>
+	
+	<p>
+		Adresse : <br /> 
+		<span><input type='text' name='adrL1' placeholder="Ligne 1"></span><br />
+		<span><input type='text' name='adrL2' placeholder="Ligne 2"></span><br /> 
+		<span><input type='text' name='adrL3' placeholder="Ligne 3"></span><br /> 
+		<span><input type='text' name='adrCP' placeholder="CP"> &nbsp; </span>
+		<span><input type='text' name='adrVille' placeholder="Ville"></span>
+	</p>
+</fieldset>
+
+<fieldset id="allowanceFieldSet">
+	<legend>Données personnelles</legend>
+
+	<p>Les données personnelles (nom de famille, téléphones, adresse,
+		email, photo) sont visibles par les autres membres de l'association
+		lorsqu'ils se connectent au site avec leur identifiant et mot de
+		passe.</p>
+
+	<p>Des personnes extérieures à l'association qui visitent ce site
+		ne verront rien de tout cela.</p>
+
+	<p>
+		<label><input type="checkbox" checked
+			name="allowMembersVisitProfile" /> J’accepte que les autres membres
+			de l’association puissent consulter mes coordonnées dans le
+			trombinoscope</label>
+	</p>
+
+	<p>
+		<label><input type="checkbox" checked
+			name="allowPublishMyFace"> J’accepte la publication d'image
+			où je suis présent(e)</label>
+	</p>
+
+	<p>
+		<label><input type="checkbox" checked name="allowEmails" />
+			J'autorise $site_title$ à m'envoyer des eMails à cette adresse
+			concernant l'actualité de l'association.</label>
+	</p>
+
+
+	<p>
+
+		<label><input type="checkbox" name="informDataCollect" /> Je
+			suis informé(e) que l’association VISA30 collecte les informations
+			personnelles que je lui communique dans le but de gestion des
+			adhésions, de statistiques de présence aux activités, ne les
+			communique à aucun tiers, et qu’elles seront supprimées dès que je
+			ne serai plus adhérent(e) à l’association. </label>
+
+	</p>
+
+	<p>
+
+		<label><input type="checkbox" name="informDataAccess" /> Je
+			suis informé(e) que j’ai le droit d’accéder à mes informations
+			personnelles, d’en demander la rectification ou la suppression, y
+			compris sur les photos ou vidéos qui pourraient être prises dans le
+			cadre des activités de l’association. </label>
+
+	</p>
+</fieldset>
+
+<div id="slefCreationResultContainer"></div>
+
+<center><button class="submitButton" onclick="selfCreateAccountStart(this)">Enregistrer, et poursuivre l'inscription</button></center>

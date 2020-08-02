@@ -48,8 +48,24 @@ class Roles {
 	public static function isMembre() {
 		if (session_id () == '' || is_null ( $_SESSION ))
 			return false;
+		if(!$_SESSION ["allowedToConnect"] ){
+		    return false;	    
+		}
+			
 		return array_key_exists ( "userRoles", $_SESSION );
 	}
+	
+	public static function isInvite() {
+	    if (session_id () == '' || is_null ( $_SESSION ))
+	        return false;
+        if($_SESSION ["allowedToConnect"] === false){
+            return true;
+        }
+        
+        return false;
+	       
+	}
+	
 	private static function hasRole($role) {
 		if (session_id () == '' || is_null ( $_SESSION ) || ! array_key_exists ( "userRoles", $_SESSION ))
 			return false;

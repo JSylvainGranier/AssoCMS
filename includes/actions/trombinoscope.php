@@ -11,6 +11,10 @@ if (array_key_exists ( "printable", $ARGS )) {
 	$page->append ( "trombiContainer", "<tr><th>Nom</th><th>Prénom</th><th>Tél. Fixe</th><th>Tél. Portable</th></tr>" );
 	
 	foreach ( $pers->getAll () as $personne ) {
+	    
+	    if(!$personne->allowedToConnect){
+	        continue;
+	    }
 		
 		$showProfileUrl = SITE_ROOT . "index.php?show&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
 		if (! Roles::canAdministratePersonne () && ! $personne->allowMembersVisitProfile) {
@@ -28,6 +32,10 @@ if (array_key_exists ( "printable", $ARGS )) {
 } else {
 	foreach ( $pers->getAll () as $personne ) {
 		
+	    if(!$personne->allowedToConnect){
+	        continue;
+	    }
+	    
 		if (is_null ( $personne->trombiFile ) || ! file_exists ( "documents/trombi/" . $personne->trombiFile )) {
 			$imageUrl = "";
 		} else {

@@ -12,6 +12,7 @@ $sql = "select * from personne where
 	or lower(prenom) like '%{$searchedTerm}%'
 	or lower(email) like '%{$searchedTerm}%'
 	)
+    and allowedToConnect = '1'
 	order by nom, prenom ";
 
 $persDao = new Personne ();

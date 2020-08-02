@@ -23,6 +23,7 @@ function prepareUserSession($personne, $session = null) {
 	$_SESSION ["userName"] = $personne->prenom;
 	$_SESSION ["userId"] = $personne->idPersonne;
 	$_SESSION ["userRoles"] = $personne->getRolesArray ();
+	$_SESSION ["allowedToConnect"] = $personne->allowedToConnect;
 	
 	$categList = $personne->getCategoriesEffectivesList ();
 	$categIdList = array ();
@@ -43,6 +44,8 @@ function prepareUserSession($personne, $session = null) {
 	
 		
 	setcookie ( 'LSTK', $session->longSessionToken, time () + 60 * 60 * 24 * 365, SITE_PATH, SITE_DOMAIN );
+	
+	return $session;
 }
 function removeLongSessionCookie() {
 	

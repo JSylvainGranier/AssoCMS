@@ -10,9 +10,49 @@ $page->asset ( "catId", $cat->getPrimaryKey () );
 $page->append ( $tag, "<li class='listEmptyItem'>Il n'y a aucun rendez-vous prévu pour ce mois-ci. </li>" );
 */
 
+
+
 $page->setTitle ( "Inscriptions Ouvertes" );
 
-
+if (! Roles::isMembre () && ! Roles::isInvite () ) {
+    $page->asset("displayCreateAccountParapgraph", "block");
+    $page->appendBody ( file_get_contents ( "includes/html/selfCreateAccountForm.html" ) );
+} else {
+    $page->asset("displayCreateAccountParapgraph", "none");
+    
+    $jsonConfig = array();
+    
+    $jsonConfig["allowSearchInAllPersons"] = Roles::isGestionnaireGlobal();
+    
+    $user = new Personne ( thisUserId() );
+    $jsonConfig["famille"] = array();
+    $jsonConfig["famille"]["id"] = $user->idFamille;
+    $jsonConfig["famille"]["members"] = $user->getAllPersonnesInFamily($user->idFamille);
+    
+    $jsonConfig["produits"] = array();
+    
+    forEach($instance->getInscriptionsOuvertesEnCeMoment() as $produit){
+        
+        $divProduit = "<div class='produitSection' idproduit='{$produit->idProduit}'>";
+        $divProduit .= "<p class='produitTitle'>{$produit->libelle}</p>";
+        $divProduit .= "<div class='produitDescription'>{$produit->description}</div>";
+        $divProduit .= "<div class='produitInscriptionContainer'>Inscire...</div>";
+        $divProduit .= "</div>";
+        
+        $page->append("listProduit", $divProduit);
+        
+        $jsonConfig["produits"][$produit->idProduit] = $produit;
+        
+        $jsonConfig["produits"][$produit->produitRequis] = $instance->findById($produit->produitRequis);
+        
+    }
+    
+    $jsonConfig["inscriptionsExistantes"] = array();
+      
+    
+    
+    
+}
 
 /*
 if (Roles::isGestionnaireGlobal () || Roles::isGestionnaireOfCategorie ( $cat )) {
