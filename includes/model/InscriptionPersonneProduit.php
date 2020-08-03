@@ -58,4 +58,9 @@ class InscriptionPersonneProduit extends HasMetaData {
         return "inscription_personne_produit";
     }
     
+    public function getAllForInscription($idInscription) {
+        $q = "select * from inscription_personne_produit where fkInscription = ".$idInscription;
+        return $this->getObjectListFromQuery ( $q );
+    }
+    
 }

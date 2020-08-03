@@ -20,36 +20,51 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
 } else {
     $page->asset("displayCreateAccountParapgraph", "none");
     
+    $user = new Personne ( thisUserId() );
+    
+    $idFamille = $user->idFamille;
+    
+    if(Roles::isGestionnaireGlobal() ){
+        $page->asset("adminForOtherFamilies", "<a href='index.php?InscriptionsSwitchFamily'>Administrateur, vous faite une inscriptions pour une autre famille ?</a>");
+        if(isset($ARGS["forceFamily"])){
+            $idFamille = $ARGS["forceFamily"];
+        }
+    }
+    
     $jsonConfig = array();
     
     $jsonConfig["allowSearchInAllPersons"] = Roles::isGestionnaireGlobal();
     
-    $user = new Personne ( thisUserId() );
     $jsonConfig["famille"] = array();
-    $jsonConfig["famille"]["id"] = $user->idFamille;
-    $jsonConfig["famille"]["members"] = $user->getAllPersonnesInFamily($user->idFamille);
+    $jsonConfig["famille"]["id"] = $idFamille;
+    $jsonConfig["famille"]["members"] = $user->getAllPersonnesInFamily($idFamille);
     
     $jsonConfig["produits"] = array();
     
     forEach($instance->getInscriptionsOuvertesEnCeMoment() as $produit){
-        
-        $divProduit = "<div class='produitSection' idproduit='{$produit->idProduit}'>";
-        $divProduit .= "<p class='produitTitle'>{$produit->libelle}</p>";
-        $divProduit .= "<div class='produitDescription'>{$produit->description}</div>";
-        $divProduit .= "<div class='produitInscriptionContainer'>Inscire...</div>";
-        $divProduit .= "</div>";
-        
-        $page->append("listProduit", $divProduit);
-        
+              
         $jsonConfig["produits"][$produit->idProduit] = $produit;
         
         $jsonConfig["produits"][$produit->produitRequis] = $instance->findById($produit->produitRequis);
         
     }
     
-    $jsonConfig["inscriptionsExistantes"] = array();
+    $jsonConfig["inscription"] = array();
       
+    $inscription = new Inscription();
+    $incrPersPro = new InscriptionPersonneProduit();
     
+    foreach($inscription->getInscriptionsForFamille($idFamille) as $anInscription){
+        $jsonConfig["inscription"][$anInscription->idInscription] = $anInscription;
+        
+        $jsonConfig["inscription"][$anInscription->idInscription]["souscripteurs"] = $incrPersPro->getAllForInscription($anInscription->idInscription);
+    }
+    
+    if (isPhpUp ()) {
+        $page->asset("config", json_encode ( $jsonConfig ) );
+    } else {
+        $page->asset("config", json_encode ( $jsonConfig, JSON_UNESCAPED_UNICODE ) );
+    }
     
     
 }

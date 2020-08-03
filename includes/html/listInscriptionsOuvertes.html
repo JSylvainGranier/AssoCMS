@@ -1,5 +1,7 @@
 <h1>Inscriptions Ouvertes</h1>
 
+$adminForOtherFamilies$
+
 <p style="display : $displayCreateAccountParapgraph$;">
 
 Pour utiliser les inscriptions en ligne, il faut d'abord que l'on sache qui vous êtes <i class="fa fa-smile-o" aria-hidden="true"></i> !
@@ -24,5 +26,81 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 
 
 <div id="produitListContainer">
-	$listProduit$
+	
 </div>
+
+<template id="produitTemplate">
+	<div class="produitContainer">
+		<h2 produitTitre></h2>
+		<div produitDescription>
+		</div>
+		<div>
+		J'inscris : 
+			<ul produitPersonnesAInscrire>
+			</ul>
+		</div>
+		<div produitConditions>
+		</div>
+	</div>
+</template>
+
+<script>
+
+var renderProduitList = function(){
+	var pListContainer = document.getElementById("produitListContainer");
+	var produitTemplate = document.querySelector("#produitTemplate");
+	
+	for (var prod in config.produits) {
+	    if (Object.prototype.hasOwnProperty.call(config.produits, prod)) {
+	    	var produit = config.produits[prod];
+	    	if(!produit.accesDirect){
+				continue;
+			}
+		
+			var clone = document.importNode(produitTemplate.content, true);
+			clone.querySelector("h2[produitTitre]").innerHTML = produit.libelle;
+			clone.querySelector("div[produitDescription]").innerHTML = produit.description;
+
+			if(produit.conditionsLegales && produit.conditionsLegales.length > 20){
+				clone.querySelector("div[produitConditions]").innerHTML = produit.conditionsLegales;
+			}
+			
+			var listPersonnes = clone.querySelector("ul[produitPersonnesAInscrire]");
+			listPersonnes.setAttribute("idProduit", produit.idProduit);
+			
+			config.famille.members.forEach(function(personne){
+				var persCbx = document.createElement("LI");
+				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' /> "+personne.prenom+" "+personne.nom+"</label>";
+				persCbx.onChange = function(){
+					var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(personne.idPersonne, produit.idProduit);
+					if(!this.checked){
+						inscriptionEtInscriptionProduit.souscripteurs
+						non, ici, c'est pas bon. 
+						Peut être qu'en javascript, je devrais plutpt avoir une seule ligne qui regroupe inscription et inscriprtion produit. 
+						Et sur cette ligne, je rajoute une variable markedForDeletion
+					}
+				}
+				
+				listPersonnes.appendChild(persCbx);
+			});
+		  
+			pListContainer.appendChild(clone);
+	    }
+	}
+	
+
+}
+
+var findOrCreateInscriptionForProduit = function(idPersonne, idProduit){
+	parmis config.inscriptions, retourner ou créer, ajouter et retourner un objet qui corresponde à l'inscription de idPersonne au produit idProduit. 
+	En ayant populé les autres champs. 
+	
+	//Et plus tard, en ayant rajouté les produits dépendants, et les règlements dépendants. 
+}
+
+var config = $config$;
+
+renderProduitList();
+
+
+</script>

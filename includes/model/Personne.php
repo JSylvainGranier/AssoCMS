@@ -329,5 +329,19 @@ class Personne extends HasMetaData {
 		return $str;
 	}
 	
+	public function getAllPersonnesByFamille(){
+	    $q = "select idFamille, GROUP_CONCAT(concat(nom, ' ', prenom) SEPARATOR ', ') as 'name'  from personne group by idFamille order by nom";
+	    $rep = array();
+	    $resultSet = $this->ask($q);
+	    while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
+	        $fam = array();
+	        $fam["idFamille"] = $data["idFamille"];
+	        $fam["name"] = $data["name"];
+	        
+	        $rep[] = $fam;
+	    }
+	    return $rep;
+	}
+	
 
 }

@@ -33,6 +33,7 @@ CREATE TABLE inscription (
   fin datetime DEFAULT NULL,
   lastUpdateOn datetime DEFAULT NULL,
   fkLastUpdateBy int(11) DEFAULT NULL,
+  idFamille INT(11) NOT NULL DEFAULT -1,
   PRIMARY KEY (idInscription),
   KEY fkLastUpdateBy (fkLastUpdateBy)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;

@@ -13,6 +13,7 @@ class Inscription extends HasMetaData {
     public $fin;
     public $commentaire;
     public $etat;
+    public $idFamille;
     
     public function getPrimaryKey() {
         return $this->idInscription;
@@ -32,6 +33,7 @@ class Inscription extends HasMetaData {
                 new SqlColumnMappgin ( "fin", "Fin validité inscription", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "commentaire", "Commentaire", SqlColumnTypes::$LONGTEXT ),
                 new SqlColumnMappgin ( "etat", "Etat de l'inscription", SqlColumnTypes::$INTEGER ),
+                new SqlColumnMappgin ( "idFamille", "idFamille", SqlColumnTypes::$INTEGER ),
             );
             
             Inscription::$memberDeclaration = array_merge ( Inscription::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -46,6 +48,15 @@ class Inscription extends HasMetaData {
         return "debut";
     }
     
+    public function getInscriptionsForFamille($idFamille){
+        $query = "select * from inscription where idFamille = ".$idFamille;
+        $order = $this->getNaturalOrderColumn ();
+        if (! is_null ( $order )) {
+            $query .= " order by {$order} ASC ";
+        }
+        $objList = $this->getObjectListFromQuery ( $query );
+        return $objList;
+    }
    
 }
 
