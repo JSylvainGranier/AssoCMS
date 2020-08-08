@@ -95,3 +95,20 @@ if ($sameUserAsActor) {
 	}
 }
 
+$familleList = "";
+
+foreach($user->getAllPersonnesInFamily($user->idFamille) as $mFamille){
+    if($mFamille->idPersonne == $user->idPersonne){
+        continue;
+    }
+    
+    $familleList .= "<a href='index.php?show&class=Personne&id={$mFamille->idPersonne}'>{$mFamille->prenom} {$mFamille->nom}</a>, ";
+}
+
+$page->asset("family", $familleList);
+
+if (Roles::canAdministratePersonne ()) {
+    $page->appendActionButton ( "Modifier la famille", "edit&class=Famille&idFamille=" . $user->idFamille );
+    
+}
+
