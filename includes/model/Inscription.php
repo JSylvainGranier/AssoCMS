@@ -57,6 +57,12 @@ class Inscription extends HasMetaData {
         $objList = $this->getObjectListFromQuery ( $query );
         return $objList;
     }
+    
+    public function findRecentInscriptionForFamille($idFamille){
+        $query = "select * from inscription where idFamille = {$idFamille} and etat = 10 and lastUpdateOn >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) order by lastUpdateOn DESC limit 1";
+        
+        return $this->getOneObjectOrNullFromQuery ( $query );
+    }
    
 }
 

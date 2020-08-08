@@ -11,6 +11,7 @@ class Produit extends HasMetaData {
     public $produitRequis;
     public $produitOrdre = 0;
     public $accesDirect = 0;
+    public $quantiteLibre = 0;
     
     public function getPrimaryKey() {
         return $this->idProduit;
@@ -35,7 +36,8 @@ class Produit extends HasMetaData {
                 new SqlColumnMappgin ( "quantiteDisponible", "Quantité disponible", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "produitRequis", "Produit requis pour avoir droit à ce produit", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "produitOrdre", "Ordre du produit dans le groupe", SqlColumnTypes::$INTEGER, 0 ),
-                new SqlColumnMappgin ( "accesDirect", "Produit que l'utilisateur peut cocher lui-même", SqlColumnTypes::$BOOLEAN, false )
+                new SqlColumnMappgin ( "accesDirect", "Produit que l'utilisateur peut cocher lui-même", SqlColumnTypes::$BOOLEAN, false ),
+                new SqlColumnMappgin ( "quantiteLibre", "L'utilisateur peut lui-même choisir la quantité qu'il commande", SqlColumnTypes::$BOOLEAN, false )
             );
             
             Produit::$memberDeclaration = array_merge ( Produit::$memberDeclaration, HasMetaData::getMembersDeclaration () );

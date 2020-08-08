@@ -343,5 +343,25 @@ class Personne extends HasMetaData {
 	    return $rep;
 	}
 	
+	public function updatesPersonnesForFamily($idFamille, $idPersonnesArray){
+	    
+	    $qClear = "update personne set idFamille = idPersonne where idFamille = {$idFamille};";
+	    $this->ask($qClear);
+	    
+	    $comma = "";
+	    $persListIds = "";
+	    
+	    foreach ($idPersonnesArray as $id){
+	        $persListIds .= $comma.$id;
+	        $comma = ", ";
+	    }
+	    
+	    
+	    $qSet = "update personne set idFamille = {$idFamille} where idPersonne in ($persListIds)";
+	    $this->ask($qSet);
+	    
+	    
+	}
+	
 
 }

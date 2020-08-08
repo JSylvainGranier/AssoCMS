@@ -2,7 +2,8 @@
 $page->appendBody ( file_get_contents ( "includes/html/listInscriptionsOuvertes.html" ) );
 /* @var $instance Produit */
 $instance = new Produit ();
-
+/* @var $inscription Inscription */
+$inscription = new Inscription();
 
 /*
 $page->asset ( "catName", $cat->nom );
@@ -24,10 +25,24 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     
     $idFamille = $user->idFamille;
     
+    $editInscription = -1;
+    if(isset($ARGS["editInscription"])){
+        $editInscription = parseInt($ARGS["editInscription"]);
+    }
+    
+    
+    
     if(Roles::isGestionnaireGlobal() ){
         $page->asset("adminForOtherFamilies", "<a href='index.php?InscriptionsSwitchFamily'>Administrateur, vous faite une inscriptions pour une autre famille ?</a>");
         if(isset($ARGS["forceFamily"])){
             $idFamille = $ARGS["forceFamily"];
+        }
+    }
+    
+    if($editInscription < 0 ){
+        $possibleInscriptionAEditer = $inscription->findRecentInscriptionForFamille($idFamille);
+        if(!is_null($possibleInscriptionAEditer)){
+            $editInscription = $possibleInscriptionAEditer->idInscription;
         }
     }
     
@@ -38,6 +53,28 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $jsonConfig["famille"] = array();
     $jsonConfig["famille"]["id"] = $idFamille;
     $jsonConfig["famille"]["members"] = $user->getAllPersonnesInFamily($idFamille);
+    
+    $compteJointBreak = false;
+    $dateNaissanceBreak = false;
+    
+    forEach($jsonConfig["famille"]["members"] as $personne){
+        if(is_null($personne->dateNaissance)){
+            $dateNaissanceBreak = true;
+            $page->appendBody("<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+        }
+        
+        if($personne->civilite == "Monsieur et Madame"){
+            $compteJointBreak = true;
+            $page->appendBody("<p>Vous utilisez un compte joint pour vous connecter sur le site de VISA30. <br />Le système des inscriptions en ligne ne prends pas en charge ce cas.  <br />Adressez nous un email en nous indiquant une adresse électronique pour chaque personne, et nous résoudrons le problème. <br />Désolé pour ce contre-temps :-( </p>");
+            
+        }
+        
+        $personne->dateNaissance = $personne->dateNaissance->format("Y-m-d");
+    }
+    
+    if($compteJointBreak || $dateNaissanceBreak){
+        return;
+    }
     
     $jsonConfig["produits"] = array();
     
@@ -54,10 +91,21 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $inscription = new Inscription();
     $incrPersPro = new InscriptionPersonneProduit();
     
+    if($editInscription > 0){
+        $inscription = $inscription->findById($editInscription);
+    } else {
+        $inscription->idFamille = $idFamille;
+    }
+    $inscription->save();
+    
+    
+    
+    $jsonConfig["currentInscription"] = $inscription;
+    
     foreach($inscription->getInscriptionsForFamille($idFamille) as $anInscription){
         $jsonConfig["inscription"][$anInscription->idInscription] = $anInscription;
         
-        $jsonConfig["inscription"][$anInscription->idInscription]["souscripteurs"] = $incrPersPro->getAllForInscription($anInscription->idInscription);
+        $jsonConfig["inscriptionPersonneProduit"][$anInscription->idInscription] = $incrPersPro->getAllForInscription($anInscription->idInscription);
     }
     
     if (isPhpUp ()) {

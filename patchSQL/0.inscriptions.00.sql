@@ -67,6 +67,7 @@ CREATE TABLE produit (
   produitOrdre int(11) DEFAULT 0,
   fkProduitRequis int(11),
   accesDirect TINYINT(1) NOT NULL DEFAULT 0,
+  quantiteLibre TINYINT(1) NOT NULL DEFAULT 0,
   conditionsLegales longtext COLLATE latin1_general_ci,
   lastUpdateOn datetime DEFAULT NULL,
   fkLastUpdateBy int(11) DEFAULT NULL,
@@ -89,3 +90,8 @@ CREATE TABLE reglement (
   KEY fkLastUpdateBy (fkLastUpdateBy),
   KEY fkInscription (fkInscription)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 COLLATE=latin1_general_ci;
+
+--return politiqueTarifaireFixeALaSouscription(souscription, "Calendrier mensuel envoyé par voie postale", 8);
+-- return politiqueAdhesionAssociation(souscription, {premierAdulte : 22, autresAdultes : 16, adoSeul : 13, enfant : 3, ageMaxEnfant :   15, ageMaxAdo : 20});
+--return politiqueTarifaireFixeALaSouscriptionSelonAge(souscription, {tarifAdulte : 13, tarifEnfant : 7, ageMaxEnfant : 16, libelle : "Assurance Randonnée" } );
+--return politiqueTarifaireMensuelle(souscription, {jourDuMois : 30, debut : "2020-10-01", fin : "2021-06-30", libelle : "Participation Mensuelle Poterie", tarif1 : 33, ageMaxTarif1 : 16, tarif2 : 48});
