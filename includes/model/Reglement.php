@@ -21,8 +21,8 @@ class Reglement extends HasMetaData {
             $pk = new SqlColumnMappgin ( "idReglement", null, SqlColumnTypes::$INTEGER );
             $pk->setPrimaryKey ( true );
             
-            $inscription = new SqlColumnMappgin ( "inscription", "Inscription que cela règle", SqlColumnTypes::$INTEGER );
-            $inscription->setForeing ( new Inscription (), "fkInscription", true, true );
+            $inscription = new SqlColumnMappgin ( "fkInscription", "Inscription que cela règle", SqlColumnTypes::$INTEGER );
+            $inscription->setForeing ( new Inscription (), "inscription", true, true );
             
             Reglement::$memberDeclaration = array (
                 $pk,
@@ -45,5 +45,13 @@ class Reglement extends HasMetaData {
     }
     protected function getNaturalOrderColumn() {
         return "dateEcheance";
+    }
+    
+    
+    public function clearReglementNonPercusForInscription($idInscription){
+        $q = "delete from reglement where datePerception is null and fkInscription=".$idInscription;
+        
+        $this->ask($q);
+        
     }
 }

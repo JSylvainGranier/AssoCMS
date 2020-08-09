@@ -58,22 +58,27 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $dateNaissanceBreak = false;
     
     forEach($jsonConfig["famille"]["members"] as $personne){
-        if(is_null($personne->dateNaissance)){
+        if(is_null($personne->dateNaissance) ){
             $dateNaissanceBreak = true;
-            $page->appendBody("<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+            $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+        } else {
+            $personne->dateNaissance = $personne->dateNaissance->format("Y-m-d");
         }
         
         if($personne->civilite == "Monsieur et Madame"){
             $compteJointBreak = true;
-            $page->appendBody("<p>Vous utilisez un compte joint pour vous connecter sur le site de VISA30. <br />Le système des inscriptions en ligne ne prends pas en charge ce cas.  <br />Adressez nous un email en nous indiquant une adresse électronique pour chaque personne, et nous résoudrons le problème. <br />Désolé pour ce contre-temps :-( </p>");
+            $page->append("requirementNoFullFilled", "<p>Vous utilisez un compte joint pour vous connecter sur le site de VISA30. <br />Le système des inscriptions en ligne ne prends pas en charge ce cas.  <br />Adressez nous un email en nous indiquant une adresse électronique pour chaque personne, et nous résoudrons le problème. <br />Désolé pour ce contre-temps :-( </p>");
             
         }
         
-        $personne->dateNaissance = $personne->dateNaissance->format("Y-m-d");
+        
     }
     
     if($compteJointBreak || $dateNaissanceBreak){
+        $page->asset("visibilityOnRequirementFullfilled", "hidden");
         return;
+    } else {
+        $page->asset("visibilityOnRequirementFullfilled", "visible");
     }
     
     $jsonConfig["produits"] = array();

@@ -20,17 +20,17 @@ class InscriptionPersonneProduit extends HasMetaData {
     private static $memberDeclaration;
     static function getMembersDeclaration() {
         if (is_null ( InscriptionPersonneProduit::$memberDeclaration )) {
-            $pk = new SqlColumnMappgin ( "idMail", null, SqlColumnTypes::$INTEGER );
+            $pk = new SqlColumnMappgin ( "idIPP", null, SqlColumnTypes::$INTEGER );
             $pk->setPrimaryKey ( true );
             
-            $inscription = new SqlColumnMappgin ( "inscription", "Inscription qui fait la liaison", SqlColumnTypes::$INTEGER );
-            $inscription->setForeing ( new Inscription (), "fkInscription", true, true );
+            $inscription = new SqlColumnMappgin ( "fkInscription", "Inscription qui fait la liaison", SqlColumnTypes::$INTEGER );
+            $inscription->setForeing ( new Inscription (), "inscription", true, true );
             
-            $personne = new SqlColumnMappgin ( "personne", "Personne que l'on inscrit à une activité", SqlColumnTypes::$INTEGER );
-            $personne->setForeing ( new Personne (), "fkPersonne", true, true );
+            $personne = new SqlColumnMappgin ( "fkPersonne", "Personne que l'on inscrit à une activité", SqlColumnTypes::$INTEGER );
+            $personne->setForeing ( new Personne (), "personne", true, true );
             
-            $produit = new SqlColumnMappgin ( "produit", "Produit souscrit pour la personne", SqlColumnTypes::$INTEGER );
-            $produit->setForeing ( new Produit (), "fkProduit", true, true );
+            $produit = new SqlColumnMappgin ( "fkProduit", "Produit souscrit pour la personne", SqlColumnTypes::$INTEGER );
+            $produit->setForeing ( new Produit (), "produit", true, true );
             
             InscriptionPersonneProduit::$memberDeclaration = array (
                 $pk,
@@ -61,6 +61,18 @@ class InscriptionPersonneProduit extends HasMetaData {
     public function getAllForInscription($idInscription) {
         $q = "select * from inscription_personne_produit where fkInscription = ".$idInscription;
         return $this->getObjectListFromQuery ( $q );
+    }
+    
+    public function clearForInscription($idInscription){
+        $q = "delete from inscription_personne_produit where fkInscription = ".$idInscription;
+        $this->ask($q);
+    }
+    
+    public function getProduit() {
+        return $this->fetchLasyObject ( "produit", "Produit" );
+    }
+    public function getPersonne() {
+        return $this->fetchLasyObject ( "personne", "Personne" );
     }
     
 }

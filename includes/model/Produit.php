@@ -61,7 +61,7 @@ class Produit extends HasMetaData {
     }
     
     public function getInscriptionsOuvertesEnCeMoment(){
-        $q = "select * from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1;";
+        $q = "select * from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 order by produitOrdre desc;";
         return $this->getObjectListFromQuery ( $q );
     }
 }

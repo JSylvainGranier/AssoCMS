@@ -1,4 +1,4 @@
-<h1>Inscriptions Ouvertes</h1>
+<h1>Inscriptions en ligne</h1>
 
 $adminForOtherFamilies$
 
@@ -26,17 +26,99 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 
 
 <style>
-	button[notchecked] {
-		background-color: red;
-		font-size: 1.5em;
+
+	button {
+		cursor: pointer;
+		font-size: 1.2em;
 	}
 	
-	button[notchecked]::after {
-		content : "Cliquez ici pour consulter et accepter les conditions spécifiques";
+	button[disabled] {
+		cursor: not-allowed;
+	}
+
+	button[notchecked] {
+		font-size: 1.3em;
+		border : solid 1px #C83768;
+		background-color: #D35F86;
+		color : white; 
+		font-weight: bold;
+		
+	}
+	
+	button[checked], .submitButton {
+		font-size: inherit;
+		border : solid 1px #2ED171;
+		background-color: #58DA8E;
+		color : dark; 
+		font-weight: normal;
+		
+	}
+	
+	.submitButton{
+		margin: 20px;
+		padding : 1em;
+		font-size: 1.3em;
+	}
+	
+	
+	[produitPersonnesAInscrire] li, [lignesDetail] li {
+		list-style: none;	
+	}
+	
+	[lignesDetail] li {
+		
+	}
+	
+	
+	[lignesDetail] li:before {
+		content: '↳ ';
+	}
+	
+	[sousTotal] {
+		font-weight: bold;
+		margin : 0.8em;
+		
+	}	
+	
+	[produitPersonnesAInscrireContainer] {
+		margin: 1em;
+		padding : 1em;
+		border : solid 1px #B5D6EF;
+		background-color: #DFEDF8;
+	}
+	
+	.produitContainer {
+		border : solid 1px #698296;
+		border-left : solid 10px #698296;
+		margin-top : 1em;
+		margin-bottom : 1em;
+		padding : 0.5em;
+	}
+	
+	.introduction {
+	}
+	
+	.ticketLigneDecomposition {
+		color : #525658;
+		padding-left : 1em;
+	}
+	
+	 p {
+		margin-block-end: 8px;
+		margin-block-start: 8px;
 	}
 	
 	.startValidatingConditionsButton {
 		border : solid 3px green;
+	}
+	
+	.ticketLigneTemplate {
+		margin: 1em;
+		padding : 1em;
+		background-color: #E4E4EB;
+		border : solid 1px #C7C7D5;
+		border-left : solid 10px #C7C7D5;
+	
 	}
 	
 	 .modal {
@@ -58,7 +140,7 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
         transform: translate(-50%, -50%);
         background-color: white;
         padding: 1rem 1.5rem;
-        width: 80%;
+        width: 65%;
         max-height : 80%;
         border-radius: 0.5rem;
         overflow: hidden;
@@ -67,7 +149,13 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
     .modal-scrollable-body {
 		height : 75vh;
     	overflow: auto;
+    	padding : 5px;
     }
+    
+     .modal-scrollable-body p {
+     	margin-block-end: 16px;
+		margin-block-start: 16px;
+     }
     
     .modal-foot {
 		height : 5vh;
@@ -97,15 +185,43 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
         transform: scale(1.0);
         transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
     }
+    
+    .requirementNoFullFilled p {
+    	font-weight: bold;
+    	font-size: 1.1em;
+    	border : solid 1px #C83768;
+    	padding: 10px;
+    	
+    }
 
 </style>
 
-<div id="produitListContainer">
-	
+<div class="requirementNoFullFilled">
+	$requirementNoFullFilled$
 </div>
 
-<div id="summaryContainer">
+<div style="visibility : $visibilityOnRequirementFullfilled$ ;">
+
+	<div class="introduction" >
+		<p>Voici la liste des activités, ateliers et rendez-vous auxquels vous pouvez vous inscrire.</p>
+		<p>Pour procéder à l'inscription, vous n'avez qu'à cocher le nom des personnes que vous souhaitez inscrire, et valider en bas de page.</p>
+		<p>Votre adhésion à l'association sera automatiquement ajoutée si besoin.</p>
+		<p>Lorsque votre inscription aura été validée par un des membres du bureau, vous recevez un email de confirmation.</p>
+		<p>Vous pouvez aussi consulter toutes vos inscriptions depuis la rubrique "<a href='index.php?show&class=Personne'>Mon Compte</a>".</p>
+		<p>Il n'y a pas de paiement en ligne (... pas encore <i class="fa fa-smile-o" aria-hidden="true"></i> ), donc il vous faut apporter votre paiement en chèque ou espèce lors de votre participation aux ateliers, ou au forum des associations. </p>
+	</div>
 	
+	
+	<div id="produitListContainer">
+		
+	</div>
+	
+	<h1>Résumé de votre inscription</h1>
+	<div id="summaryContainer">
+		
+	</div>
+	
+	<button onclick="submitSubscription()" class="submitButton"><i class="fa fa-pencil-square-o"></i> M'inscrire</button>
 </div>
 
 <div class="modal">
@@ -121,8 +237,8 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 		<h2 produitTitre></h2>
 		<div produitDescription>
 		</div>
-		<div>
-		J'inscris : 
+		<div produitPersonnesAInscrireContainer>
+			Personne(s) à inscrire : 
 			<ul produitPersonnesAInscrire>
 			</ul>
 		</div>
@@ -130,6 +246,19 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 		</div>
 	</div>
 </template>
+
+
+<template id="ticketLigneTemplate">
+	<div class="ticketLigneTemplate">
+		<p><span date></span><span sousTotal></span></p>
+		<div class="ticketLigneDecomposition">
+		Décomposé comme suit : 
+			<ul lignesDetail>
+			</ul>
+		</div>
+	</div>
+</template>
+
 <script src="ressources/moment-with-locales.js"></script>
 <script>
 
@@ -142,80 +271,133 @@ var renderProduitList = function(){
 	var pListContainer = document.getElementById("produitListContainer");
 	var produitTemplate = document.querySelector("#produitTemplate");
 	
+	var sortableProduits = [];
 	for (var prod in config.produits) {
 	    if (Object.prototype.hasOwnProperty.call(config.produits, prod)) {
 	    	var produit = config.produits[prod];
-	    	if(!produit.accesDirect){
-				continue;
-			}
-		
-			var clone = document.importNode(produitTemplate.content, true);
-			clone.querySelector("h2[produitTitre]").innerHTML = produit.libelle;
-			clone.querySelector("div[produitDescription]").innerHTML = produit.description;
-
-			
-			
-			var listPersonnes = clone.querySelector("ul[produitPersonnesAInscrire]");
-			listPersonnes.setAttribute("idProduit", produit.idProduit);
-			
-			var quantiteLieAPersonneEacherator = function(personne){
-				var persCbx = document.createElement("LI");
-				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
-				persCbx.onchange = function(e){
-					var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
-					inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
-					
-					if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
-						var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
-						produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
-					}
-					
-					willUpdateSummary();
-					
-				}
-				
-				listPersonnes.appendChild(persCbx);
-			};
-			
-			var quantiteLibreEacherator = function(personne){
-				var persCbx = document.createElement("LI");
-				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
-				persCbx.onchange = function(e){
-					var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
-					inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
-					
-					if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
-						var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
-						produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
-					}
-					
-					willUpdateSummary();
-					
-				}
-				
-				listPersonnes.appendChild(persCbx);
-			};
-			
-			
-			
-			config.famille.members.forEach(prod.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
-			
-			if(produit.conditionsLegales && produit.conditionsLegales.length > 5){
-				var condContainer = clone.querySelector("div[produitConditions]");
-				
-				condContainer.innerHTML = "<button class='startValidatingConditionsButton' onclick='startValidatingConditions("+produit.idProduit+", this.target)' notchecked idproduit='"+produit.idProduit+"'>Conditions particulières</button>";				
-			}
-
-			
-			
-			pListContainer.appendChild(clone);
+	    	sortableProduits.push(produit);
 	    }
 	}
+	
+	sortableProduits.sort(function(a, b) {
+	    return a.produitOrdre - b.produitOrdre;
+	});
+	
+	for (var i = 0; i < sortableProduits.length; i++) {
+    	var produit = sortableProduits[i];
+    	
+    	if(!produit.accesDirect){
+			continue;
+		}
+	
+		var clone = document.importNode(produitTemplate.content, true);
+		clone.querySelector("h2[produitTitre]").innerHTML = produit.libelle;
+		clone.querySelector("div[produitDescription]").innerHTML = produit.description;
+
+		
+		
+		var listPersonnes = clone.querySelector("ul[produitPersonnesAInscrire]");
+		listPersonnes.setAttribute("idProduit", produit.idProduit);
+		
+		var quantiteLieAPersonneEacherator = function(personne){
+			
+			if(isPersonneDejaInscriteSurProduit(personne.idPersonne, produit.idProduit)){
+				var persCbx = document.createElement("LI");
+				persCbx.innerHTML = "<i> "+personne.prenom+" "+personne.nom+" est déjà inscrit(e) à ceci.</i>";
+				listPersonnes.appendChild(persCbx);
+			} else {
+				var persCbx = document.createElement("LI");
+				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
+				persCbx.onchange = function(e){
+					var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
+					inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
+					
+					if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
+						if(!isPersonneDejaInscriteSurProduit(personne.idPersonne, e.target.getAttribute("idproduitrequis"))){
+							var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
+							produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
+						}
+					}
+					
+					willUpdateSummary();
+					
+				}
+				
+				listPersonnes.appendChild(persCbx);
+			}
+			
+			
+		};
+		
+		var quantiteLibreEacherator = function(personne){
+			var persCbx = document.createElement("LI");
+			persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
+			persCbx.onchange = function(e){
+				var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
+				inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
+				
+				if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
+					if(!isPersonneDejaInscriteSurProduit(personne.idPersonne, e.target.getAttribute("idproduitrequis"))){
+						var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
+						produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
+					}
+				}
+				
+				willUpdateSummary();
+				
+			}
+			
+			listPersonnes.appendChild(persCbx);
+		};
+		
+		
+		
+		config.famille.members.forEach(prod.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
+		
+		if(produit.conditionsLegales && produit.conditionsLegales.length > 5){
+			var condContainer = clone.querySelector("div[produitConditions]");
+			
+			condContainer.innerHTML = "<button class='startValidatingConditionsButton' onclick='startValidatingConditions("+produit.idProduit+", this.target)' notchecked idproduit='"+produit.idProduit+"'><i class='fa fa-arrow-circle-o-right' aria-hidden='true'></i> Conditions particulières</button>";				
+		}
+
+		
+		
+		pListContainer.appendChild(clone);
+    }
 	
 
 }
 
-
+var isPersonneDejaInscriteSurProduit = function(idPersonne, idProduit){
+	
+	var inscriptionsPotentielConflit = new Array();
+	
+	for (var i in config.inscription) {
+	    if (Object.prototype.hasOwnProperty.call(config.inscription, i)) {
+	    	var inscription = config.inscription[i];
+	    	if(inscription.etat >= 20 && inscription.idInscription != config.currentInscription.idInscrption ){
+	    		inscriptionsPotentielConflit.push(inscription);
+	    	}
+	    }
+	}
+	
+	var dejaInscrit = false;
+	
+	
+	inscriptionsPotentielConflit.forEach(function(i){
+		config.inscriptionPersonneProduit[i.idInscription].forEach(function(ipp){
+		//console.log(ipp, ipp.personne == idPersonne, ipp.produit == idProduit, ipp.quantite > 0);
+			if(ipp.personne == idPersonne && ipp.produit == idProduit && ipp.quantite > 0){
+				dejaInscrit = true;
+				console.log("DA");
+			}
+		});
+	});
+	
+	console.log(dejaInscrit);
+	return dejaInscrit;
+	
+}
 
 
 var modal = document.querySelector(".modal");
@@ -253,6 +435,9 @@ var acceptConditions = function(button){
 	console.log(q);
 	
 	document.querySelector(q).removeAttribute("notchecked");
+	document.querySelector(q).setAttribute("checked", "yep!");
+	document.querySelector(q).innerHTML = "<i class='fa fa-check-square-o' aria-hidden='true'></i> Conditions particulières";
+	
 	
 	if(!config.conditionsAcceptees){
 		config.conditionsAcceptees = new Array();
@@ -292,7 +477,7 @@ var findOrCreateInscriptionForProduit = function(idPersonne, idProduit){
 	
 	return candidat;
 	
-	//Et plus tard, en ayant rajouté les produits dépendants, et les règlements dépendants. 
+	
 }
 
 var willUpdateSummaryTimer = null;
@@ -324,19 +509,82 @@ var updateSummary = function(){
 		
 	});
 	
+	config.ticketParDate = new Array();
+
 	config.ticket.forEach(function(tl){
 		if(tl.quantite == 0){
 			return;
 		}
+		
+		
 		if(tl){
+			/*
+			
 			var ligne = document.createElement("DIV");
 			ligne.innerHTML = tl.libelle + " " + tl.quantite + " x " + tl.prixUnitaire + " = " + (tl.quantite * tl.prixUnitaire) + "€ + (le "+moment(tl.dateEcheance).format("DD/MM/YYYY")+")";
 			
 			targetCnt.append(ligne);
+			*/
+			
+			var kDate = moment(tl.dateEcheance).format("YYYY-MM-DD");
+			var sameTlsAtDate = config.ticketParDate.filter(grp => grp.date == kDate);
+			if(sameTlsAtDate.length > 0)
+				sameTlsAtDate = sameTlsAtDate[0];
+			else {
+				sameTlsAtDate = {date : kDate, tls : new Array()}
+				config.ticketParDate.push(sameTlsAtDate);
+			}
+			
+			sameTlsAtDate.tls.push(tl);
 		}
 		
 		
+		
 	});
+	
+	
+	//console.log(config.ticketParDate);
+	
+	
+	config.ticketParDate.sort(function(a , b){ return a.date.localeCompare(b.date)});
+	
+	var tlTemplate = document.querySelector("#ticketLigneTemplate");
+
+	
+	config.ticketParDate.forEach(function(dEtTl){
+		
+		var clone = document.importNode(tlTemplate.content, true);
+		
+		if(dEtTl.date == moment().format("YYYY-MM-DD")){
+			clone.querySelector("[date]").innerHTML = "A régler lors de votre premier atelier / activité de l'année ";
+		} else {
+			clone.querySelector("[date]").innerHTML = "A régler le "+moment(dEtTl.date).format("DD/MM/YYYY");
+		}
+		
+		var somme = 0;
+		
+		dEtTl.tls.forEach(function(tl){
+			
+			somme += tl.prixUnitaire * tl.quantite;
+			
+			var tlLigne = document.createElement("LI");
+			tlLigne.innerHTML = tl.libelle + " : " + tl.prixUnitaire * tl.quantite + "€";
+			
+			clone.querySelector("[lignesDetail]").append(tlLigne);
+			
+		});
+		
+		clone.querySelector("[sousTotal]").innerHTML = somme+"€";
+		
+		//ligne.innerHTML = tl.libelle + " " + tl.quantite + " x " + tl.prixUnitaire + " = " + (tl.quantite * tl.prixUnitaire) + "€ + (le "+moment(tl.dateEcheance).format("DD/MM/YYYY")+")";
+		
+		targetCnt.append(clone);
+		
+		
+	});
+	
+	
+	
 }
 
 
@@ -390,7 +638,7 @@ var findPersonneById = function(idPersonne){
 
 var politiqueTarifaireFixeALaSouscription = function(souscription,libelle, prixUnitaire){
 	return {
-		libelle : libelle, 
+		libelle : libelle + " pour " + findPersonneById(souscription.idPersonne).prenom, 
 		quantite : souscription.quantite, 
 		prixUnitaire : prixUnitaire, 
 		idProduit : souscription.idProduit,
@@ -437,17 +685,17 @@ var politiqueAdhesionAssociation = function(souscription, pol){
 	if(personneCourante.age > pol.ageMaxAdo){
 		//Adulte : 
 		if(premierAdulteDejaLa){
-			rep.libelle = "Adhésion à l'association pour un adulte supplémentaire";
+			rep.libelle = "Adhésion à l'association pour un adulte supplémentaire : "+personneCourante.prenom;
 			rep.prixUnitaire = pol.autresAdultes;
 		} else {
-			rep.libelle = "Adhésion à l'association pour le premier adulte";
+			rep.libelle = "Adhésion à l'association pour le premier adulte :  "+personneCourante.prenom;
 			rep.prixUnitaire = pol.premierAdulte;
 		}
 	} else if (premierAdulteDejaLa == false && personneCourante.age > pol.ageMaxEnfant) {
-		rep.libelle = "Adhésion à l'association pour un adolescent seul";
+		rep.libelle = "Adhésion à l'association pour un adolescent seul : "+personneCourante.prenom;
 		rep.prixUnitaire = pol.adoSeul;
 	} else if (premierAdulteDejaLa && personneCourante.age <= pol.ageMaxEnfant){
-		rep.libelle = "Adhésion à l'association pour un enfant";
+		rep.libelle = "Adhésion à l'association pour un enfant : "+personneCourante.prenom;
 		rep.prixUnitaire = pol.enfant;
 	} else {
 		throw "Impossible de trouver un tarif pour votre situation";
@@ -465,7 +713,7 @@ var politiqueTarifaireFixeALaSouscriptionSelonAge = function(souscription, pol){
 		throw new Exception("Je n'ai pas trouvé la personne courante en appliquant les tarifs de l'adhésion... ");
 	
 	var rep = {
-		libelle : pol.libelle, 
+		libelle : pol.libelle + " pour " + findPersonneById(souscription.idPersonne).prenom, 
 		quantite : 1, 
 		prixUnitaire : 666, 
 		idProduit : souscription.idProduit,
@@ -497,7 +745,7 @@ var politiqueTarifaireMensuelle = function(souscription, pol ){
 	do {
 		
 		var rep = {
-				libelle : pol.libelle, 
+				libelle : pol.libelle + " pour " + personneCourante.prenom,
 				quantite : 1, 
 				prixUnitaire : personneCourante.age <= pol.ageMaxTarif1 ? pol.tarif1 : pol.tarif2, 
 				idProduit : souscription.idProduit,
@@ -517,5 +765,65 @@ var politiqueTarifaireMensuelle = function(souscription, pol ){
 	return reps;
 }
 
+var submitSubscription = function(){
+	var submitButton = document.querySelector(".submitButton");
+	document.querySelectorAll("button, input").forEach(btn => btn.disabled = true);
+	submitButtonOldText = submitButton.innerHTML;
+	submitButton.innerHTML = "<i class='fa fa-refresh fa-spin fa-fw'></i> Traitement de votre inscription en cours...";
+	
+	setTimeout(function(){
+		try {
+			
+			if(!config.ticket){
+				throw "Pour les activités listés ci-dessous, cochez les personnes que vous souhaitez inscrire.";
+			}
+			
+			var manqueConditions = false;
+			document.querySelectorAll("button[notchecked]").forEach(function(btn){
+				var idProduit = btn.getAttribute("idproduit");
+				if(!manqueConditions){
+					manqueConditions = config.ticket.filter(p => (p.quantite > 0 && p.idProduit == idProduit) ).length > 0;
+				}
+				
+			});
+			if(manqueConditions){
+				throw "Veuillez accepter les conditions des activités auxquelles vous souscrivez";
+			}
+			
+			
+			
+			callServeurPostJson("index.php?saveInscription", function(reponse){
+				console.log(reponse);
+				
+				var submitButton = document.querySelector(".submitButton");
+				submitButton.innerHTML = "<i class='fa fa-thumbs-o-up' aria-hidden='true'></i> Inscription enregistrée !";
+				
+				setTimeout(function(){document.location = "index.php?show&class=Personne&idPersonne="+config.famille.members[0].idPersonne+"#inscriptions"}, 3000);
+				
+			}, function(e){
+				console.log(e); 
+				
+				var submitButton = document.querySelector(".submitButton");
+				submitButton.innerHTML = "<i class='fa fa-bomb' aria-hidden='true'></i> Et Mince... ";
+				
+								
+				alert(e);
+			
+			}, config);
+			
+		} catch (e){
+			alert(e);
+			
+			document.querySelectorAll("button, input").forEach(btn => btn.disabled = false);
+			submitButton.innerHTML = submitButtonOldText;
+		}
+		
+		
+	
+	}, 100);
+	
+	
+	
+}
 
 </script>

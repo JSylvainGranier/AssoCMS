@@ -107,6 +107,30 @@ foreach($user->getAllPersonnesInFamily($user->idFamille) as $mFamille){
 
 $page->asset("family", $familleList);
 
+
+if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
+    $itb = "";
+    
+    $inscription = new Inscription();
+    $ipp = new InscriptionPersonneProduit();
+    $produit = new Produit();
+    foreach($inscription->getInscriptionsForFamille($user->idFamille) as $iscp){
+        if($iscp->etat < 20){
+            continue;
+        }
+        
+        foreach ($ipp->getAllForInscription($iscp->idInscription) as $anIpp){
+            $pers = $anIpp->getPersonne();
+            $itb .= "<tr><td>{$anIpp->getProduit()->libelle}</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
+            //$itb .= "<tr><td>".print_r($prod, true)."</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
+        }
+        
+    }
+    
+    $page->asset("inscriptionsTableBody", $itb);
+}
+
+
 if (Roles::canAdministratePersonne ()) {
     $page->appendActionButton ( "Modifier la famille", "edit&class=Famille&idFamille=" . $user->idFamille );
     

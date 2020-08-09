@@ -52,7 +52,7 @@ class Inscription extends HasMetaData {
         $query = "select * from inscription where idFamille = ".$idFamille;
         $order = $this->getNaturalOrderColumn ();
         if (! is_null ( $order )) {
-            $query .= " order by {$order} ASC ";
+            $query .= " order by {$order} DESC ";
         }
         $objList = $this->getObjectListFromQuery ( $query );
         return $objList;
