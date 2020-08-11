@@ -19,6 +19,34 @@ td {
 	text-align: right;
 	padding-right: 15px;
 }
+
+
+.inscriptionItem p {
+	margin : 2px;
+}
+
+.inscriptionItem {
+	border : solid 1px gray;
+	padding : 5px;
+}
+
+.inscriptionTitre{
+	font-weight: bold;
+	
+}
+
+.etatInscription{
+	font-style: italic;
+	font-size: 10pt;
+}
+
+.produitLigne {
+	font-size: 10pt;
+}
+
+
+
+
 </style>
 
 <table>
@@ -64,16 +92,7 @@ td {
 	<tr id="#inscriptions">
 		<td colspan="2">
 			<h2>Inscriptions</h2>
-			<table style="width: 100%;">
-				<thead>
-					<tr>
-						<th>Element souscrit</th>
-						<th>Etat de la demande</th>
-						<th>Bénéficiare</th>
-					</tr>
-				</thead>
-				<tbody>$inscriptionsTableBody$</tbody>
-			</table>
+			$inscriptionsList$
 		</td>
 	</tr>
 </table>

@@ -26,6 +26,7 @@ $reglement = new Reglement();
 //Mettre à jour l'Inscription
 
 $inscription->etat = InscriptionEtat::$SOUMIS;
+$inscription->debut = new MyDateTime();
 //Faudrait faire quelque chose des champs debut et fin sur Inscriptiuon. 
 $inscription->save();
 
@@ -75,8 +76,15 @@ foreach ($data->ticket as $tl){
     $r->montant = $tl->quantite * $tl->prixUnitaire;
     $r->dateEcheance = MyDateTime::createFromFormat('Y-m-d H:i', substr($tl->dateEcheance, 0, 10 )." 00:00" );
     
+    if((is_null($inscription->fin) || $inscription->fin->date < $r->dateEcheance->date) 
+        && $r->dateEcheance->date != $inscription->fin->date){
+        $inscription->fin = $r->dateEcheance;
+    }
+    
     $r->save();
 }
+
+$inscription->save();
 
 if (isPhpUp ()) {
     $jsToReturn = json_encode ( $rep );

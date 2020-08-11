@@ -5,6 +5,17 @@ class InscriptionEtat {
     public static $SOUMIS = 20;
     public static $ACCEPTE = 50;
     public static $ARCHIVE = 70;
+    
+    public static function getEtatLibelle($etat){
+        switch ($etat) {
+            case InscriptionEtat::$SUPPRIME : return "Supprimée" ;
+            case InscriptionEtat::$BROUILLON : return "Brouillon enregistré" ;
+            case InscriptionEtat::$SOUMIS : return "Soumise à la validation du bureau" ;
+            case InscriptionEtat::$ACCEPTE : return "Validée" ;
+            case InscriptionEtat::$ARCHIVE : return "Archivée" ;
+        }
+        
+    }
 }
 
 class Inscription extends HasMetaData {

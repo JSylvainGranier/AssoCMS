@@ -54,4 +54,11 @@ class Reglement extends HasMetaData {
         $this->ask($q);
         
     }
+    
+    public function getAllForInscription($idInscription) {
+        $q = "select * from reglement where fkInscription = ".$idInscription;
+        return $this->getObjectListFromQuery ( $q );
+    }
+    
+   
 }

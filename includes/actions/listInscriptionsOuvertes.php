@@ -94,6 +94,7 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $jsonConfig["inscription"] = array();
       
     $inscription = new Inscription();
+    $inscription->etat = InscriptionEtat::$BROUILLON;
     $incrPersPro = new InscriptionPersonneProduit();
     
     if($editInscription > 0){

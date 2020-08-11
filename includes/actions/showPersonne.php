@@ -114,20 +114,75 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
     $inscription = new Inscription();
     $ipp = new InscriptionPersonneProduit();
     $produit = new Produit();
+    $reglement = new Reglement();
+    
+    $now = new MyDateTime();
+    
     foreach($inscription->getInscriptionsForFamille($user->idFamille) as $iscp){
-        if($iscp->etat < 20){
+        if($iscp->etat < 20 || $iscp->etat >= 70){
             continue;
         }
         
+        $liensAdmin = "";
+        
+        if (Roles::isGestionnaireCategorie ()){
+            $liensAdmin = "<p>";
+            if($iscp->etat != InscriptionEtat::$SUPPRIME){
+                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=-15&idPersonne={$user->idPersonne}'>Supprimer</a> ";
+            }
+            
+            if($iscp->etat != InscriptionEtat::$ACCEPTE){
+                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=50&idPersonne={$user->idPersonne}'>Accepter</a> ";
+            }
+            
+            if($iscp->etat != InscriptionEtat::$ARCHIVE && $iscp->etat != InscriptionEtat::$SOUMIS){
+                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=70&idPersonne={$user->idPersonne}'>Archiver</a> ";
+            }
+            
+            $liensAdmin .= "</p>";
+            
+        }
+        
+        $itb .= "<div class='inscriptionItem'> <span class='inscriptionTitre'> Inscription du {$iscp->debut->format("d/m/Y")} </span> ";
+        $itb .= "<span class='etatInscription'>".InscriptionEtat::getEtatLibelle($iscp->etat)."</span>";
+        
+        $itb .= $liensAdmin;
+        
+        /*
         foreach ($ipp->getAllForInscription($iscp->idInscription) as $anIpp){
             $pers = $anIpp->getPersonne();
-            $itb .= "<tr><td>{$anIpp->getProduit()->libelle}</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
+            $itb .= "<p class='produitLigne'>{$anIpp->getProduit()->libelle} pour {$pers->prenom} {$pers->nom}</p>";
+            //$itb .= "<tr><td>".print_r($prod, true)."</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
+        }
+        */
+        
+        $lignes = array();
+        
+        foreach ($reglement->getAllForInscription($iscp->idInscription) as $aReglement){
+            
+            
+            if(is_null( $aReglement->datePerception)){
+                $when = "à percevoir ";
+                $when .= $aReglement->dateEcheance->date > $now->date ? "le ".$aReglement->dateEcheance->format("d/m/Y") : "au prochain atelier / activité";
+                
+            } else {
+                $when = "perçu le ".$aReglement->datePerception->format("d/m/Y");
+            }
+            
+            $lignes[] = "<p class='produitLigne' date='{$aReglement->dateEcheance->format("Y-m-d")}'>{$aReglement->libelle}, {$aReglement->montant}€ {$when}</p>";
             //$itb .= "<tr><td>".print_r($prod, true)."</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
         }
         
+        sort($lignes);
+        
+        foreach ($lignes as $al){
+            $itb .= $al;
+        }
+        
+        $itb .= "</div>\n";
     }
     
-    $page->asset("inscriptionsTableBody", $itb);
+    $page->asset("inscriptionsList", $itb);
 }
 
 

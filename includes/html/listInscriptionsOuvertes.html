@@ -765,6 +765,39 @@ var politiqueTarifaireMensuelle = function(souscription, pol ){
 	return reps;
 }
 
+var politiqueTarifaireTrimestrielle = function(souscription, pol ){
+	//{jourDuMois : 30, debut : "2020-10-01", fin : "2021-07-1", libelle : "Participation Mensuelle Poterie", tarif1 : 33, ageMaxTarif1 : 16, tarif2 : 48}
+
+	var personneCourante = findPersonneById(souscription.idPersonne);
+	
+	var start = moment(pol.debut).startOf('month').add(pol.jourDuMois-1, 'day');
+	var end = moment(pol.fin);
+	
+	var reps = [];
+	
+	do {
+		
+		var rep = {
+				libelle : pol.libelle + " pour " + personneCourante.prenom,
+				quantite : 1, 
+				prixUnitaire : personneCourante.age <= pol.ageMaxTarif1 ? pol.tarif1 : pol.tarif2, 
+				idProduit : souscription.idProduit,
+				idPersonne : souscription.idPersonne,
+				dateEcheance : start.clone(), 
+				uniqueId : souscription.uniqueId
+		}
+		
+		reps.push(rep);
+		
+		start = start.add(3, 'month').startOf('month');
+		var daysToAdd = start.daysInMonth() < pol.jourDuMois ? start.daysInMonth() : pol.jourDuMois;
+		start = start.add(daysToAdd-1, 'day');
+		
+	} while (!start.isAfter(end));
+	
+	return reps;
+}
+
 var submitSubscription = function(){
 	var submitButton = document.querySelector(".submitButton");
 	document.querySelectorAll("button, input").forEach(btn => btn.disabled = true);

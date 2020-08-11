@@ -64,4 +64,24 @@ class Produit extends HasMetaData {
         $q = "select * from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 order by produitOrdre desc;";
         return $this->getObjectListFromQuery ( $q );
     }
+    
+    public function getInscritsOuPasSurCeProduit(){
+        $q = "select pers.idPersonne, pers.idFamille, pers.nom, pers.prenom, ipp.fkProduit, i.etat
+        from personne pers
+        left outer join inscription_personne_produit ipp on ipp.fkPersonne = pers.idPersonne
+        left outer join inscription i on i.idInscription = ipp.fkInscription
+        where (ipp.fkProduit = {$this->idProduit} or ipp.fkProduit is null)
+        and (i.etat in (20, 50, 70) or i.etat is null)
+        order by pers.nom, pers.prenom";
+        
+        $ret = array();
+        
+        $resultSet = $this->ask($q);
+        while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
+            $ret[] = $data;
+        }
+        
+        return $ret;
+    }
+    
 }
