@@ -95,6 +95,7 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
       
     $inscription = new Inscription();
     $inscription->etat = InscriptionEtat::$BROUILLON;
+    $inscription->debut = new MyDateTime();
     $incrPersPro = new InscriptionPersonneProduit();
     
     if($editInscription > 0){

@@ -1,5 +1,6 @@
 <?php
 $page->append ( "body", file_get_contents ( "includes/html/listReglement.html" ) );
+$page->setTitle("Règlements");
 
 $reglement = new Reglement();
 $inscription = new Inscription();

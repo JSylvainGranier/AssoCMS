@@ -54,7 +54,7 @@ foreach ( $membersDeclaration as $aColumn ) {
 			                $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue." 00:00" );
 			            } catch (Exception $p){
 			                try {
-			                    $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue." 00:00" );
+			                    $object->$fieldName = MyDateTime::createFromFormat ( "Y-m-d H:i", $fieldValue." 00:00" );
 			                } catch (Exception $p){
 			                    throw $p;
 			                }
