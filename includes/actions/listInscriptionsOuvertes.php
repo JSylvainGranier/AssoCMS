@@ -17,7 +17,7 @@ $page->setTitle ( "Inscriptions Ouvertes" );
 
 if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $page->asset("displayCreateAccountParapgraph", "block");
-    $page->asset("visibilityOnRequirementFullfilled", "hidden");
+    $page->asset("visibilityOnRequirementFullfilled", "none");
     $page->appendBody ( file_get_contents ( "includes/html/selfCreateAccountForm.html" ) );
 } else {
     $page->asset("displayCreateAccountParapgraph", "none");
@@ -76,10 +76,10 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     }
     
     if($compteJointBreak || $dateNaissanceBreak){
-        $page->asset("visibilityOnRequirementFullfilled", "hidden");
+        $page->asset("visibilityOnRequirementFullfilled", "none");
         return;
     } else {
-        $page->asset("visibilityOnRequirementFullfilled", "visible");
+        $page->asset("visibilityOnRequirementFullfilled", "block");
     }
     
     $jsonConfig["produits"] = array();
