@@ -55,10 +55,10 @@ function callServeur(url, callbackSuccess, callbackError, inGet, postData){
     };
      
     if(inGet){
-    	xhr.open("GET", url+"&random="+new Date().getTime, true);
+    	xhr.open("GET", url+"&random="+new Date().getTime(), true);
 	    xhr.send(null);
     } else {
-    	xhr.open("POST", url+"&random="+new Date().getTime);
+    	xhr.open("POST", url+"&random="+new Date().getTime());
     	xhr.setRequestHeader('Content-Type','application/x-www-form-urlencoded');
     	xhr.send(postData);
 	}
@@ -89,7 +89,7 @@ function callServeurPostJson(url, callbackSuccess, callbackError, postJson){
    		}
     };
      
-    xhr.open("POST", url+"&random="+new Date().getTime);
+    xhr.open("POST", url+"&random="+new Date().getTime());
 	xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 	xhr.send(JSON.stringify(postJson));
 }

@@ -50,6 +50,7 @@ $notAthNeedForActions = array (
 		"error",
 		"install",
 		"mailStorage",
+		"cron",
 		"sitemap",
 		"unsuscribe",
         "selfCreateAccountCheckEmail",

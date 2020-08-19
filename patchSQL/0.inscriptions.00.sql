@@ -66,6 +66,7 @@ CREATE TABLE produit (
   quantiteDisponible int(11) DEFAULT NULL,
   produitOrdre int(11) DEFAULT 0,
   fkProduitRequis int(11),
+  idCategorieAffecter int(11),
   accesDirect TINYINT(1) NOT NULL DEFAULT 0,
   quantiteLibre TINYINT(1) NOT NULL DEFAULT 0,
   conditionsLegales longtext COLLATE latin1_general_ci,

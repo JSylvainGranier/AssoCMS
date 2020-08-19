@@ -53,4 +53,9 @@ class AffiliationCategorie extends HasMetaData {
 		$sql = "delete from personne_categorie where fkPersonne = ".$pers->idPersonne;
 		AffiliationCategorie::ask($sql);
 	}
+	
+	public function findForPersonneEtCategorie($idPersonne, $idCategorie){
+		$sql = "select * from personne_categorie where fkPersonne = {$idPersonne} and fkCategorie = {$idCategorie}";
+		return $this->getObjectListFromQuery ( $sql );
+	}
 }

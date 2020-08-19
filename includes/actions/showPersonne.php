@@ -128,23 +128,25 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         if (Roles::isGestionnaireCategorie ()){
             $liensAdmin = "<p>";
             if($iscp->etat != InscriptionEtat::$SUPPRIME){
-                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=-15&idPersonne={$user->idPersonne}'>Supprimer</a> ";
+                $liensAdmin .= " <a onclick='changeInscriptionStatut({$iscp->idInscription}, -15, {$user->idPersonne}); return false;' href='#'>Supprimer</a> ";
             }
             
             if($iscp->etat != InscriptionEtat::$ACCEPTE){
-                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=50&idPersonne={$user->idPersonne}'>Accepter</a> ";
+                $liensAdmin .= " <a onclick='changeInscriptionStatut({$iscp->idInscription}, 50, {$user->idPersonne}); return false;' href='#'>Accepter</a> ";
             }
             
             if($iscp->etat != InscriptionEtat::$ARCHIVE && $iscp->etat != InscriptionEtat::$SOUMIS){
-                $liensAdmin .= " <a href='index.php?changeInscriptionStatus&idInscription={$iscp->idInscription}&status=70&idPersonne={$user->idPersonne}'>Archiver</a> ";
+                $liensAdmin .= " <a onclick='changeInscriptionStatut({$iscp->idInscription}, 70, {$user->idPersonne});  return false;' href='#'>Archiver</a> ";
             }
             
             $liensAdmin .= "</p>";
             
         }
         
+        $lienDownloadConfirm = $iscp->etat == 50 ? " <a target='_blank' href='index.php?exportInscriptionAttestation&idInscription=".$iscp->idInscription."'>Télécharger l'attestation</a>" : "";
+        
         $itb .= "<div class='inscriptionItem'> <span class='inscriptionTitre'> Inscription du {$iscp->debut->format("d/m/Y")} </span> ";
-        $itb .= "<span class='etatInscription'>".InscriptionEtat::getEtatLibelle($iscp->etat)."</span>";
+        $itb .= "<span class='etatInscription'>".InscriptionEtat::getEtatLibelle($iscp->etat).$lienDownloadConfirm."</span>";
         
         $itb .= $liensAdmin;
         
@@ -158,6 +160,9 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         
         $lignes = array();
         
+        $itb .= "<span class='titreBeforeOptions'>Options souscrites et cotisations : </span>";
+        
+        
         foreach ($reglement->getAllForInscription($iscp->idInscription) as $aReglement){
             
             
@@ -169,16 +174,19 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 $when = "perçu le ".$aReglement->datePerception->format("d/m/Y");
             }
             
-            $lignes[] = "<p class='produitLigne' date='{$aReglement->dateEcheance->format("Y-m-d")}'>{$aReglement->libelle}, {$aReglement->montant}€ {$when}</p>";
+            $lignes[] = "<li class='produitLigne' date='{$aReglement->dateEcheance->format("Y-m-d")}'>{$aReglement->libelle}, {$aReglement->montant}€ {$when}</li>";
             //$itb .= "<tr><td>".print_r($prod, true)."</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
         }
         
         sort($lignes);
         
+        $itb .= "<ul>";
+        
         foreach ($lignes as $al){
             $itb .= $al;
         }
         
+        $itb .= "</ul>";
         $itb .= "</div>\n";
     }
     

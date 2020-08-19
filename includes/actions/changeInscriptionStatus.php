@@ -1,18 +1,26 @@
 <?php 
+$page->setStandardOuputDisabled ( true );
 
-$inscription = new Inscription($ARGS["idInscription"]);
-$inscription->etat = $ARGS["status"];
-$inscription->save();
+// Takes raw data from the request
+$json = file_get_contents('php://input');
+// Converts it into a PHP object
+$data = json_decode($json);
 
 
-$page->appendNotification ( "Inscription passée à ".InscriptionEtat::getEtatLibelle($inscription->etat) );
 
-$ACTIONS [] = array (
-    "show",
-    "class" => "Personne",
-    "idPersonne" => $ARGS ["idPersonne"]
-);
+$rep = array();
 
+
+$inscription = new Inscription($data->idInscription);
+$newStatus = $data->statutCible;
+
+$rep = $inscription->changerStatut($newStatus);
+
+if (isPhpUp ()) {
+    echo json_encode ( $rep );
+} else {
+    echo json_encode ( $rep, JSON_UNESCAPED_UNICODE );
+}
 
 
 ?>

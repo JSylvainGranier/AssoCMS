@@ -2,7 +2,7 @@
 
 <style>
 table {
-	width: 500px;
+	width: 580px;
 	border-collapse: collapse;
 	display: block;
 	margin-left: auto;
@@ -21,13 +21,21 @@ td {
 }
 
 
-.inscriptionItem p {
+.inscriptionItem ul {
+	margin: 0px;
+}
+
+.inscriptionItem li {
 	margin : 2px;
 }
 
+
+
 .inscriptionItem {
-	border : solid 1px gray;
+	border : solid 2px #CDD7EF;
+	background-color : #F4F6FB;
 	padding : 5px;
+	margin : 5px;
 }
 
 .inscriptionTitre{
@@ -42,6 +50,12 @@ td {
 
 .produitLigne {
 	font-size: 10pt;
+}
+
+
+.titreBeforeOptions {
+	font-weight: bold;
+	font-size: 0.9em;
 }
 
 
@@ -97,6 +111,28 @@ td {
 	</tr>
 </table>
 
+<script>
+
+var changeInscriptionStatut = function(idInscription, statutCible, idPersonne){
+	
+	var post = {
+			idInscription : idInscription,
+			statutCible : statutCible
+	}
+	
+	callServeurPostJson("index.php?changeInscriptionStatus", function(reponse){
+		console.log(reponse);
+		
+		alert(reponse.join('\n'));
+		
+		document.location.reload();
+		
+	}, function(e){console.log(e);}, post);
+	
+
+}
+
+</script>
 
 
 

@@ -74,6 +74,253 @@ class Inscription extends HasMetaData {
         
         return $this->getOneObjectOrNullFromQuery ( $query );
     }
+    
+    public function changerStatut($newStatus){
+        
+        
+        $rep = array();
+        
+        
+        $ipp = new InscriptionPersonneProduit();
+        $ippList = $ipp->getAllForInscription($this->idInscription);
+        $produit = new Produit();
+        $apc = new AffiliationCategorie();
+        
+        $oldStatus = $this->etat;
+        
+        $this->etat = $newStatus;
+        $this->save();
+        
+        $rep[] = "⇨Inscription passée de '".InscriptionEtat::getEtatLibelle($oldStatus)."' à '".InscriptionEtat::getEtatLibelle($newStatus)."'.";
+        
+        $sendMailConfirm = false;
+        $addCategorieAffectation = false;
+        $removeCategorieAffectation = false;
+        $activateAccount = false;
+        
+        
+        if($oldStatus < InscriptionEtat::$ACCEPTE && $newStatus == InscriptionEtat::$ACCEPTE){
+            $sendMailConfirm = true;
+            $addCategorieAffectation = true;
+            $activateAccount = true;
+        } else if($oldStatus == InscriptionEtat::$ACCEPTE && $newStatus == InscriptionEtat::$ARCHIVE){
+            $removeCategorieAffectation = true;
+        }
+        
+        
+        
+        if($addCategorieAffectation){
+            
+            $nbChanges = 0;
+            
+            foreach ($ippList as $anIpp){
+                $idCateg = $anIpp->getProduit()->idCategorieAffecter;
+                
+                $actionDoneForPersonne = false;
+                
+                if($idCateg > 0){
+                    foreach ($apc->findForPersonneEtCategorie($anIpp->getPersonne()->idPersonne, $idCateg)    as    $assoc){
+                        $actionDoneForPersonne = true;
+                        $assoc->save();
+                        $nbChanges++;
+                    }
+                    
+                    if(!$actionDoneForPersonne){
+                        $affCat = new AffiliationCategorie ();
+                        $affCat->categorie = $idCateg + 0;
+                        $affCat->personne = $anIpp->getPersonne();
+                        $affCat->save ();
+                        
+                        $actionDoneForPersonne = true;
+                        $nbChanges++;
+                    }
+                }
+                
+            }
+            
+            if($nbChanges > 0)
+                $rep[] = "⇨J'ai associé les personnes concernées aux bonnes sections de l'association";
+        }
+        
+        if($removeCategorieAffectation){
+            $nbChanges = 0;
+            
+            foreach ($ippList as $anIpp){
+                $idCateg = $anIpp->getProduit()->idCategorieAffecter;
+                
+                $actionDoneForPersonne = false;
+                
+                if($idCateg > 0){
+                    foreach ($apc->findForPersonneEtCategorie($anIpp->getPersonne()->idPersonne, $idCateg)    as    $assoc){
+                        $actionDoneForPersonne = true;
+                        $assoc->delete();
+                        $nbChanges++;
+                    }
+                    
+                }
+                
+            }
+            
+            if($nbChanges > 0)
+                $rep[] = "⇨J'ai supprimé l'association entre les personnes et sections de l'association";
+        }
+        
+        if($sendMailConfirm){
+            
+            $mailTo = array();
+            
+            foreach ($ippList as $anIpp){
+                $pers = $anIpp->getPersonne();
+                
+                if(!is_null($pers->email) && strlen($pers->email) > 5){
+                    $mailTo[] = $pers->email;
+                }
+                
+            }
+            
+            $mailTo = array_unique($mailTo);
+            
+            if(count($mailTo) > 0){
+                $mailContent = $this->getConfirmationInscriptionHtml();
+                
+                $mailContent = "<p>Bonjour,</p><p>Veuillez trouver ci-dessous la confirmation de votre inscription à l'association ".SITE_TITLE."</p>" . $mailContent;
+                
+                foreach($mailTo as $email){
+                    sendSimpleMail ( "Confirmation de votre inscription " . SITE_TITLE, $mailContent, $email, true );
+                    $rep[] = "⇨J'ai envoyé un email de confirmation à {$email}";
+                }
+                
+            }
+            
+            
+        }
+        
+        if($activateAccount){
+            
+            foreach ($ippList as $anIpp){
+                $pers = $anIpp->getPersonne();
+                
+                if(!$pers->allowedToConnect){
+                    $pers->allowedToConnect = true;
+                    $pers->save();
+                    $rep[] = "⇨J'ai activé le compte utilisateur de {$pers->prenom} {$pers->nom}.";
+                }
+                
+            }
+            
+        }
+        
+        return $rep;
+    }
+    
+    
+    public function getConfirmationInscriptionHtml(){
+    	$ipp = new InscriptionPersonneProduit();
+    	$reglement = new Reglement();
+		$ippList = $ipp->getAllForInscription($this->idInscription);
+		
+		$produitList = array();
+		
+		foreach($ippList as $anIpp){
+		    $prdt = $anIpp->getProduit();
+		    
+		    $pil = array();
+		    
+		    if(array_key_exists($prdt->idProduit, $produitList)){
+		        $pil = $produitList[$prdt->idProduit];
+		    } else {
+		        $pil = array();
+		        $pil["produit"] = $prdt;
+		        $pil["personnes"] = array();
+		        if(isset($anIpp->conditionsLegales) && !is_null($anIpp->conditionsLegales) && strlen($anIpp->conditionsLegales) > 5){
+    		        $pil["conditions"] = $anIpp->conditionsLegales;
+		        }
+		        
+		    }
+		    
+		    $pil["personnes"][] = $anIpp->getPersonne();
+		    $produitList[$prdt->idProduit] = $pil;
+		}
+		
+		$h = "";
+		
+		$h .= "<p>Inscription en date du ".$this->debut->format("d/m/Y")." </p>"; 
+		
+		function cmp($a, $b)
+		{
+		    return strcmp($a["produit"]->produitOrdre, $b["produit"]->produitOrdre);
+		}
+		usort($produitList, "cmp");
+		
+		foreach($produitList as $pid => $pil){
+		    $h .= "<h2>{$pil["produit"]->libelle} </h2>";
+		    
+		    $h .= "<p class='description'>{$pil["produit"]->description}</p>";
+		    
+		    $h .= "<p class='persInscrites'><u>Personnes inscrites :</u> ";
+		    
+		    
+		    if(count($pil["personnes"]) == 2){
+		        $h .= $pil["personnes"][0]->prenom . " " . $pil["personnes"][0]->nom . " et " . $pil["personnes"][1]->prenom . " " . $pil["personnes"][1]->nom;
+		    } else {
+		        $comma = "";
+		        foreach ($pil["personnes"] as $aPers){
+		            $h .= $aPers->prenom . " " . $aPers->nom . $comma;
+		            $comma = ", ";
+		        }
+		        
+		    }
+		    
+		    $h .= "</p>";
+		    
+		    if(isset($pil["conditions"]) && !is_null($pil["conditions"]) && strlen($pil["conditions"]) > 5){
+		        $h .= "<i>Des conditions spécifiques s'appliquent à cette option. Veuillez vous reporter aux pages suivantes.</i>";
+		        
+		    }
+		    
+		}
+		
+		$h .= "<h2>Détail des cotisations</h2>";
+		$reglementList = $reglement->getAllForInscription($this->idInscription);
+		
+		function cmpReglement($a, $b)
+		{
+		    return strcmp($a->dateEcheance->format("Y-m-d").$a->libelle, $b->dateEcheance->format("Y-m-d").$a->libelle);
+		}
+		usort($reglementList, "cmpReglement");
+		
+		
+		if(count($reglementList) > 0){
+		    
+		    $h .= "<table style='width : 100%;' class='reglement'>";
+		    $h .= "<tr><th style='width : 15%;'>Date échéance</th><th style='width : 15%;'>Montant</th><th style='width : 70%;'>Motif</th></tr>";
+		    
+		    foreach($reglementList as $aReglement){
+		        
+		        $h .= "<tr><td>{$aReglement->dateEcheance->format("d/m/Y")}</td><td>{$aReglement->montant} €</td><td>{$aReglement->libelle}</td></tr>";
+		    }
+		    
+		    $h .= "</table>";
+		    $h .= "<p class='info'>Le paiement des cotisations peut se faire en espèce ou en chèque (à l'ordre de <b>Association ".SITE_TITLE."</b>)</p>";
+		} else {
+		    $h .= "<p class='info'>Cette inscription n'entraine pas de cotisation</p>";
+		}
+		
+		
+		
+		foreach($produitList as $pid => $pil){
+		    
+		    if(isset($pil["conditions"]) && !is_null($pil["conditions"]) && strlen($pil["conditions"]) > 5){
+		        $h .= "<div class='conditionsContainer'>".$pil["conditions"]."</div>";
+		    }
+		    
+		    
+		}
+		
+		
+		
+		return $h;
+    }
    
 }
 

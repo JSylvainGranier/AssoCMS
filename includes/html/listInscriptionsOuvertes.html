@@ -147,7 +147,7 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
     }
     
     .modal-scrollable-body {
-		height : 75vh;
+		height : 70vh;
     	overflow: auto;
     	padding : 5px;
     }
@@ -158,14 +158,13 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
      }
     
     .modal-foot {
-		height : 5vh;
+		height : 10vh;
 		text-align: center;
     }
     
     .modal-foot button {
     	margin-top : 15px;
     	font-size: 1.5em;
-    	
     }
     .close-button {
         float: right;
@@ -512,7 +511,7 @@ var updateSummary = function(){
 	config.ticketParDate = new Array();
 
 	config.ticket.forEach(function(tl){
-		if(tl.quantite == 0){
+		if(tl && tl.quantite == 0){
 			return;
 		}
 		
