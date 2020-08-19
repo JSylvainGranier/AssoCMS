@@ -1,0 +1,35 @@
+<IfDefine Free>
+php 1
+
+</IfDefine>
+
+
+PerlSetVar AuthFile /.htpassword
+AuthName "Bonjour :-) \nLe temps de quelques travaux, le site de VISA30 est inaccessible."
+AuthType Basic
+require valid-user
+
+Satisfy    any
+Order      deny,allow
+Deny from  all
+Allow from env=NO_AUTH
+
+ErrorDocument 403 /travaux.html
+ErrorDocument 401 /travaux.html
+
+Options -Indexes -FollowSymLinks
+
+<Files "*.php"> 
+     Order Deny,Allow 
+     Deny from All 
+</Files>
+ 
+<Files "index.php"> 
+     Order Deny,Allow 
+     Allow from All 
+</Files>
+
+<Files "travaux.html"> 
+     Order Deny,Allow 
+     Allow from All 
+</Files>
