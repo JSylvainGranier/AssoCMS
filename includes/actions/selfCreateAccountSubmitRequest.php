@@ -31,7 +31,11 @@ try {
             try {
                 MyDateTime::createFromFormat ( "d/m/Y H:i",  $aPersonne->dateNaissance->value." 00:00"  );
             } catch (Exception $e){
-                $rep["fieldsRejected"][$aPersonne->dateNaissance->uid] = "Le format de date incorrect : il doit être JJ/MM/AAAA";
+                try {
+                    MyDateTime::createFromFormat ( "Y-m-d H:i",  $aPersonne->dateNaissance->value." 00:00"  );
+                } catch (Exception $e){
+                    $rep["fieldsRejected"][$aPersonne->dateNaissance->uid] = "Le format de date incorrect : il doit être JJ/MM/AAAA";
+                }
             }
         }
         
