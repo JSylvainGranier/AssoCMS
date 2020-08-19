@@ -36,7 +36,6 @@ class Produit extends HasMetaData {
                 new SqlColumnMappgin ( "finDisponibilite", "Et le", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "quantiteDisponible", "Quantité disponible", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "produitRequis", "Produit requis pour avoir droit à ce produit", SqlColumnTypes::$INTEGER ),
-                new SqlColumnMappgin ( "idCategorieAffecter", "Id de la catégorie qu'il faut affecter à la personne en cas de validation de l'inscription.", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "produitOrdre", "Ordre du produit dans le groupe", SqlColumnTypes::$INTEGER, 0 ),
                 new SqlColumnMappgin ( "accesDirect", "Produit que l'utilisateur peut cocher lui-même", SqlColumnTypes::$BOOLEAN, false ),
                 new SqlColumnMappgin ( "quantiteLibre", "L'utilisateur peut lui-même choisir la quantité qu'il commande", SqlColumnTypes::$BOOLEAN, false )

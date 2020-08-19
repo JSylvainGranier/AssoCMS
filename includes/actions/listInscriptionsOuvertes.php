@@ -17,6 +17,7 @@ $page->setTitle ( "Inscriptions Ouvertes" );
 
 if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $page->asset("displayCreateAccountParapgraph", "block");
+    $page->asset("visibilityOnRequirementFullfilled", "hidden");
     $page->appendBody ( file_get_contents ( "includes/html/selfCreateAccountForm.html" ) );
 } else {
     $page->asset("displayCreateAccountParapgraph", "none");
