@@ -29,11 +29,11 @@ try {
             $rep["fieldsRejected"][$aPersonne->dateNaissance->uid] = "Veuillez renseigner une date de naissance correcte";
         } else {
             try {
-                MyDateTime::createFromFormat ( "d/m/Y H:i",  $aPersonne->dateNaissance->value." 00:00"  );
+                $aPersonne->dateNaissance->value = MyDateTime::createFromFormat ( "d/m/Y H:i",  $aPersonne->dateNaissance->value." 00:00"  );
             } catch (Exception $e){
                 try {
-                    MyDateTime::createFromFormat ( "Y-m-d H:i",  $aPersonne->dateNaissance->value." 00:00"  );
-                } catch (Exception $e){
+                    $aPersonne->dateNaissance->value = MyDateTime::createFromFormat ( "Y-m-d H:i",  $aPersonne->dateNaissance->value." 00:00"  );
+                } catch (Exception $v){
                     $rep["fieldsRejected"][$aPersonne->dateNaissance->uid] = "Le format de date incorrect : il doit être JJ/MM/AAAA";
                 }
             }
@@ -87,59 +87,61 @@ try {
     
     
     
+    if(!isset($rep["error"]) && sizeof($rep["fieldsRejected"] ) == 0){
+        
+        $firstPersonne = null;
+        
+        $idFamille = $pers->getNextIdFamilleAvailable();
+        
+        foreach ($data->personnes as $aPersonne){
+            
+            $persToSave = new Personne();
+            
+            $persToSave->nom = $aPersonne->nom->value;
+            $persToSave->prenom = $aPersonne->prenom->value;
+            $persToSave->dateNaissance = $aPersonne->dateNaissance->value;
+            $persToSave->email = $aPersonne->login->value;
+            $persToSave->setPassword($aPersonne->pw->value);
+            $persToSave->civilite = $aPersonne->civilite->value;
+            $persToSave->telPortable = $aPersonne->telPortable->value;
+            $persToSave->telFixe = $data->domiciliation->telFixe->value;
+            $persToSave->adrL1 = $data->domiciliation->adrL1->value;
+            $persToSave->adrL2 = $data->domiciliation->adrL2->value;
+            $persToSave->adrL3 = $data->domiciliation->adrL3->value;
+            $persToSave->adrCP = $data->domiciliation->adrCP->value;
+            $persToSave->adrVille = $data->domiciliation->adrVille->value;
+            
+            $persToSave->wantPaperRecap = false;
+            $persToSave->allowEmails = $data->allowance->allowEmails->value;
+            $persToSave->allowMembersVisitProfile = $data->allowance->allowMembersVisitProfile->value;
+            $persToSave->allowPublishMyFace = $data->allowance->allowPublishMyFace->value;
+            
+            $persToSave->allowedToConnect = false;
+            $persToSave->idFamille = $idFamille;
+            
+            $persToSave->save();
+            
+            if(is_null($firstPersonne)){
+                $firstPersonne = $persToSave;
+            }
+            
+            
+        }
+        
+        
+        $session = prepareUserSession($firstPersonne);
+        $rep["longSessionToken"] = $session->longSessionToken;
+        
+        
+        
+        
+    }
+    
 } catch (Excption $e){
     $rep["error"] = $e;
 }
 
-if(!isset($rep["error"]) && sizeof($rep["fieldsRejected"] ) == 0){
-    
-    $firstPersonne = null;
-    
-    $idFamille = $pers->getNextIdFamilleAvailable();
-    
-    foreach ($data->personnes as $aPersonne){
-        
-        $persToSave = new Personne();
-        
-        $persToSave->nom = $aPersonne->nom->value;
-        $persToSave->prenom = $aPersonne->prenom->value; 
-        $persToSave->dateNaissance = MyDateTime::createFromFormat ( "d/m/Y H:i",  $aPersonne->dateNaissance->value." 00:00"  );
-        $persToSave->email = $aPersonne->login->value;
-        $persToSave->setPassword($aPersonne->pw->value);
-        $persToSave->civilite = $aPersonne->civilite->value;
-        $persToSave->telPortable = $aPersonne->telPortable->value;
-        $persToSave->telFixe = $data->domiciliation->telFixe->value;
-        $persToSave->adrL1 = $data->domiciliation->adrL1->value;
-        $persToSave->adrL2 = $data->domiciliation->adrL2->value;
-        $persToSave->adrL3 = $data->domiciliation->adrL3->value;
-        $persToSave->adrCP = $data->domiciliation->adrCP->value;
-        $persToSave->adrVille = $data->domiciliation->adrVille->value;
-        
-        $persToSave->wantPaperRecap = false;
-        $persToSave->allowEmails = $data->allowance->allowEmails->value;
-        $persToSave->allowMembersVisitProfile = $data->allowance->allowMembersVisitProfile->value;
-        $persToSave->allowPublishMyFace = $data->allowance->allowPublishMyFace->value;
-        
-        $persToSave->allowedToConnect = false;
-        $persToSave->idFamille = $idFamille;
-        
-        $persToSave->save();
-        
-        if(is_null($firstPersonne)){
-            $firstPersonne = $persToSave;
-        }
-        
-       
-    }
-    
-      
-    $session = prepareUserSession($firstPersonne);
-    $rep["longSessionToken"] = $session->longSessionToken;
-    
- 
-    
-    
-}
+
 
 
 
