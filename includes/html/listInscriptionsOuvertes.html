@@ -212,7 +212,7 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 	
 	
 	<div id="produitListContainer">
-		
+		<i>Chargement des activités possibles...</i>
 	</div>
 	
 	<h1>Résumé de votre inscription</h1>
@@ -270,6 +270,8 @@ var renderProduitList = function(){
 	var pListContainer = document.getElementById("produitListContainer");
 	var produitTemplate = document.querySelector("#produitTemplate");
 	
+	pListContainer.innerHTML = "";
+	
 	var sortableProduits = [];
 	for (var prod in config.produits) {
 	    if (Object.prototype.hasOwnProperty.call(config.produits, prod)) {
@@ -282,29 +284,54 @@ var renderProduitList = function(){
 	    return a.produitOrdre - b.produitOrdre;
 	});
 	
-	for (var i = 0; i < sortableProduits.length; i++) {
-    	var produit = sortableProduits[i];
-    	
-    	if(!produit.accesDirect){
-			continue;
-		}
+	try {
+		for (var i = 0; i < sortableProduits.length; i++) {
+	    	var produit = sortableProduits[i];
+	    	
+	    	if(!produit.accesDirect){
+				continue;
+			}
+		
+			var clone = document.importNode(produitTemplate.content, true);
+			clone.querySelector("h2[produitTitre]").innerHTML = produit.libelle;
+			clone.querySelector("div[produitDescription]").innerHTML = produit.description;
 	
-		var clone = document.importNode(produitTemplate.content, true);
-		clone.querySelector("h2[produitTitre]").innerHTML = produit.libelle;
-		clone.querySelector("div[produitDescription]").innerHTML = produit.description;
-
-		
-		
-		var listPersonnes = clone.querySelector("ul[produitPersonnesAInscrire]");
-		listPersonnes.setAttribute("idProduit", produit.idProduit);
-		
-		var quantiteLieAPersonneEacherator = function(personne){
 			
-			if(isPersonneDejaInscriteSurProduit(personne.idPersonne, produit.idProduit)){
-				var persCbx = document.createElement("LI");
-				persCbx.innerHTML = "<i> "+personne.prenom+" "+personne.nom+" est déjà inscrit(e) à ceci.</i>";
-				listPersonnes.appendChild(persCbx);
-			} else {
+			
+			var listPersonnes = clone.querySelector("ul[produitPersonnesAInscrire]");
+			listPersonnes.setAttribute("idProduit", produit.idProduit);
+			
+			var quantiteLieAPersonneEacherator = function(personne){
+				
+				if(isPersonneDejaInscriteSurProduit(personne.idPersonne, produit.idProduit)){
+					var persCbx = document.createElement("LI");
+					persCbx.innerHTML = "<i> "+personne.prenom+" "+personne.nom+" est déjà inscrit(e) à ceci.</i>";
+					listPersonnes.appendChild(persCbx);
+				} else {
+					var persCbx = document.createElement("LI");
+					persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
+					persCbx.onchange = function(e){
+						var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
+						inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
+						
+						if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
+							if(!isPersonneDejaInscriteSurProduit(personne.idPersonne, e.target.getAttribute("idproduitrequis"))){
+								var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
+								produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
+							}
+						}
+						
+						willUpdateSummary();
+						
+					}
+					
+					listPersonnes.appendChild(persCbx);
+				}
+				
+				
+			};
+			
+			var quantiteLibreEacherator = function(personne){
 				var persCbx = document.createElement("LI");
 				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
 				persCbx.onchange = function(e){
@@ -323,46 +350,28 @@ var renderProduitList = function(){
 				}
 				
 				listPersonnes.appendChild(persCbx);
+			};
+			
+			
+			
+			config.famille.members.forEach(prod.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
+			
+			if(produit.conditionsLegales && produit.conditionsLegales.length > 5){
+				var condContainer = clone.querySelector("div[produitConditions]");
+				
+				condContainer.innerHTML = "<button class='startValidatingConditionsButton' onclick='startValidatingConditions("+produit.idProduit+", this.target)' notchecked idproduit='"+produit.idProduit+"'><i class='fa fa-arrow-circle-o-right' aria-hidden='true'></i> Conditions particulières</button>";				
 			}
+	
 			
 			
-		};
+			pListContainer.appendChild(clone);
+	    }
 		
-		var quantiteLibreEacherator = function(personne){
-			var persCbx = document.createElement("LI");
-			persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
-			persCbx.onchange = function(e){
-				var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduit")));
-				inscriptionEtInscriptionProduit.quantite = e.target.checked ? 1 : 0;
-				
-				if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
-					if(!isPersonneDejaInscriteSurProduit(personne.idPersonne, e.target.getAttribute("idproduitrequis"))){
-						var produitRequisSouscription = findOrCreateInscriptionForProduit(e.target.value, parseInt(e.target.getAttribute("idproduitrequis")));
-						produitRequisSouscription.quantite += e.target.checked ? 1 : -1;
-					}
-				}
-				
-				willUpdateSummary();
-				
-			}
-			
-			listPersonnes.appendChild(persCbx);
-		};
-		
-		
-		
-		config.famille.members.forEach(prod.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
-		
-		if(produit.conditionsLegales && produit.conditionsLegales.length > 5){
-			var condContainer = clone.querySelector("div[produitConditions]");
-			
-			condContainer.innerHTML = "<button class='startValidatingConditionsButton' onclick='startValidatingConditions("+produit.idProduit+", this.target)' notchecked idproduit='"+produit.idProduit+"'><i class='fa fa-arrow-circle-o-right' aria-hidden='true'></i> Conditions particulières</button>";				
-		}
-
-		
-		
-		pListContainer.appendChild(clone);
-    }
+	} catch (e) {
+		console.log(e);
+		pListContainer.innerHTML = "Et mince... une erreur c'est produite ";
+	}
+	
 	
 
 }
