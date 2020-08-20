@@ -839,7 +839,14 @@ var submitSubscription = function(){
 				var submitButton = document.querySelector(".submitButton");
 				submitButton.innerHTML = "<i class='fa fa-thumbs-o-up' aria-hidden='true'></i> Inscription enregistrée !";
 				
-				setTimeout(function(){document.location = "index.php?show&class=Personne&idPersonne="+config.famille.members[0].idPersonne+"#inscriptions"}, 3000);
+				if(reponse.emailConfirm && reponse.emailConfirm != "aucun"){
+					document.querySelector("article").innerHTML = "<h1>Inscriptions en ligne</h1><h2><i style='color : green;' class='fa fa-check-circle' aria-hidden='true'></i>&nbsp;&nbsp;Votre inscription est terminée !</h2><p>D'ici quelques instants, vous allez recevoir un email à l'adresse '"+reponse.emailConfirm+"', signe que votre inscription a bien fonctionné.</p><p>Merci d'avoir utilisé l'inscription en ligne, et à bientôt <i class='fa fa-smile-o' aria-hidden='true'></i></p>"
+				} else {
+					setTimeout(function(){document.location = "index.php?show&class=Personne&idPersonne="+config.famille.members[0].idPersonne+"#inscriptions"}, 3000);
+				}
+				
+					
+				
 				
 			}, function(e){
 				console.log(e); 

@@ -2,7 +2,7 @@
 
 $page->setStandardOuputDisabled ( true );
 
-$pers = new Personne();
+$pers = new Personne(thisUserId());
 $prod = new Produit();
 
 
@@ -85,6 +85,20 @@ foreach ($data->ticket as $tl){
 }
 
 $inscription->save();
+
+
+if( ! Roles::isGestionnaireGlobal()){
+    $messageConfirm = "<p>Bonjour, </p>";
+    $messageConfirm .= "<p>Nous avons bien enregistré votre inscription sur le site de ".SITE_TITLE."</p>";
+    $messageConfirm .= "<p>Dès qu'un membre du bureau de l'association aura confirmé votre demande, vous recevrez second message de confirmation avec tous les détails de votre souscription.</p>";
+    $messageConfirm .= "<p>Bonne journée.</p>";
+    
+    sendSimpleMail ( "Prise en compte de votre inscription à " . SITE_TITLE, $messageConfirm, $firstPersonne->email, true );
+    
+    $rep["emailConfirm"] = $pers->email;
+} else {
+    $rep["emailConfirm"] = "aucun";
+}
 
 if (isPhpUp ()) {
     $jsToReturn = json_encode ( $rep );

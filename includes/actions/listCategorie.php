@@ -7,11 +7,11 @@ $cat = new Categorie();
 $s = "";
 
 foreach ($cat->getAll() as $categorie){
-    $s.= "<a href='index.php?list&class=Page&categorie=".$categorie->idCategorie."'>";
-    $s.= "<li class='catItem'>";
+
+    $s.= "<div class='catItem' onclick=\"openLink('index.php?list&class=Page&categorie=".$categorie->idCategorie."');\"'>";
     $s.= "<p class='catTitle'><i class='".$categorie->iconClass."'></i>&nbsp;".$categorie->nom."</p>";
     $s.= "<p class='txtPresentation'>".$categorie->textePresentation."</p>";
-    $s.= "</li></a>";
+    $s.= "</div>";
     
 }
 $page->asset ( "catList", $s );

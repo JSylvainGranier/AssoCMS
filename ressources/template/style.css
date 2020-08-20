@@ -152,3 +152,7 @@ a > div > img{
 	text-decoration: none !important;
 }
 
+
+.randoFa:before {
+	content : '🥾';
+}

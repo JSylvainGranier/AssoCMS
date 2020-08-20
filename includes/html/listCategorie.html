@@ -10,14 +10,23 @@
 	}
 	
 	.catItem {
-	flex-grow : 0;
-		width : 35vw;
+	
+		background-color : #dee9f1;
+		
+		flex-grow : 0;
+		width : 45%;
 		height : 20vh;
 		border : solid 2px #333;
 		overflow: hidden;
 		margin : 10px;
 		padding : 10px;
+		cursor : pointer;
 		
+	}
+	
+	.catItem:hover {
+		outline: solid 5px #fca351;
+  		transition: outline 0.1s linear;
 	}
 	
 	.catTitle {
@@ -35,9 +44,14 @@
 
 </style>
 
-<ul class="catCollection">
+<div class="catCollection">
 	$catList$
-</ul>
+</div>
 
+<script>
+var openLink = function(url){
+	document.location = url;
+}
+</script>
 
 $saisonBar$
