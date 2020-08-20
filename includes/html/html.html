@@ -148,22 +148,7 @@ html { $backgroundImage$
 	$php_errors$
 
 
-	<script>
-		var mailPoolingEffort = function(){
-			var callBackFnc = function(){};
-			callServeur('$EMAIL_WORKER_URL$', 
-					callBackFnc, 
-					callBackFnc, 
-					true 
-					)
-		}
-		try{
-			setInterval(mailPoolingEffort, 60000);
-			mailPoolingEffort();
-		} catch (e) { }
-		
-	 
-	</script>
+	
 	
 
 </body>
