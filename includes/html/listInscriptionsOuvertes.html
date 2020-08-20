@@ -636,9 +636,13 @@ var errorSurPolitiqueTarifaire = function(idProduit){
 
 var config = $config$;
 
-initPolitiqueTarifaireFunction();
+if($runJsInit$){
+	initPolitiqueTarifaireFunction();
 
-renderProduitList();
+	renderProduitList();
+}
+
+
 
 var findPersonneById = function(idPersonne){
 	return config.famille.members.filter(p => p.idPersonne == idPersonne)[0];

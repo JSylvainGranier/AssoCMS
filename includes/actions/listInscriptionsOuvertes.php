@@ -19,6 +19,11 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     $page->asset("displayCreateAccountParapgraph", "block");
     $page->asset("visibilityOnRequirementFullfilled", "none");
     $page->appendBody ( file_get_contents ( "includes/html/selfCreateAccountForm.html" ) );
+    
+    $page->asset("config", "{}" );
+    $page->asset("runJsInit", "false");
+    
+    
 } else {
     $page->asset("displayCreateAccountParapgraph", "none");
     
@@ -61,7 +66,12 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     forEach($jsonConfig["famille"]["members"] as $personne){
         if(is_null($personne->dateNaissance) ){
             $dateNaissanceBreak = true;
-            $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+            if(thisUserId() == $personne->idPersonne){
+                $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, vous devez renseigner votre date de naissance dans votre compte. <a href='index.php?edit&class=Personne'>Modifier mon compte</a></p>");
+                
+            } else {
+                $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+            }
         } else {
             $personne->dateNaissance = $personne->dateNaissance->format("Y-m-d");
         }
@@ -121,6 +131,8 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     } else {
         $page->asset("config", json_encode ( $jsonConfig, JSON_UNESCAPED_UNICODE ) );
     }
+    
+    $page->asset("runJsInit", "true");
     
     
 }

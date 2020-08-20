@@ -54,7 +54,8 @@ $notAthNeedForActions = array (
 		"sitemap",
 		"unsuscribe",
         "selfCreateAccountCheckEmail",
-        "selfCreateAccountSubmitRequest"
+        "selfCreateAccountSubmitRequest",
+    
 );
 
 $maxLoop = 5;
@@ -97,7 +98,6 @@ try {
 	
 	do {
 		
-	    $isIdentifiedUser = Roles::isMembre () || Roles::isInvite ()  ;
 		$ARGS = array_shift ( $ACTIONS );
 				
 		if (is_null ( $ARGS )) {
@@ -109,6 +109,8 @@ try {
 		
 		
 		$urlKeys = array_keys ( $ARGS );
+		
+		$isIdentifiedUser = Roles::isMembre () || (Roles::isInvite() && $urlKeys [0] == "saveInscription") ;
 		
 		if (array_key_exists ( 0, $urlKeys )) {
 			// On vérifie que le visiteur est bien connecté en fonction de ce qu'il veut faire.
