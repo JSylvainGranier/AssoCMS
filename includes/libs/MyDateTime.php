@@ -117,7 +117,7 @@ class MyDateTime {
 		public static function createFromFormat ( $format , $time){
 			$a = my_date_parse_from_format($format, $time);
 			if(array_key_exists("error_count", $a) && $a["error_count"] >0){
-				throw new Exception("La date {$time} n'a pas pue être intermprêtée avec le format {$format} : ".print_r($a, true));
+				throw new Exception("La date '{$time}' n'a pas pue être intermprêtée avec le format {$format}.");
 			}
 			$dateTime = new MyDateTime();
 			$dateTime->date = strtotime("{$a["year"]}-{$a["month"]}-{$a["day"]} {$a["hour"]}:{$a["minute"]}:00");

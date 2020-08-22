@@ -66,12 +66,24 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     forEach($jsonConfig["famille"]["members"] as $personne){
         if(is_null($personne->dateNaissance) ){
             $dateNaissanceBreak = true;
+            
+            $page->reset();
+            
             if(thisUserId() == $personne->idPersonne){
-                $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, vous devez renseigner votre date de naissance dans votre compte. <a href='index.php?edit&class=Personne'>Modifier mon compte</a></p>");
-                
+                $page->appendNotification ("Avant de poursuivre, vous devez renseigner votre date de naissance dans votre compte." );
             } else {
-                $page->append("requirementNoFullFilled", "<p>Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance. <a href='index.php?edit&class=Personne&idPersonne={$personne->idPersonne}'>Modifier</a></p>");
+                $page->appendNotification ("Avant de poursuivre, le profil de {$personne->prenom} {$personne->nom} doit être complété avec sa date de naissance." );
             }
+            
+            $redirection = array (
+                "edit",
+                "class" => "Personne",
+                "idPersonne" => $personne->idPersonne
+            );
+            $ACTIONS [] = $redirection;
+            
+            break;
+            
         } else {
             $personne->dateNaissance = $personne->dateNaissance->format("Y-m-d");
         }
@@ -81,6 +93,8 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
             $page->append("requirementNoFullFilled", "<p>Vous utilisez un compte joint pour vous connecter sur le site de VISA30. <br />Le système des inscriptions en ligne ne prends pas en charge ce cas.  <br />Adressez nous un email en nous indiquant une adresse électronique pour chaque personne, et nous résoudrons le problème. <br />Désolé pour ce contre-temps :-( </p>");
             
         }
+        
+        
         
         
     }

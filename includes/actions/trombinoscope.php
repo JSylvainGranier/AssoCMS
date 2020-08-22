@@ -30,6 +30,54 @@ if (array_key_exists ( "printable", $ARGS )) {
 	
 	$page->appendActionButton ( "Version normale", "trombinoscope" );
 } else {
+    
+    $byFamily = array();
+    
+    foreach ($pers->getAll () as $personne){
+        if(array_key_exists($personne->idFamille, $byFamily)){
+            $byFamily[$personne->idFamille][] = $personne;
+        } else {
+            $byFamily[$personne->idFamille] = array();
+            $byFamily[$personne->idFamille][] = $personne;
+        }
+    }
+    
+       
+    foreach ( $byFamily as $idFamille => $membres ) {
+        $mem = "";
+        $imageUrl = null;
+        
+        $comma = "";
+        
+        foreach($membres as $personne){
+            $showProfileUrl = SITE_ROOT . "index.php?show&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
+            
+            $mem .= $comma."<a class='trombiLink' href='{$showProfileUrl}'>{$personne->nom} {$personne->prenom}</a>";
+            
+            $comma = ", <br/>";
+            
+            if(!$personne->allowedToConnect){
+                continue;
+            }
+            
+            if (is_null ( $personne->trombiFile ) || ! file_exists ( "documents/trombi/" . $personne->trombiFile )) {
+                $imageUrl = "";
+            } else {
+                $imageUrl = $personne->getTrombiFileUrlPath ();
+            }
+            
+        }
+        
+        $html = "<div class='trombiCell'><table>
+			<tr><td><a href='{$showProfileUrl}'><img class='trombiImage' src='ressources/template/nobody.png' data-src='$imageUrl' /></a></td></tr>
+			<tr><td style='height : 1em;'>{$mem}</td></tr>
+			</table></div>";
+        //$html = "<div class='trombiCell'><a href='{$showProfileUrl}'><img class='trombiImage' src='ressources/template/nobody.png' data-src='$imageUrl' /></a><a class='trombiLink' href='{$showProfileUrl}'>{$personne->nom} {$personne->prenom}</a></div>";
+        
+        $page->append ( "trombiContainer", $html );
+    }
+    
+    /*
 	foreach ( $pers->getAll () as $personne ) {
 		
 	    if(!$personne->allowedToConnect){
@@ -53,6 +101,7 @@ if (array_key_exists ( "printable", $ARGS )) {
 		
 		$page->append ( "trombiContainer", $html );
 	}
+	*/
 	
 	$page->appendActionButton ( "Version imprimable", "trombinoscope&printable", false, false );
 }

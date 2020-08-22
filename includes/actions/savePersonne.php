@@ -15,7 +15,18 @@ if(strlen($email) > 0){
 }
 
 if(!$stopSave){
-	include 'includes/actions/saveGeneric.php';
+    try {
+    	include 'includes/actions/saveGeneric.php';
+    } catch (Exception $e){
+        $page->appendNotification ( "Erreur lors de l'enregistrement : ".$e->getMessage() );
+        
+        $redirection = array (
+            "edit",
+            "class" => "Personne",
+            "idPersonne" => $ARGS ["idPersonne"]
+        );
+        $ACTIONS [] = $redirection;
+    }
 } else {
 	$page->appendNotification ( "Les changements n'ont pas été enregistrés à cause du problème de format de l'adresse email." );
 	

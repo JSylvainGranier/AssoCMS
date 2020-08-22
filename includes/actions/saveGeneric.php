@@ -44,27 +44,33 @@ foreach ( $membersDeclaration as $aColumn ) {
 			} else if ($aColumn->sqlType == SqlColumnTypes::$INTEGER && ! is_null ( $fieldValue )) {
 				$object->$fieldName = $fieldValue + 0;
 			} else if ($aColumn->sqlType == SqlColumnTypes::$DATETIME && ! is_null ( $fieldValue )) {
-			    try {
-				    $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue );
-			    } catch (Exception $p){
+			    $fieldValue = strlen ( $fieldValue ) > 0 ? $fieldValue : null;
+			    if(!is_null($fieldValue)){
 			        try {
-			            $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue );
+			            $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue );
 			        } catch (Exception $p){
 			            try {
-			                $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue." 00:00" );
+			                $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue );
 			            } catch (Exception $p){
-    		                try {
-        		                $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue." 00:00" );
-        		            } catch (Exception $p){
-        		                try {
-        		                    $object->$fieldName = MyDateTime::createFromFormat ( "Y-m-d H:i", $fieldValue." 00:00" );
-        		                } catch (Exception $p){
-        		                    throw $p;
-        		                }
-        		            }
+			                try {
+			                    $object->$fieldName = MyDateTime::createFromFormat ( "d/m/Y H:i", $fieldValue." 00:00" );
+			                } catch (Exception $p){
+			                    try {
+			                        $object->$fieldName = MyDateTime::createFromFormat ( "d/m/y H:i", $fieldValue." 00:00" );
+			                    } catch (Exception $p){
+			                        try {
+			                            $object->$fieldName = MyDateTime::createFromFormat ( "Y-m-d H:i", $fieldValue." 00:00" );
+			                        } catch (Exception $p){
+			                            throw $p;
+			                        }
+			                    }
+			                }
 			            }
 			        }
+			    } else {
+			        $object->$fieldName = null;
 			    }
+			    
 			} else if ($aColumn->sqlType == SqlColumnTypes::$BOOLEAN) {
 				if ($fieldValue == "1") {
 					$object->$fieldName = true;
