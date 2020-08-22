@@ -1,10 +1,12 @@
 <IfDefine Free>
 php 1
 
+PerlSetVar AuthFile /.htpassword
+
 </IfDefine>
 
 
-PerlSetVar AuthFile /.htpassword
+
 AuthName "Bonjour :-) \nLe temps de quelques travaux, le site de VISA30 est inaccessible."
 AuthType Basic
 require valid-user
