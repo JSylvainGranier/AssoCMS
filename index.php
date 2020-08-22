@@ -48,6 +48,7 @@ $notAthNeedForActions = array (
 		"login",
 		"exception",
 		"error",
+        "cron",
 		"install",
 		"mailStorage",
 		"cron",

@@ -69,6 +69,14 @@ class Inscription extends HasMetaData {
         return $objList;
     }
     
+    public function clearOldBrouillons(){
+        $wc = "etat = 10 and now() > DATE_ADD(lastUpdateOn, INTERVAL 5 DAY)";
+        $query = "delete from inscription_personne_produit where fkInscription in (select idInscription from inscription where {$wc});";
+        $this->ask($query);
+        $query = "delete from inscription where {$wc};";
+        $this->ask($query);
+    }
+    
     public function findRecentInscriptionForFamille($idFamille){
         $query = "select * from inscription where idFamille = {$idFamille} and etat = 10 and lastUpdateOn >= DATE_SUB(NOW(), INTERVAL 30 MINUTE) order by lastUpdateOn DESC limit 1";
         
