@@ -504,6 +504,8 @@ var updateSummary = function(){
 	var targetCnt = document.getElementById("summaryContainer");
 	targetCnt.innerHTML = "";
 	
+	//Appliquer les politiques tarifaires individuellement
+	
 	config.inscriptionPersonneProduit[config.currentInscription.idInscription].forEach(function(souscription){
 		
 		if(souscription.quantite > 0 && config.produits[souscription.idProduit].politiqueTarifaire){
@@ -518,6 +520,9 @@ var updateSummary = function(){
 		}
 		
 	});
+	
+	
+	
 	
 	config.ticketParDate = new Array();
 
@@ -558,6 +563,101 @@ var updateSummary = function(){
 	
 	config.ticketParDate.sort(function(a , b){ return a.date.localeCompare(b.date)});
 	
+	
+
+	//Calculer la réduction sur les isCotisationMenuelle
+	config.ticketParDate.forEach(function(dEtTl){
+		
+		config.premierTarifPleinFait = false;
+		
+		//Remettre à zero les liste sur les produits 
+		
+		for (var i in config.produits) {
+		    if (Object.prototype.hasOwnProperty.call(config.produits, i)) {
+		    	var prod = config.produits[i];
+		    	prod.prixSurCeMois = new Array();
+		    	prod.prixModifies = new Array();
+		    }
+		}
+		
+		
+		dEtTl.tls.forEach(function (tl){
+			if(tl.isCotisationReguliere){
+				config.produits[tl.idProduit].prixSurCeMois.push({tlId : tl.uniqueId, prixUnitaire : tl.prixUnitaire});
+			}
+		});
+		
+    	var precedantPrixRemise = 0;
+    	var nbReductionCascade = 1;
+		for (var i in config.produits) {
+		    if (Object.prototype.hasOwnProperty.call(config.produits, i)) {
+		    	var prod = config.produits[i];
+		    	prod.prixSurCeMois.sort(function(a, b) {
+		    	    return a.prixUnitaire - b.prixUnitaire;
+		    	});
+		    	
+		    	if(prod.prixSurCeMois.length == 0)
+		    		continue;
+		    	
+		    	var start = 0 ;
+		    	
+		    	if(!config.premierTarifPleinFait){
+		    		start = 1;
+		    		config.premierTarifPleinFait = true;
+		    		prod.prixModifies.push({tlId : prod.prixSurCeMois[0].tlId, prixRemise : prod.prixSurCeMois[0].prixUnitaire});
+		    		precedantPrixRemise = prod.prixSurCeMois[0].prixUnitaire;
+		    	} 
+		    	
+		    	
+				prod.prixSurCeMois.slice(start).forEach(function(o){
+					var loopPrct = 0;
+					var cePrixRemise = o.prixUnitaire;
+					do {
+						cePrixRemise = cePrixRemise - (0.2*cePrixRemise);
+						loopPrct++;
+					} while(loopPrct < nbReductionCascade)
+					
+					nbReductionCascade++;
+					
+					precedantPrixRemise = cePrixRemise;
+					prod.prixModifies.push({tlId : o.tlId, prixRemise : cePrixRemise});
+				});
+		    	
+		    }
+		}
+				
+		
+		
+		
+		//console.log(prixModifies);
+		
+		dEtTl.tls.forEach(function(tl, index){
+			
+			console.log(config.produits[tl.idProduit].prixModifies);
+			
+			var bonneRemise = null;
+			
+			config.produits[tl.idProduit].prixModifies.forEach(function(r){
+				if(r.tlId == tl.uniqueId){
+					bonneRemise = r;
+				}
+			})
+			
+			if(bonneRemise){
+				tl.remise = Math.round(bonneRemise.prixRemise);
+			}
+			
+			
+		});
+		
+	});
+	
+	
+	
+	
+	
+	
+	
 	var tlTemplate = document.querySelector("#ticketLigneTemplate");
 
 	
@@ -575,10 +675,19 @@ var updateSummary = function(){
 		
 		dEtTl.tls.forEach(function(tl){
 			
-			somme += tl.prixUnitaire * tl.quantite;
+			
 			
 			var tlLigne = document.createElement("LI");
-			tlLigne.innerHTML = tl.libelle + " : " + tl.prixUnitaire * tl.quantite + "€";
+			var montant = tl.prixUnitaire * tl.quantite; 
+			if(tl.remise && tl.remise != tl.prixUnitaire){
+				var delta = tl.prixUnitaire - tl.remise;
+				somme += tl.remise;
+				montant = tl.remise + "€ (remise de "+delta+"€)";
+			} else {
+				somme += montant;
+				montant += "€";
+			}
+			tlLigne.innerHTML = tl.libelle + " : " + montant;
 			
 			clone.querySelector("[lignesDetail]").append(tlLigne);
 			
@@ -765,7 +874,8 @@ var politiqueTarifaireMensuelle = function(souscription, pol ){
 				idProduit : souscription.idProduit,
 				idPersonne : souscription.idPersonne,
 				dateEcheance : start.clone(), 
-				uniqueId : souscription.uniqueId
+				uniqueId : souscription.uniqueId,
+				isCotisationReguliere : true
 		}
 		
 		reps.push(rep);
@@ -798,7 +908,8 @@ var politiqueTarifaireTrimestrielle = function(souscription, pol ){
 				idProduit : souscription.idProduit,
 				idPersonne : souscription.idPersonne,
 				dateEcheance : start.clone(), 
-				uniqueId : souscription.uniqueId
+				uniqueId : souscription.uniqueId,
+				isCotisationReguliere : true
 		}
 		
 		reps.push(rep);

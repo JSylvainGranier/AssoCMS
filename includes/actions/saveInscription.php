@@ -74,6 +74,9 @@ foreach ($data->ticket as $tl){
     $r->inscription = $inscription;
     $r->libelle = $tl->libelle;
     $r->montant = $tl->quantite * $tl->prixUnitaire;
+    if(isset($tl->remise)){
+        $r->montant = $tl->remise;
+    }
     $r->dateEcheance = MyDateTime::createFromFormat('Y-m-d H:i', substr($tl->dateEcheance, 0, 10 )." 00:00" );
     
     if((is_null($inscription->fin) || $inscription->fin->date < $r->dateEcheance->date) 
