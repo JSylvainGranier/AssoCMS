@@ -122,11 +122,20 @@ class Inscription extends HasMetaData {
             $nbChanges = 0;
             
             foreach ($ippList as $anIpp){
-                $idCateg = $anIpp->getProduit()->idCategorieAffecter;
                 
                 $actionDoneForPersonne = false;
                 
-                if($idCateg > 0){
+                $idCateg = $anIpp->getProduit()->idCategorieAffecter;
+                
+                if($idCateg == -55){
+                    $pers = $anIpp->getPersonne();
+                    
+                    if( ! $pers->wantPaperRecap){
+                        $pers->wantPaperRecap = true;
+                        $pers->save();
+                        $rep[] = "⇨J'ai activé la calendrier papier pour {$pers->prenom} {$pers->nom}.";
+                    }
+                } else if($idCateg > 0){
                     foreach ($apc->findForPersonneEtCategorie($anIpp->getPersonne()->idPersonne, $idCateg)    as    $assoc){
                         $actionDoneForPersonne = true;
                         $assoc->save();
@@ -216,7 +225,18 @@ class Inscription extends HasMetaData {
                 
             }
             
+            
+        } else {
+            foreach ($ippList as $anIpp){
+                $pers = $anIpp->getPersonne();
+                $pers->wantPaperRecap = false;
+                $pers->save();
+            }
         }
+        
+            
+        
+            
         
         return $rep;
     }

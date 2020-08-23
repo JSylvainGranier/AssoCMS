@@ -167,6 +167,11 @@ class SmartPage {
 		    'classicon' => 'fa fa-users'
 		);
 		
+		$menuItems[] = array('url' => '$site_root$index.php?contact',
+		    'text' => 'Contact',
+		    'classicon' => 'fa fa-envelope-o'
+		);
+		
 		
 		
 		

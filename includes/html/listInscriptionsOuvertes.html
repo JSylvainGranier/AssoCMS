@@ -30,10 +30,12 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 	button {
 		cursor: pointer;
 		font-size: 1.2em;
+		box-shadow: 4px 4px;
 	}
 	
 	button[disabled] {
 		cursor: not-allowed;
+		box-shadow: none;
 	}
 
 	button[notchecked] {
@@ -520,7 +522,7 @@ var updateSummary = function(){
 	config.ticketParDate = new Array();
 
 	config.ticket.forEach(function(tl){
-		if(tl && tl.quantite == 0){
+		if(tl && ( tl.quantite == 0 || tl.prixUnitaire == 0) ){
 			return;
 		}
 		
@@ -808,6 +810,27 @@ var politiqueTarifaireTrimestrielle = function(souscription, pol ){
 	} while (!start.isAfter(end));
 	
 	return reps;
+}
+
+var politiqueTarifaireGratuite = function(souscription, pol ){
+	//libelle : "Participation Mensuelle Poterie"}
+
+	var personneCourante = findPersonneById(souscription.idPersonne);
+	
+	if(personneCourante == null)
+		throw new Exception("Je n'ai pas trouvé la personne courante en appliquant les tarifs de l'adhésion... ");
+	
+	var rep = {
+		libelle : pol.libelle + " pour " + findPersonneById(souscription.idPersonne).prenom, 
+		quantite : 1, 
+		prixUnitaire : 0, 
+		idProduit : souscription.idProduit,
+		idPersonne : souscription.idPersonne,
+		dateEcheance : moment().format("YYYY-MM-DD"), 
+		uniqueId : souscription.uniqueId
+	}
+	
+	return rep;
 }
 
 var submitSubscription = function(){

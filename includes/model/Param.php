@@ -15,6 +15,8 @@ final class PKeys {
 	public static $MAIL_MAX_TENTATIVES;
 	public static $MAIL_RAPPEL_SET_PASSWORD;
 	public static $PROPOSITION_ALERT_LAST_EXEC;
+	public static $CONTACT_EMAIL;
+	public static $CONTACT_TEXT;
 }
 PKeys::$HOME_TITLE = new ParamKey ( "HOME_TITLE" );
 PKeys::$HOME_TEXT = new ParamKey ( "HOME_TEXT" );
@@ -25,6 +27,8 @@ PKeys::$MAIL_SPOOL_RUNNING = new ParamKey ( "MAIL_SPOOL_RUNNING" );
 PKeys::$MAIL_MAX_TENTATIVES = new ParamKey ( "MAIL_MAX_TENTATIVES" );
 PKeys::$MAIL_RAPPEL_SET_PASSWORD = new ParamKey ( "MAIL_RAPPEL_SET_PASSWORD" );
 PKeys::$PROPOSITION_ALERT_LAST_EXEC = new ParamKey ( "PROPOSITION_ALERT_LAST_EXEC" );
+PKeys::$CONTACT_EMAIL = new ParamKey ( "CONTACT_EMAIL" );
+PKeys::$CONTACT_TEXT = new ParamKey ( "CONTACT_TEXT" );
 class Param extends Persistant {
 	public $pKey;
 	public $pValue;

@@ -49,6 +49,7 @@ $notAthNeedForActions = array (
 		"exception",
 		"error",
         "cron",
+        "contact",
 		"install",
 		"mailStorage",
 		"cron",

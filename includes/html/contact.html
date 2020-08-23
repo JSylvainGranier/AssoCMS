@@ -1,0 +1,101 @@
+<h1>Contact</h1>
+
+<style>
+	.sideContainer {
+		display: flex;
+		align-items: stretch;
+		flex-wrap: wrap;
+	}
+	
+	.sidePart {
+		margin : 2px;
+		padding : 1em;
+		flex-grow: 1;
+		min-width: 20em;
+	}
+	
+	.separator {
+		background-color: gray;
+	}
+	
+	.sideContainer textarea, .sideContainer input {
+		width: 93%;
+	}
+	
+	#sbtn {
+		cursor: pointer;
+		font-size: 1.2em;
+		font-size: inherit;
+		border : solid 1px #2ED171;
+		background-color: #58DA8E;
+		color : dark; 
+		font-weight: normal;
+		padding : 1em;
+		font-size: 1.3em;
+		box-shadow: 4px 4px;
+	}
+	
+	
+
+	#sbtn[disabled] {
+		cursor: not-allowed;
+		box-shadow: none;
+	}
+
+	
+	
+	
+
+</style>
+
+<div class="sideContainer">
+
+
+	<div class="sidePart">
+		$CONTACT_MESSAGE$
+	</div>
+	
+	<div class="separator" >&nbsp;</div>
+	
+	<div class="sidePart">
+		<h2>Nous contacter par email : </h2>
+		<form method="post" >
+		
+			<p><label> Votre adresse email : <br /><input type="email" value="$email$" name="email" /> </label></p>
+			<p>
+				<label> Votre message : </label><br />
+				<textarea rows="15" name="message"></textarea>
+			</p>
+			
+			<p>Afin de nous protéger d'une invation de robots, voyons voir dans quel clan vous êtes :</p>
+			<div id="g-recaptcha" ></div>
+
+			<button type="submit" disabled id="sbtn">Envoyer</button>
+			
+		</form>
+	</div>
+
+</div>
+
+<script type="text/javascript">
+
+var maybeARobot = true;
+
+var onloadRecaptchaCallback = function(){
+	grecaptcha.render('g-recaptcha', {
+        'sitekey' : '6LcJTbkZAAAAAKfQlRWM-1WU1Bx2Uv9-cRzFRw-P',
+        'callback' : function(e){
+        	if(e && e.length > 20){
+        		maybeARobot = false;
+        		document.getElementById("sbtn").disabled = false;
+        	}
+        },
+        'expired-callback' : function(e){
+        	maybeARobot = true;
+        	document.getElementById("sbtn").disabled = true;
+        },
+      });
+}
+
+</script>
+<script src="https://www.google.com/recaptcha/api.js?onload=onloadRecaptchaCallback&render=explicit"  ></script>

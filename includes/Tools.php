@@ -187,7 +187,12 @@ function securePost(){
 			$allowedForLogin = "login|visiblepw|pw";
 			$allowedForLoginAndRedirection = "login|visiblepw|pw|requestBeforeLogin";
 			$allowedForPostEndOfRegeneration = "reactivateAccount|idPersonne|visiblenpwa|npwa|visiblenpwb|npwb|mailText";
-			if(!array_key_exists_r($allowedForLogin, $_POST) && !array_key_exists_r($allowedForLoginAndRedirection, $_POST) && !array_key_exists_r($allowedForPostEndOfRegeneration, $_POST)){
+			$allowedForContact = "email|message|g-recaptcha-response";
+			if(!array_key_exists_r($allowedForLogin, $_POST) 
+			    && !array_key_exists_r($allowedForLoginAndRedirection, $_POST) 
+			    && !array_key_exists_r($allowedForPostEndOfRegeneration, $_POST)
+			    && !array_key_exists_r($allowedForContact, $_POST)
+			    ){
 				throw new HttpException ( "Paramètres de login suspicieux : ".print_r($_POST, true) );
 			}
 		}
