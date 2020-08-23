@@ -15,18 +15,26 @@
 		
 		flex-grow : 0;
 		width : 45%;
-		height : 20vh;
-		border : solid 2px #333;
+		border : solid 4px #BAD1E2;
 		overflow: hidden;
 		margin : 10px;
 		padding : 10px;
 		cursor : pointer;
 		
+		
+		display : flex;
+		flex-direction: column;
+		flex-wrap:  wrap;
+		
+	}
+	
+	.catItem * {
+		flex-grow : 1;
 	}
 	
 	.catItem:hover {
-		outline: solid 5px #fca351;
-  		transition: outline 0.1s linear;
+		border : solid 4px #F1E6DE;
+  		transition: border 0.1s linear;
 	}
 	
 	.catTitle {
@@ -38,9 +46,23 @@
 	.textePresentation {
 		font-size: 0.7em;
 		font-style: italic;
-		height: 70%;
-		overflow: hidden;
 	}
+	
+	.catItemBottom  {
+		flex-grow : 0;
+		text-align : right;
+	}
+	
+	.catItemBottom button {
+		cursor: pointer;
+		font-size: 1em;
+		box-shadow: 2px 2px;
+		border : solid 1px #2ED171;
+		background-color: #58DA8E;
+		color : dark; 
+	}
+	
+
 
 </style>
 

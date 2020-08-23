@@ -156,3 +156,12 @@ a > div > img{
 .randoFa:before {
 	content : '🥾';
 }
+
+.fa-visa {
+	width : 32px;
+	height : 32px;
+	background-image: url('favicon/favicon-32x32.png');
+	background-image: url('logo.png');
+	background-size: 32px 32px;
+	vertical-align: middle;
+}
