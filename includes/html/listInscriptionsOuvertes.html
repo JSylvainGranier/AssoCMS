@@ -97,6 +97,18 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 		padding : 0.5em;
 	}
 	
+	.produitDescriptionEtInscrireContainerc {
+		display: flex;
+		flex-wrap: wrap;
+	}
+	
+	.produitDescriptionEtInscrireContainerc div {
+		flex-grow: 1;
+		width: 45%;
+	}
+	
+	
+	
 	.introduction {
 	}
 	
@@ -236,12 +248,14 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 <template id="produitTemplate">
 	<div class="produitContainer">
 		<h2 produitTitre></h2>
-		<div produitDescription>
-		</div>
-		<div produitPersonnesAInscrireContainer>
-			Personne(s) à inscrire : 
-			<ul produitPersonnesAInscrire>
-			</ul>
+		<div class="produitDescriptionEtInscrireContainerc">
+			<div produitDescription>
+			</div>
+			<div produitPersonnesAInscrireContainer>
+				<b>Personne(s) à inscrire :</b> 
+				<ul produitPersonnesAInscrire>
+				</ul>
+			</div>
 		</div>
 		<div produitConditions>
 		</div>
