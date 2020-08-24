@@ -2,11 +2,6 @@
 php 1
 
 PerlSetVar AuthFile /.htpassword
-
-</IfDefine>
-
-
-
 AuthName "Bonjour :-) \nLe temps de quelques travaux, le site de VISA30 est inaccessible."
 AuthType Basic
 require valid-user
@@ -15,6 +10,12 @@ Satisfy    any
 Order      deny,allow
 Deny from  all
 Allow from env=NO_AUTH
+
+</IfDefine>
+
+
+
+
 
 ErrorDocument 403 /travaux.html
 ErrorDocument 401 /travaux.html
