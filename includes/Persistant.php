@@ -526,7 +526,10 @@ abstract class Persistant {
 							$aClassInstence->$phpObjectName = $fieldValue;
 							break;
 						case SqlColumnTypes::$INTEGER :
-							$aClassInstence->$phpObjectName = $fieldValue + 0;
+							$aClassInstence->$phpObjectName = intval($fieldValue);
+							break;
+						case SqlColumnTypes::$NUMERIC :
+							$aClassInstence->$phpObjectName = floatval($fieldValue);
 							break;
 						case SqlColumnTypes::$DATETIME :
 							$aClassInstence->$phpObjectName = MyDateTime::createFromFormat ( "Y-m-d H:i:s", $fieldValue );

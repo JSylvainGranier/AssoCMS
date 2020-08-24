@@ -105,6 +105,10 @@ foreach($user->getAllPersonnesInFamily($user->idFamille) as $mFamille){
     $familleList .= "<a href='index.php?show&class=Personne&id={$mFamille->idPersonne}'>{$mFamille->prenom} {$mFamille->nom}</a>, ";
 }
 
+if(strlen($familleList) == 0){
+    $familleList = "<i>Sans lien avec d'autres personnes de VISA30</i>";
+}
+
 $page->asset("family", $familleList);
 
 
@@ -118,7 +122,13 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
     
     $now = new MyDateTime();
     
-    foreach($inscription->getInscriptionsForFamille($user->idFamille) as $iscp){
+    $iscpList = $inscription->getInscriptionsForFamille($user->idFamille);
+    
+    if(count($iscpList) == 0){
+        $page->append("inscriptionsList", "<i>Pas d'inscription à ce jour</i>");
+    }
+    
+    foreach($iscpList as $iscp){
         if($iscp->etat < 20 || $iscp->etat >= 70){
             continue;
         }
@@ -160,8 +170,9 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         
         $lignes = array();
         
-        $itb .= "<span class='titreBeforeOptions'>Options souscrites et cotisations : </span>";
+        $itb .= "<span class='titreBeforeOptions'>Options souscrites : </span>";
         
+        /*
         
         foreach ($reglement->getAllForInscription($iscp->idInscription) as $aReglement){
             
@@ -178,6 +189,12 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             //$itb .= "<tr><td>".print_r($prod, true)."</td><td>{$iscp->etat}</td><td>{$pers->prenom} {$pers->nom}</td></tr>";
         }
         
+        */
+        
+        foreach($ipp->getAllForInscription($iscp->idInscription) as $produitLigne){
+            $lignes[] = "<li class='produitLigne' >{$produitLigne->getProduit()->libelle} pour {$produitLigne->getPersonne()->prenom}</li>";
+        }
+        
         sort($lignes);
         
         $itb .= "<ul>";
@@ -190,11 +207,127 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         $itb .= "</div>\n";
     }
     
-    $page->asset("inscriptionsList", $itb);
+    $page->append("inscriptionsList", $itb);
+    
+    
+    $cotisationList = "";
+    
+    $reglementsList = $reglement->getAllForFamille($user->idFamille);
+    
+    if(count($reglementsList) == 0){
+        $cotisationList = "<i>Pas de cotisations à ce jour</i>";
+    } else {
+        
+        $rglParDate = array();
+        
+        $now = new MyDateTime();
+              
+        $reglements = "<table>";
+        
+        $montantADate = 0;
+        
+        $saisieReglementFormConfig = array(
+            "idFamille" => $user->idFamille, 
+            "targetTag" => "formReglement",
+            "thenAction" => "show",
+            "thenClass" => "Personne",
+            "thenIdName" => "idPersonne",
+            "thenIdValue" => $user->idPersonne
+        );
+        
+        function cmp($a, $b) {
+            return strcmp($a->dateEcheance->date+$a->idReglement, $b->dateEcheance->date+$b->idReglement);
+        }
+        
+        usort($reglementsList, "cmp");
+        
+        foreach ($reglementsList as $aReglement){
+            $dt = $aReglement->dateEcheance;
+            $aPercevoirDesQuePossible = false;
+            
+            if($dt->date <= $now->date){
+                $aPercevoirDesQuePossible = true;
+            }
+            
+            $momentPerception = $aPercevoirDesQuePossible ? "Côtisations dûes à ce jour" : "Côtisations dûes au ".$dt->format("d/m/Y");
+            
+            
+            $montantADate = $montantADate < 0 ? $montantADate : 0;
+            
+            $cssClass = "Inconnu";
+            $libelle = $aReglement->libelle;
+            switch ($aReglement->modePerception){
+                case "debit" :
+                    $montantADate += $aReglement->montant;
+                    $montantTotal += $aReglement->montant;
+                    $cssClass = "debit";
+                    break;
+                case "Espèces" :
+                    $montantADate -= $aReglement->montant;
+                    $montantTotal -= $aReglement->montant;
+                    $cssClass = "credit";
+                    $libelle = "Règlement en espèces ";
+                    break;
+                case "Chèque" :
+                    $montantADate -= $aReglement->montant;
+                    $montantTotal -= $aReglement->montant;
+                    $cssClass = "credit";
+                    $libelle = "Règlement par chèque ('{$aReglement->libelle}') ";
+                    if(! array_key_exists("montant", $saisieReglementFormConfig)){
+                        $saisieReglementFormConfig["libelle"] = $aReglement->libelle;
+                    }
+                    break;
+                default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
+            }
+            
+            $reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td></tr>";
+            
+            if($montantADate > 0){
+                $bizut = $aPercevoirDesQuePossible ? "dès que possible" : "pour le ".$dt->format("d/m/Y");
+                $reglements .= "<tr><td class='sumUp'>Reste à régler {$bizut}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+            } else if ($montantADate == 0){
+                $reglements .= "<tr><td class='sumUp'>Cotisations soldées au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+            } else {
+                $reglements .= "<tr><td class='sumUp'>Avance sur cotisations au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+            } 
+            
+            {
+                
+            } 
+            
+            if($montantADate > 0 && ! array_key_exists("montant", $saisieReglementFormConfig)){
+                $saisieReglementFormConfig["montant"] = $montantADate;
+                $saisieReglementFormConfig["datePerception"] = $kDate;
+            }
+        }
+        
+        $reglements .= "<tr><td class='sumUp'>Solde Adhérent</td><td class='sumUp'>{$montantTotal}€</td></tr>";
+        
+        $reglements .= "</table>";
+        
+        $cotisationList .= "<div>{$reglements}</div>";
+        
+        if (Roles::canAdministratePersonne ()) {
+            include 'includes/actions/saisieReglementForm.php';
+        }
+        
+        
+    }
+    
+    
+    $page->append("cotisationsList", $cotisationList);
+    
+    
+    
+    
+    
 }
 
 
 if (Roles::canAdministratePersonne ()) {
+    
+    $page->asset("inscriptionsList", "<p><a href='index.php?list&class=InscriptionsOuvertes&forceFamily={$user->idFamille}'>Débuter une inscription</a></p>");
+    
     $page->appendActionButton ( "Modifier la famille", "edit&class=Famille&idFamille=" . $user->idFamille );
     
 }

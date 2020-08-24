@@ -59,6 +59,14 @@ td {
 }
 
 
+td .credit {
+	background-color: green;
+}
+
+td .debit {
+	background-color: red;
+}
+
 
 
 </style>
@@ -98,7 +106,7 @@ td {
 	</tr>
 	<tr>
 		<td colspan="2">
-			<p>Dans la même famille que : </p>
+			<h2>Famille</h2>
 			<p>$family$</p>
 			<p>$familyUpdate$</p>
 		</td>
@@ -107,6 +115,13 @@ td {
 		<td colspan="2">
 			<h2>Inscriptions</h2>
 			$inscriptionsList$
+		</td>
+	</tr>
+	<tr id="#cotisations">
+		<td colspan="2">
+			<h2>Cotisations</h2>
+			$cotisationsList$
+			$formReglement$
 		</td>
 	</tr>
 </table>

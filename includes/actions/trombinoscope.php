@@ -50,8 +50,8 @@ if (array_key_exists ( "printable", $ARGS )) {
         $comma = "";
         
         foreach($membres as $personne){
-            //$showProfileUrl = SITE_ROOT . "index.php?show&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
-            $showProfileUrl = SITE_ROOT . "index.php?edit&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
+            $showProfileUrl = SITE_ROOT . "index.php?show&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
+            //$showProfileUrl = SITE_ROOT . "index.php?edit&class=Personne&idPersonne=" . $personne->getPrimaryKey ();
             
             $mem .= $comma."<a class='trombiLink' href='{$showProfileUrl}'>{$personne->nom} {$personne->prenom}</a>";
             

@@ -165,3 +165,27 @@ a > div > img{
 	background-size: 32px 32px;
 	vertical-align: middle;
 }
+
+
+
+
+.reglementForm {
+	border: solid 1px gray;
+	
+}
+
+.reglementForm input {
+	width: inherit !important;
+	display: inline-block !important;
+}
+
+.reglementForm input[name='libelle'] {
+	width: 15em !important;
+}
+
+.sumUp {
+	text-align: right;
+	font-weight: bold;
+	padding-bottom: 16px;
+}
+

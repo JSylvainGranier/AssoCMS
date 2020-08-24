@@ -1,0 +1,29 @@
+<div class="reglementForm">
+	<h3>Saisie d'un règlement : </h3>
+	<form method="post" action="index.php?save" >
+	
+	<p><label>Date perception : <input type="date" name="datePerception" value="$datePerception$" /> </label>
+	<label>Montant : <input type="number" name="montant" value="$montant$" /> </label></p>
+	
+	<p>Par :
+	<select name="modePerception">
+		<option value="Chèque">Chèque</option>
+		<option value="Espèces">Espèces</option>
+	</select>
+	<label>Intitulé : <input type="text" name="libelle" value="$libelle$" placeholder="Titulaire du compte, pour les chèques" /> </label></p>
+	<p>
+	<label>Référence : <input type="text" name="refPerception" value="$refPerception$" placeholder="Numéro de chèque"/> </label> </p>
+	
+	<input type="hidden" name="idFamille" value="$idFamille$" />
+	<input type="hidden" name="idInscription" value="$idInscription$" />
+	<input type="hidden" name="class" value="Reglement" />
+	<input type="hidden" name="idReglement" value="$idReglement$" />
+	<input type="hidden" name="thenAction" value="$thenAction$" />
+	<input type="hidden" name="thenClass" value="$thenClass$" />
+	<input type="hidden" name="thenIdName" value="$thenIdName$" />
+	<input type="hidden" name="thenIdValue" value="$thenIdValue$" />
+	
+	<input type="submit" value="Enregistrer" />
+	
+	</form>
+</div>
