@@ -244,7 +244,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 $goodDateForReglement = 0;
                 
                 foreach($rglParDate as $adt => $rlgs){
-                    if($adt <= $kDate ){
+                    if($adt <= $kDate && $adt>= $goodDateForReglement){
                         $goodDateForReglement = $adt;
                     }
                 }
@@ -346,17 +346,31 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 }
                 
                 //$reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td> <td>{$actions}</td></tr>";
-                $cotiRows[] = array(
+                $cotiRows[$aReglement->dateEcheance->date + $aReglement->idReglement] = array(
+                    "date" => $aReglement->dateEcheance,
                     "cssClass" => $cssClass,
                     "libelle" => $libelle,
                     "montant" => $aReglement->montant,
+                    "montantAfficher" => $aReglement->montant,
                     "actions" => $actions,
                     "type" => "ligneReglement"
                 );
             }
             
             $montantADateAbsolut = abs($montantADate);
+            /*
+            $cotiRows[] = array(
+                "date" => $dt,
+                "cssClass" => "sumUp",
+                "libelle" => "N/A",
+                "montant" => $montantADate,
+                "montantAfficher" => $montantADateAbsolut,
+                "actions" => "",
+                "type" => "sousTotal"
+            );
+            */
             
+            /*
             if($montantADate > 0){
                 $bizut = $aPercevoirDesQuePossible ? "dès que possible" : "pour le ".$dt->format("d/m/Y");
                 //$reglements .= "<tr><td class='sumUp'>Cotisations à régler {$bizut}</td><td class='sumUp'>{$montantADate}€</td><td></td></tr>";
@@ -364,6 +378,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                     "cssClass" => "sumUp",
                     "libelle" => "Cotisations à régler {$bizut}",
                     "montant" => $montantADate,
+                    "montantAfficher" => $montantADate,
                     "actions" => "",
                     "type" => "sousTotal"
                 );
@@ -373,6 +388,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                     "cssClass" => "sumUp",
                     "libelle" => "Cotisations déjà réglées au {$dt->format("d/m/Y")}",
                     "montant" => $montantADate,
+                    "montantAfficher" => $montantADate,
                     "actions" => "",
                     "type" => "sousTotal"
                 );
@@ -381,20 +397,85 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 $cotiRows[] = array(
                     "cssClass" => "sumUp",
                     "libelle" => "Avance sur cotisations au {$dt->format("d/m/Y")}",
-                    "montant" => $montantADateAbsolut,
+                    "montant" => $montantADate,
+                    "montantAfficher" => $montantADateAbsolut,
                     "actions" => "",
                     "type" => "sousTotal"
                 );
             } 
-            
+            */
             
         }
         
         //Petit réajustement sur les sousTotaux intermédiaires pour les cas où on fait un gros chèque en retard, qui prends plusieurs périodes.
         
+        
+        /*
+        foreach ($cotiRows as &$row){
+            if ($row["cssClass"]  == "sumUp"){
+                $row["montantAfficher"] = abs($row["montant"]);
+                if($row["montant"] == 0){
+                    $row["libelle"] = "Cotisations déjà réglées au {$row["date"]->format("d/m/Y")}";
+                } else if($row["montant"] > 0){
+                    $row["libelle"] = "Cotisations à régler au {$row["date"]->format("d/m/Y")}";
+                } else {
+                    $row["libelle"] = "Avance sur cotisations au {$row["date"]->format("d/m/Y")}";
+                }
+            }
+        }*/
+        
+        
+        
         //$reglements .= "<tr><td class='sumUp'>Solde Total</td><td class='sumUp'>{$montantTotal}€</td><td></td></tr>";
         
-        $cotiRows[] = array(
+        $previousCotiRow = null;
+        
+        foreach ($rglParDate as $kDate => $rgls){
+            $dt = new MyDateTime();
+            $dt->date = $kDate;
+            
+            $startMontant = is_null($previousCotiRow) ? 0 : $previousCotiRow["montant"];
+            
+            foreach($rgls as $aReglement){
+                switch ($aReglement->modePerception){
+                    case "debit" :
+                        $startMontant -= $aReglement->montant;
+                        break;
+                    case "Espèces" :
+                        $startMontant += $aReglement->montant;
+                        break;
+                    case "Chèque" :
+                        $startMontant += $aReglement->montant;
+                        break;
+                    default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
+                }
+            }
+            
+            
+            if($startMontant < 0){
+                //J'ai plus sur cette période.
+                //Alons voir si la période précédante est déficitaire, pour lui en donner un peut : 
+                if(!is_null($previousCotiRow) && $previousCotiRow["montant"] > 0){
+                    $combienEnleverDeNow = min(abs($previousCotiRow["montant"]), abs($startMontant));
+                    $previousCotiRow["montant"] -= $combienEnleverDeNow;
+                    $startMontant -= $combienEnleverDeNow;
+                }
+            }
+            
+            $cotiRows[$kDate+(1*24*60*60)] = array(
+                "cssClass" => "sumUp",
+                "libelle" => "Sous Total au {$dt->format("d/m/Y")}",
+                "montant" => $startMontant,
+                "montantAfficher" => abs($startMontant),
+                "actions" => "",
+                "type" => "sousTotal"
+            );
+            
+            $previousCotiRow = $cotiRows[$kDate+(1*24*60*60)];
+        }
+        
+        
+        $cotiRows[77777777777] = array(
             "cssClass" => "sumUp",
             "libelle" => "Solde Total",
             "montant" => $montantTotal,
@@ -402,8 +483,10 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             "type" => "sousTotal"
         );
         
+        ksort($cotiRows);
+        
         foreach ($cotiRows as $r){
-            $reglements .= "<tr><td class='{$r['cssClass']}'>{$r['libelle']}</td><td class='{$r['cssClass']}'>{$r['montant']}€</td><td>{$r['actions']}</td></tr>";
+            $reglements .= "<tr><td class='{$r['cssClass']}'>{$r['libelle']}</td><td class='{$r['cssClass']}'>{$r['montantAfficher']}€</td><td>{$r['actions']}</td></tr>";
         }
         
         $reglements .= "</table>";

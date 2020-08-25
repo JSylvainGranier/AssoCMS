@@ -916,7 +916,7 @@ var politiqueTarifaireTrimestrielle = function(souscription, pol ){
 	do {
 		
 		var rep = {
-				libelle : pol.libelle + " pour " + personneCourante.prenom,
+				libelle : pol.libelle + " (T"+start.format('Q/YYYY')+") pour " + personneCourante.prenom,
 				quantite : 1, 
 				prixUnitaire : personneCourante.age <= pol.ageMaxTarif1 ? pol.tarif1 : pol.tarif2, 
 				idProduit : souscription.idProduit,
