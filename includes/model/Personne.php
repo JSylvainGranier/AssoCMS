@@ -363,5 +363,10 @@ class Personne extends HasMetaData {
 	    
 	}
 	
+	public function search($q){
+	    $objList = $this->getObjectListFromQuery ( "select * from personne where concat(nom, prenom, email, adrVille) like '%{$q}%' ");
+	    return $objList;
+	}
+	
 
 }
