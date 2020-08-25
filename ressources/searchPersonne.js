@@ -1,3 +1,4 @@
+//https://tarekraafat.github.io/autoComplete.js/#/?id=_2-examples
 
 new autoComplete({
     data: {                              // Data src [Array, Function, Async] | (REQUIRED)
@@ -13,24 +14,15 @@ new autoComplete({
         // Return Fetched data
         return data;
       },
-      key: ["nom"],
+      key: ["nom", "prenom"],
       cache: false
     },
-    query: {                               // Query Interceptor               | (Optional)
-          manipulate: (query) => {
-            return query.replace("pizza", "burger");
-          }
-    },
-    sort: (a, b) => {                    // Sort rendered results ascendingly | (Optional)
-    	var aKey = a.nom+" "+a.prenom;
-    	var bKey = b.nom+" "+b.prenom;
-        return (aKey < bKey) ? -1 : 1;
-    },
+
     placeHolder: "Personne...",     // Place Holder text                 | (Optional)
     selector: "#autoComplete",           // Input field selector              | (Optional)
     threshold: 3,                        // Min. Chars length to start Engine | (Optional)
     debounce: 300,                       // Post duration for engine to start | (Optional)
-    searchEngine: "strict",              // Search Engine type/mode           | (Optional)
+    searchEngine: "loose",              // Search Engine type/mode           | (Optional)
     resultsList: {                       // Rendered results list object      | (Optional)
         render: true,
         /* if set to false, add an eventListener to the selector for event type

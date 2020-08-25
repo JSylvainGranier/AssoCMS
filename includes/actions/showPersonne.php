@@ -222,18 +222,45 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         
         $now = new MyDateTime();
         
+        
+        
         foreach($reglementsList as $aReglement){
-            $kDate = $aReglement->dateEcheance->format("Y-m-d");
-            if(!array_key_exists($kDate, $rglParDate)){
-                $rglParDate[$kDate] = array();
+            if($aReglement->modePerception == "debit"){
+                $kDate = $aReglement->dateEcheance->date;
+                if(!array_key_exists($kDate, $rglParDate)){
+                    $rglParDate[$kDate] = array();
+                }
+                $rglParDate[$kDate][] = $aReglement;
+            } else {
+                
             }
-            $rglParDate[$kDate][] = $aReglement;
-            
         }
+        
+        
+        foreach($reglementsList as $aReglement){
+            if($aReglement->modePerception != "debit"){
+                $kDate = $aReglement->datePerception->date;
+                
+                $goodDateForReglement = 0;
+                
+                foreach($rglParDate as $adt => $rlgs){
+                    if($adt <= $kDate ){
+                        $goodDateForReglement = $adt;
+                    }
+                }
+                
+                $rglParDate[$goodDateForReglement][] = $aReglement;
+            } else {
+                
+            }
+        }
+        
+      
+        
         
         ksort($rglParDate);
         
-        $reglements = "<table>";
+        $reglements = "<table class='cotisationsTable'>";
         
         $montantTotal = 0;
         $montantADate = 0;
@@ -247,8 +274,14 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             "thenIdValue" => $user->idPersonne
         );
         
+        $montantDuACeJour = 0;
+        
+        $cotiRows = array();
+
         foreach ($rglParDate as $kDate => $rgls){
-            $dt = MyDateTime::createFromFormat("Y-m-d H:i", $kDate." 00:00");
+            $dt = new MyDateTime();
+            $dt->date = $kDate;
+            
             $aPercevoirDesQuePossible = false;
             
             if($dt->date <= $now->date){
@@ -258,62 +291,127 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             $momentPerception = $aPercevoirDesQuePossible ? "Côtisations dûes à ce jour" : "Côtisations dûes au ".$dt->format("d/m/Y");
             
             
-            $montantADate = $montantADate < 0 ? $montantADate : 0;
+            $montantADate = $montantADate < 0 ? $montantADate : $dt->date > $now->date ? 0 : $montantADate;
+            
             
             sort($rgls);
             
             foreach($rgls as $aReglement){
                 $cssClass = "Inconnu";
                 $libelle = $aReglement->libelle;
+                
+                $actions = "";
+                
+                if (Roles::canAdministratePersonne ()) {
+                    $actions = "<a href='index.php?edit&class=Reglement&id={$aReglement->idReglement}'><i class='fa fa-pencil' aria-hidden='true'></i></a>";
+                    $actions .= "&nbsp;&nbsp;<a href='index.php?delete&class=Reglement&id={$aReglement->idReglement}'><i class='fa fa-trash-o' aria-hidden='true'></i></a>";
+                }
+               
+                
                 switch ($aReglement->modePerception){
                     case "debit" :
                         $montantADate += $aReglement->montant;
                         $montantTotal += $aReglement->montant;
                         $cssClass = "debit";
+                        
+                        
+                        if($aReglement->dateEcheance->date <= $now->date){
+                            $montantDuACeJour += $aReglement->montant;
+                        }
                         break;
                     case "Espèces" :
                         $montantADate -= $aReglement->montant;
                         $montantTotal -= $aReglement->montant;
                         $cssClass = "credit";
-                        $libelle = "Règlement en espèces ";
+                        $libelle = "Règlement en espèces le ".$aReglement->datePerception->format("d/m/Y");
+                        
+                        if($aReglement->dateEcheance->date <= $now->date){
+                            $montantDuACeJour -= $aReglement->montant;
+                        }
                         break;
                     case "Chèque" :
                         $montantADate -= $aReglement->montant;
                         $montantTotal -= $aReglement->montant;
                         $cssClass = "credit";
-                        $libelle = "Règlement par chèque ('{$aReglement->libelle}') ";
-                        if(! array_key_exists("montant", $saisieReglementFormConfig)){
+                        $libelle = "Règlement par chèque le ".$aReglement->datePerception->format("d/m/Y");
+                        if(! array_key_exists("libelle", $saisieReglementFormConfig)){
                             $saisieReglementFormConfig["libelle"] = $aReglement->libelle;
+                        }
+                        
+                        if($aReglement->dateEcheance->date <= $now->date){
+                            $montantDuACeJour -= $aReglement->montant;
                         }
                         break;
                     default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
                 }
                 
-                $reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td></tr>";
+                //$reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td> <td>{$actions}</td></tr>";
+                $cotiRows[] = array(
+                    "cssClass" => $cssClass,
+                    "libelle" => $libelle,
+                    "montant" => $aReglement->montant,
+                    "actions" => $actions,
+                    "type" => "ligneReglement"
+                );
             }
+            
+            $montantADateAbsolut = abs($montantADate);
             
             if($montantADate > 0){
                 $bizut = $aPercevoirDesQuePossible ? "dès que possible" : "pour le ".$dt->format("d/m/Y");
-                $reglements .= "<tr><td class='sumUp'>Reste à régler {$bizut}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+                //$reglements .= "<tr><td class='sumUp'>Cotisations à régler {$bizut}</td><td class='sumUp'>{$montantADate}€</td><td></td></tr>";
+                $cotiRows[] = array(
+                    "cssClass" => "sumUp",
+                    "libelle" => "Cotisations à régler {$bizut}",
+                    "montant" => $montantADate,
+                    "actions" => "",
+                    "type" => "sousTotal"
+                );
             } else if ($montantADate == 0){
-                $reglements .= "<tr><td class='sumUp'>Cotisations soldées au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+                //$reglements .= "<tr><td class='sumUp'>Cotisations déjà réglées au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td><td></td></tr>";
+                $cotiRows[] = array(
+                    "cssClass" => "sumUp",
+                    "libelle" => "Cotisations déjà réglées au {$dt->format("d/m/Y")}",
+                    "montant" => $montantADate,
+                    "actions" => "",
+                    "type" => "sousTotal"
+                );
             } else {
-                $reglements .= "<tr><td class='sumUp'>Avance sur cotisations au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td></tr>";
+                //$reglements .= "<tr><td class='sumUp'>Avance sur cotisations au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADateAbsolut}€</td><td></td></tr>";
+                $cotiRows[] = array(
+                    "cssClass" => "sumUp",
+                    "libelle" => "Avance sur cotisations au {$dt->format("d/m/Y")}",
+                    "montant" => $montantADateAbsolut,
+                    "actions" => "",
+                    "type" => "sousTotal"
+                );
             } 
             
-            {
-                $reglements .= "<tr><td class='sumUp'>Solde Total</td><td class='sumUp'>{$montantADate}€</td></tr>";
-            } 
             
-            if($montantADate > 0 && ! array_key_exists("montant", $saisieReglementFormConfig)){
-                $saisieReglementFormConfig["montant"] = $montantADate;
-                $saisieReglementFormConfig["datePerception"] = $kDate;
-            }
+        }
+        
+        //Petit réajustement sur les sousTotaux intermédiaires pour les cas où on fait un gros chèque en retard, qui prends plusieurs périodes.
+        
+        //$reglements .= "<tr><td class='sumUp'>Solde Total</td><td class='sumUp'>{$montantTotal}€</td><td></td></tr>";
+        
+        $cotiRows[] = array(
+            "cssClass" => "sumUp",
+            "libelle" => "Solde Total",
+            "montant" => $montantTotal,
+            "actions" => "",
+            "type" => "sousTotal"
+        );
+        
+        foreach ($cotiRows as $r){
+            $reglements .= "<tr><td class='{$r['cssClass']}'>{$r['libelle']}</td><td class='{$r['cssClass']}'>{$r['montant']}€</td><td>{$r['actions']}</td></tr>";
         }
         
         $reglements .= "</table>";
         
         $cotisationList .= "<div>{$reglements}</div>";
+        
+        $saisieReglementFormConfig["montant"] = $montantDuACeJour;
+        $saisieReglementFormConfig["datePerception"] = $now->format("Y-m-d");
         
         if (Roles::canAdministratePersonne ()) {
             include 'includes/actions/saisieReglementForm.php';
