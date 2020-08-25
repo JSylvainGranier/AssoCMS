@@ -112,6 +112,11 @@ if (Roles::isGestionnaireGlobal ()) {
 }
 
 if (Roles::canAdministratePersonne ()) {
+
+	$page->asset("fastSwitchScript", "<script src='ressources/searchPersonne.js' ></script>");
+    $page->asset("fastSwitchDisplay", "block");
+    
+
 	$page->appendActionButton ( "Exporter", "export&class=Trombinoscope" );
 }
 

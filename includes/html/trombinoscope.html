@@ -1,4 +1,26 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/css/autoComplete.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@7.2.0/dist/js/autoComplete.min.js"></script>
+<div class="autocompleteContainer" style="display : $fastSwitchDisplay$">
+	<input id="autoComplete" tabindex="1">
+	
+</div>
+
 <h3>Trombinoscope</h3>
+
+<style>
+.autocompleteContainer {
+	float: right;
+	position: absolute;
+	right : 20px;
+	display : none;
+}
+
+.autocompleteContainer li {
+	margin-left: inherit;
+	margin-right: inherit;
+}
+
+</style>
 
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 <script src="ressources/unveil.js"></script>
@@ -18,3 +40,4 @@
 </script>
 
 <div id="trombiContainer">$trombiContainer$</div>
+$fastSwitchScript$

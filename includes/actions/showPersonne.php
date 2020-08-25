@@ -221,9 +221,21 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         $rglParDate = array();
         
         $now = new MyDateTime();
-              
+        
+        foreach($reglementsList as $aReglement){
+            $kDate = $aReglement->dateEcheance->format("Y-m-d");
+            if(!array_key_exists($kDate, $rglParDate)){
+                $rglParDate[$kDate] = array();
+            }
+            $rglParDate[$kDate][] = $aReglement;
+            
+        }
+        
+        ksort($rglParDate);
+        
         $reglements = "<table>";
         
+        $montantTotal = 0;
         $montantADate = 0;
         
         $saisieReglementFormConfig = array(
@@ -235,14 +247,8 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             "thenIdValue" => $user->idPersonne
         );
         
-        function cmp($a, $b) {
-            return strcmp($a->dateEcheance->date+$a->idReglement, $b->dateEcheance->date+$b->idReglement);
-        }
-        
-        usort($reglementsList, "cmp");
-        
-        foreach ($reglementsList as $aReglement){
-            $dt = $aReglement->dateEcheance;
+        foreach ($rglParDate as $kDate => $rgls){
+            $dt = MyDateTime::createFromFormat("Y-m-d H:i", $kDate." 00:00");
             $aPercevoirDesQuePossible = false;
             
             if($dt->date <= $now->date){
@@ -254,33 +260,37 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             
             $montantADate = $montantADate < 0 ? $montantADate : 0;
             
-            $cssClass = "Inconnu";
-            $libelle = $aReglement->libelle;
-            switch ($aReglement->modePerception){
-                case "debit" :
-                    $montantADate += $aReglement->montant;
-                    $montantTotal += $aReglement->montant;
-                    $cssClass = "debit";
-                    break;
-                case "Espèces" :
-                    $montantADate -= $aReglement->montant;
-                    $montantTotal -= $aReglement->montant;
-                    $cssClass = "credit";
-                    $libelle = "Règlement en espèces ";
-                    break;
-                case "Chèque" :
-                    $montantADate -= $aReglement->montant;
-                    $montantTotal -= $aReglement->montant;
-                    $cssClass = "credit";
-                    $libelle = "Règlement par chèque ('{$aReglement->libelle}') ";
-                    if(! array_key_exists("montant", $saisieReglementFormConfig)){
-                        $saisieReglementFormConfig["libelle"] = $aReglement->libelle;
-                    }
-                    break;
-                default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
-            }
+            sort($rgls);
             
-            $reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td></tr>";
+            foreach($rgls as $aReglement){
+                $cssClass = "Inconnu";
+                $libelle = $aReglement->libelle;
+                switch ($aReglement->modePerception){
+                    case "debit" :
+                        $montantADate += $aReglement->montant;
+                        $montantTotal += $aReglement->montant;
+                        $cssClass = "debit";
+                        break;
+                    case "Espèces" :
+                        $montantADate -= $aReglement->montant;
+                        $montantTotal -= $aReglement->montant;
+                        $cssClass = "credit";
+                        $libelle = "Règlement en espèces ";
+                        break;
+                    case "Chèque" :
+                        $montantADate -= $aReglement->montant;
+                        $montantTotal -= $aReglement->montant;
+                        $cssClass = "credit";
+                        $libelle = "Règlement par chèque ('{$aReglement->libelle}') ";
+                        if(! array_key_exists("montant", $saisieReglementFormConfig)){
+                            $saisieReglementFormConfig["libelle"] = $aReglement->libelle;
+                        }
+                        break;
+                    default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
+                }
+                
+                $reglements .= "<tr><td class='{$cssClass}'>{$libelle}</td><td>{$aReglement->montant}€</td></tr>";
+            }
             
             if($montantADate > 0){
                 $bizut = $aPercevoirDesQuePossible ? "dès que possible" : "pour le ".$dt->format("d/m/Y");
@@ -292,7 +302,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             } 
             
             {
-                
+                $reglements .= "<tr><td class='sumUp'>Solde Total</td><td class='sumUp'>{$montantADate}€</td></tr>";
             } 
             
             if($montantADate > 0 && ! array_key_exists("montant", $saisieReglementFormConfig)){
@@ -300,8 +310,6 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 $saisieReglementFormConfig["datePerception"] = $kDate;
             }
         }
-        
-        $reglements .= "<tr><td class='sumUp'>Solde Adhérent</td><td class='sumUp'>{$montantTotal}€</td></tr>";
         
         $reglements .= "</table>";
         
@@ -325,6 +333,9 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
 
 
 if (Roles::canAdministratePersonne ()) {
+    
+    $page->asset("fastSwitchScript", "<script src='ressources/searchPersonne.js' ></script>");
+    $page->asset("fastSwitchDisplay", "block");
     
     $page->asset("inscriptionsList", "<p><a href='index.php?list&class=InscriptionsOuvertes&forceFamily={$user->idFamille}'>Débuter une inscription</a></p>");
     
