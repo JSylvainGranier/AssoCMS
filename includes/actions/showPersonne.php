@@ -170,7 +170,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         
         $lignes = array();
         
-        $itb .= "<span class='titreBeforeOptions'>Options souscrites : </span>";
+        $itb .= "<br /><span class='titreBeforeOptions'>Options souscrites : </span>";
         
         /*
         
