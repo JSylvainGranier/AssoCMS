@@ -76,6 +76,7 @@ foreach ($data->ticket as $tl){
     $r->montant = $tl->quantite * $tl->prixUnitaire;
     $r->modePerception = "debit";
     $r->idFamille = $idFamille;
+    $r->produit = new Produit($tl->idProduit);
     if(isset($tl->remise)){
         $r->montant = $tl->remise;
     }

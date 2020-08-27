@@ -263,7 +263,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         $reglements = "<table class='cotisationsTable'>";
         
         $montantTotal = 0;
-        $montantADate = 0;
+        $montantDuACeJour = 0;
         
         $saisieReglementFormConfig = array(
             "idFamille" => $user->idFamille, 
@@ -273,8 +273,6 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             "thenIdName" => "idPersonne",
             "thenIdValue" => $user->idPersonne
         );
-        
-        $montantDuACeJour = 0;
         
         $cotiRows = array();
 
@@ -291,7 +289,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             $momentPerception = $aPercevoirDesQuePossible ? "Côtisations dûes à ce jour" : "Côtisations dûes au ".$dt->format("d/m/Y");
             
             
-            $montantADate = $montantADate < 0 ? $montantADate : $dt->date > $now->date ? 0 : $montantADate;
+            $montantADate = 0;
             
             
             sort($rgls);
@@ -320,7 +318,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                         }
                         break;
                     case "Espèces" :
-                        $montantADate -= $aReglement->montant;
+                        //$montantADate -= $aReglement->montant;
                         $montantTotal -= $aReglement->montant;
                         $cssClass = "credit";
                         $libelle = "Règlement en espèces le ".$aReglement->datePerception->format("d/m/Y");
@@ -330,10 +328,11 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                         }
                         break;
                     case "Chèque" :
-                        $montantADate -= $aReglement->montant;
+                        //$montantADate -= $aReglement->montant;
                         $montantTotal -= $aReglement->montant;
                         $cssClass = "credit";
                         $libelle = "Règlement par chèque le ".$aReglement->datePerception->format("d/m/Y");
+                        
                         if(! array_key_exists("libelle", $saisieReglementFormConfig)){
                             $saisieReglementFormConfig["libelle"] = $aReglement->libelle;
                         }
@@ -357,128 +356,64 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 );
             }
             
-            $montantADateAbsolut = abs($montantADate);
-            /*
-            $cotiRows[] = array(
-                "date" => $dt,
+            
+            $libelle = "Cotisations à verser au {$dt->format("d/m/Y")}";
+            if($dt->date <= $now->date){
+                $libelle = "Cotisations à verser dès que possible";
+            }
+            
+            $cotiRows[$kDate+(1*24*60*60)] = array(
                 "cssClass" => "sumUp",
-                "libelle" => "N/A",
+                "libelle" => $libelle,
                 "montant" => $montantADate,
-                "montantAfficher" => $montantADateAbsolut,
+                "montantAfficher" => abs($montantADate),
                 "actions" => "",
                 "type" => "sousTotal"
-            );
-            */
+                    );
             
-            /*
-            if($montantADate > 0){
-                $bizut = $aPercevoirDesQuePossible ? "dès que possible" : "pour le ".$dt->format("d/m/Y");
-                //$reglements .= "<tr><td class='sumUp'>Cotisations à régler {$bizut}</td><td class='sumUp'>{$montantADate}€</td><td></td></tr>";
-                $cotiRows[] = array(
-                    "cssClass" => "sumUp",
-                    "libelle" => "Cotisations à régler {$bizut}",
-                    "montant" => $montantADate,
-                    "montantAfficher" => $montantADate,
-                    "actions" => "",
-                    "type" => "sousTotal"
-                );
-            } else if ($montantADate == 0){
-                //$reglements .= "<tr><td class='sumUp'>Cotisations déjà réglées au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADate}€</td><td></td></tr>";
-                $cotiRows[] = array(
-                    "cssClass" => "sumUp",
-                    "libelle" => "Cotisations déjà réglées au {$dt->format("d/m/Y")}",
-                    "montant" => $montantADate,
-                    "montantAfficher" => $montantADate,
-                    "actions" => "",
-                    "type" => "sousTotal"
-                );
-            } else {
-                //$reglements .= "<tr><td class='sumUp'>Avance sur cotisations au {$dt->format("d/m/Y")}</td><td class='sumUp'>{$montantADateAbsolut}€</td><td></td></tr>";
-                $cotiRows[] = array(
-                    "cssClass" => "sumUp",
-                    "libelle" => "Avance sur cotisations au {$dt->format("d/m/Y")}",
-                    "montant" => $montantADate,
-                    "montantAfficher" => $montantADateAbsolut,
-                    "actions" => "",
-                    "type" => "sousTotal"
-                );
-            } 
-            */
+            
             
         }
         
         //Petit réajustement sur les sousTotaux intermédiaires pour les cas où on fait un gros chèque en retard, qui prends plusieurs périodes.
         
+        $creditADeverser = 0;
+        $firstReglement = 0;
+        foreach($cotiRows as $row){
+            if($row['cssClass'] == "credit"){
+                $creditADeverser += $row['montant'] ;
+                if($firstReglement == 0)
+                    $firstReglement = $row['date']->date;
+            }
+        }
         
-        /*
-        foreach ($cotiRows as &$row){
-            if ($row["cssClass"]  == "sumUp"){
-                $row["montantAfficher"] = abs($row["montant"]);
-                if($row["montant"] == 0){
-                    $row["libelle"] = "Cotisations déjà réglées au {$row["date"]->format("d/m/Y")}";
-                } else if($row["montant"] > 0){
-                    $row["libelle"] = "Cotisations à régler au {$row["date"]->format("d/m/Y")}";
-                } else {
-                    $row["libelle"] = "Avance sur cotisations au {$row["date"]->format("d/m/Y")}";
+        $decaler = array();
+        
+        foreach($cotiRows as $key => &$row){
+            if($row['type'] == "sousTotal"){
+                $creditATransferer = min($creditADeverser, $row['montant']);
+                $creditADeverser -= $creditATransferer;
+                $row['montant'] -= $creditATransferer;
+                $row['montantAfficher'] = $row['montant'];
+                if($creditATransferer > 0 && $row['date']->date < $now->date){
+                    $decaler[$key] = $firstReglement;
                 }
             }
-        }*/
+        }
         
-        
-        
-        //$reglements .= "<tr><td class='sumUp'>Solde Total</td><td class='sumUp'>{$montantTotal}€</td><td></td></tr>";
-        
-        $previousCotiRow = null;
-        
-        foreach ($rglParDate as $kDate => $rgls){
-            $dt = new MyDateTime();
-            $dt->date = $kDate;
-            
-            $startMontant = is_null($previousCotiRow) ? 0 : $previousCotiRow["montant"];
-            
-            foreach($rgls as $aReglement){
-                switch ($aReglement->modePerception){
-                    case "debit" :
-                        $startMontant -= $aReglement->montant;
-                        break;
-                    case "Espèces" :
-                        $startMontant += $aReglement->montant;
-                        break;
-                    case "Chèque" :
-                        $startMontant += $aReglement->montant;
-                        break;
-                    default : throw new Exception("Mode de perception '{$aReglement->modePerception}' non pris en charge ici. ");
-                }
-            }
-            
-            
-            if($startMontant < 0){
-                //J'ai plus sur cette période.
-                //Alons voir si la période précédante est déficitaire, pour lui en donner un peut : 
-                if(!is_null($previousCotiRow) && $previousCotiRow["montant"] > 0){
-                    $combienEnleverDeNow = min(abs($previousCotiRow["montant"]), abs($startMontant));
-                    $previousCotiRow["montant"] -= $combienEnleverDeNow;
-                    $startMontant -= $combienEnleverDeNow;
-                }
-            }
-            
-            $cotiRows[$kDate+(1*24*60*60)] = array(
-                "cssClass" => "sumUp",
-                "libelle" => "Sous Total au {$dt->format("d/m/Y")}",
-                "montant" => $startMontant,
-                "montantAfficher" => abs($startMontant),
-                "actions" => "",
-                "type" => "sousTotal"
-            );
-            
-            $previousCotiRow = $cotiRows[$kDate+(1*24*60*60)];
+        foreach($decaler as $cotiKey => $goTo){
+            //$cotiRow = $cotiRows[$cotiKey];
+            //unset($cotiRows[$cotiKey]);
+            //$cotiRows[$goTo + 100] = $cotiRow;
         }
         
         
-        $cotiRows[77777777777] = array(
+        
+        $cotiRows[$now->date+(365*24*60*60)] = array(
             "cssClass" => "sumUp",
             "libelle" => "Solde Total",
             "montant" => $montantTotal,
+            "montantAfficher" => $montantTotal,
             "actions" => "",
             "type" => "sousTotal"
         );

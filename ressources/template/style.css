@@ -171,6 +171,8 @@ a > div > img{
 
 .reglementForm {
 	border: solid 1px gray;
+	padding : 5px;
+	zoom : 90%;
 	
 }
 
@@ -180,7 +182,11 @@ a > div > img{
 }
 
 .reglementForm input[name='libelle'] {
-	width: 15em !important;
+	width: 30% !important;
+}
+
+.reglementForm input[name='refPerception'] {
+	width: 30% !important;
 }
 
 .sumUp {

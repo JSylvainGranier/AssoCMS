@@ -9,6 +9,7 @@ class Reglement extends HasMetaData {
     public $montant;
     public $inscription;
     public $idFamille;
+    public $produit;
     
     public function getPrimaryKey() {
         return $this->idReglement;
@@ -26,6 +27,10 @@ class Reglement extends HasMetaData {
             $inscription->setForeing ( new Inscription (), "inscription", true, true );
             $inscription->isNullable = true;
             
+            $produit = new SqlColumnMappgin ( "fkProduit", "Produit que cela règle", SqlColumnTypes::$INTEGER );
+            $produit->setForeing ( new Produit (), "produit", true, true );
+            $produit->isNullable = true;
+            
             
             Reglement::$memberDeclaration = array (
                 $pk,
@@ -36,7 +41,8 @@ class Reglement extends HasMetaData {
                 new SqlColumnMappgin ( "libelle", "Libelle", SqlColumnTypes::$VARCHAR, 255),
                 new SqlColumnMappgin ( "montant", "Montant du règlement", SqlColumnTypes::$NUMERIC ),
                 new SqlColumnMappgin ( "idFamille", "Famille en rapport avec ce reglement", SqlColumnTypes::$INTEGER ),
-                $inscription
+                $inscription,
+                $produit
             );
             
             Reglement::$memberDeclaration = array_merge ( Reglement::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -65,7 +71,7 @@ class Reglement extends HasMetaData {
     }
     
     public function getAllForFamille($idFamille) {
-        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat > 10 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
+        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat >= 50 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
 			union 
 			select rgl.* from reglement rgl where  rgl.fkInscription is null and  rgl.idFamille = ".$idFamille;
         return $this->getObjectListFromQuery ( $q );
