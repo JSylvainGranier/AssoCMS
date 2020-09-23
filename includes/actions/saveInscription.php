@@ -21,7 +21,7 @@ $inscription = new Inscription($data->currentInscription->idInscription);
 
 $reglement = new Reglement();
 
-
+$firstPersonne = null;
 
 //Mettre à jour l'Inscription
 
@@ -50,6 +50,10 @@ foreach ($data->inscriptionPersonneProduit->$idInscription as $anIpp){
     $ippInstance->personne = new Personne($anIpp->idPersonne);
     $ippInstance->produit = new Produit($anIpp->idProduit);
     $ippInstance->quantite = $anIpp->quantite;
+    
+    if(is_null($firstPersonne) && !is_null($ippInstance->personne->email)){
+        $firstPersonne = $ippInstance->personne;
+    }
     
     if(isset($data->conditionsAcceptees[$anIpp->idProduit])){
         $ippInstance->conditionsLegales = $data->conditionsAcceptees[$anIpp->idProduit];
