@@ -254,7 +254,7 @@ class Page extends HasMetaData {
 	        
 	    } else if (Roles::isMembre ()) {
 	        
-	        $accesCategorie = $this->etat = PageEtat::$ACCESS_CATEGORIE;
+	        $accesCategorie = $this->etat == PageEtat::$ACCESS_CATEGORIE;
 	        
 	        
 	        if($accesCategorie){
