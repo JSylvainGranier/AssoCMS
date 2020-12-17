@@ -71,11 +71,33 @@ class Reglement extends HasMetaData {
     }
     
     public function getAllForFamille($idFamille) {
-        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat >= 50 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
+        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat >= 20 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
 			union 
 			select rgl.* from reglement rgl where  rgl.fkInscription is null and  rgl.idFamille = ".$idFamille;
         return $this->getObjectListFromQuery ( $q );
     }
     
+    public function getAllFamillesEnAttenteReglement($dateReglementAttendu){
+
+        
+        $q = "select sum(uni.mnt) as dete, uni.idFamille 
+            from (
+                select sum(montant) as mnt, reglement.idFamille  from reglement
+                join inscription on inscription.idInscription = reglement.fkInscription
+                where reglement.modePerception = 'debit'
+                and inscription.etat >= 20 and inscription.etat < 70
+                and reglement.dateEcheance <= '{$dateReglementAttendu->formatMySql()}'
+                group by reglement.idFamille
+            union 
+                select 0-sum(montant) as mnt, reglement.idFamille  from reglement
+                where reglement.modePerception <> 'debit'
+                and reglement.dateEcheance <= '{$dateReglementAttendu->formatMySql()}'
+                group by reglement.idFamille
+            ) as uni
+            group by uni.idFamille
+            having sum(uni.mnt) > 0";
+        
+        return $this->getDataFromQuery($q);
+    }
    
 }

@@ -108,7 +108,7 @@ function checkClassForAdminRestiction($class){
 	}
 	
 }
-$GET_ALLOW_EXCEPTION = array ("resumableType","resumableIdentifier", "resumableFilename", "resumableRelativePath", "random", "key", "q");
+$GET_ALLOW_EXCEPTION = array ("resumableType","resumableIdentifier", "resumableFilename", "resumableRelativePath", "random", "key", "q", "datePerception");
 
 function secureGet(){
 	global $ARGS;

@@ -1,5 +1,9 @@
-<h1>Règlements</h1>
-
+<h1>Règlements en attente de perception au <form method="get" action="index.php">
+	<input type="hidden" name="list" value="u" />
+	<input type="hidden" name="class" value= "Reglement" />
+	<input name="datePerception" value="$datePerception$" type="date" style="font-weight : bold; font-size : 0.8em;" />
+	<input type="submit" value="Ok" name="ok" />
+	</form></h1>
 <script src="ressources/list.js" ></script>
 
 <style>
@@ -67,74 +71,9 @@ form {
 
 <div id="reglementsContainer">
 
-<input class="search" placeholder="Rechercher..." /> 
-	<span class="quickSearchTherm" onclick="seachMe(event.target);">Perçu</span> 
-	<span class="quickSearchTherm" onclick="seachMe(event.target);">Plus tard</span> 
-	<span class="quickSearchTherm" onclick="seachMe(event.target);">À percevoir dès que possible</span>
+
 <ul class="list" searching='false'>
 	$reglements$
 </ul>
 </div>
 
-<script>
-
-var saveReglement = function(form){
-	console.log(form);
-	
-	try{
-		var reglementPerception = {
-				idReglement : form.querySelector("input[name='idReglement']").value,
-				datePerception : form.querySelector("input[name='datePerception']").value,
-				refPerception : form.querySelector("input[name='refPerception']").value,
-				modePerception : form.querySelector("select[name='modePerception']").value
-		}
-		
-		callServeurPostJson("index.php?saveReglementPerception", function(reponse){
-			console.log(reponse);
-			
-			if(reponse.error){
-				document.querySelector("button[ref='"+reponse.idReglement+"']").className += " saveError";
-				alert(reponse.error);
-			} else {
-				document.querySelector("button[ref='"+reponse.idReglement+"']").className += " saveSuccess";
-			}
-			
-			
-			
-			setTimeout(function(){
-				document.querySelector("button[ref='"+reponse.idReglement+"']").className = "";
-			}, 2000);
-			
-					
-		}, function(e){
-			console.log(e); 
-			alert(e);
-		
-		}, reglementPerception);
-		
-	} catch (e){
-		console.log(e);
-	}
-	
-	
-}
-
-var options = {
-		  valueNames: [ 'reglementFamilleRappel', 'libelleReglement', 'reglementMontant', 'perceptionFiltre' , {name : 'reglementDatePerception', attr : 'value'} ,{ name: 'reglementRefPerception', attr: 'value' }]
-		};
-
-var onSearchChangeView = function() {
-	var searchLength = document.querySelector(".search").value.length
-	document.querySelector(".list").setAttribute("searching", searchLength > 0 ? "true" : "false");
-}
-
-var rlgList = new List('reglementsContainer', options);
-rlgList.on("searchComplete", onSearchChangeView);
-rlgList.on("searchStart", onSearchChangeView);
-
-var seachMe = function(span){
-	document.querySelector(".search").value = span.innerHTML;
-	document.querySelector(".search").dispatchEvent(new Event("keyup"));
-}
-
-</script>
