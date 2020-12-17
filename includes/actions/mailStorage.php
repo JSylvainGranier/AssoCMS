@@ -32,6 +32,10 @@ if($action == "list"){
 			continue;
 		}
 		
+		if(is_null($aMail->expediteur)){
+		    continue;
+		}
+		
 		if($aMail->destinataire == "EMAIL_ON_ERROR"){
 			continue;
 		}

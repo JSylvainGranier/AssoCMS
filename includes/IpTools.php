@@ -24,7 +24,7 @@ function blackListIp($newIp){
 	
 	$exceptions = array(
 			"66.249.66.172" //Google Bot.
-			
+			, "109.31.71.129" //Ma maison Parmentier
 	);
 	
 	if(in_array($newIp, $exceptions)){
