@@ -12,7 +12,7 @@ if (array_key_exists ( "createNewUser", $ARGS )) {
 	// User déjà instancié, et vide.
 } else if (array_key_exists ( "idPersonne", $ARGS )) {
 	
-	if (! Roles::canAdministratePersonne ()) {
+    if (! Roles::canAdministratePersonne () && $ARGS["idPersonne"] != $SESSION["userId"]) {
 		throw new Exception ( "Vous n'êtes pas habilité à créer ou modifier un autre profil utilisateur que le votre." );
 	}
 	
