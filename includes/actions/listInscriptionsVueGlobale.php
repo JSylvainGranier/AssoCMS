@@ -1,6 +1,6 @@
 <?php 
 
-$page->setStandardOuputDisabled ( true );
+$page->append ( "Vue Globale" );
 
 if (! Roles::isGestionnaire()) {
 	header ( "HTTP/1.0 403 Forbidden" );
@@ -16,8 +16,8 @@ join produit prt on prt.idProduit = ipp.fkProduit
 where i.etat in (20,50)
 order by p.nom, p.prenom");
 
-echo var_dump($arr);
 
 
+$page->append ( print_r($arr, true) );
 
 ?>
