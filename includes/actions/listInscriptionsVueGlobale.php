@@ -9,7 +9,7 @@ if (! Roles::isGestionnaireCategorie()) {
 	die ();
 }
 
-$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkPersonne = p.idPersonne LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit WHERE i.etat IS NULL  OR i.etat IN ( 20, 50 )  ORDER BY p.nom, p.prenom");
+$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkInscription = i.idInscription LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit ORDER BY p.nom, p.prenom");
 $tb = array();
 
 $regs = Persistant::getDataFromQuery("SELECT * from reglement where dateEcheance < now()");
@@ -24,6 +24,7 @@ foreach($arr as $i => $rw){
         $arrPersonne["nom"] = $rw["nom"];
         $arrPersonne["prenom"] = $rw["prenom"];
         $arrPersonne["email"] = $rw["email"];
+        $arrPersonne["etat"] = $rw["etat"];
         $arrPersonne["telPortable"] = $rw["telPortable"];
         
         
@@ -74,7 +75,7 @@ foreach($tb as $i => $rw){
     foreach($prods as $ap){
         $pchecks .= "<td>";
         $varName = "p".$ap->idProduit;
-        if(array_key_exists($varName, $rw)){
+        if(array_key_exists($varName, $rw) && $rw["etat"] > 0){
             $pchecks .= "X";
             $ap->count += 1;
         }
