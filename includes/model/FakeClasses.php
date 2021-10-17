@@ -10,3 +10,8 @@ class Famille {
     
 }
 ;
+
+class InscriptionsVueGlobale {
+    
+}
+;
