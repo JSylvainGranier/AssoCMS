@@ -1,0 +1,77 @@
+<h1>Vue globale des inscriptions</h1>
+
+<style>
+	.vgt {
+		border-collapse: separate; /* Don't collapse */
+  		border-spacing: 0;
+	}
+
+	.vgt td {
+		border : solid 1px #F8F8F8;
+		border-bottom : solide 1px gray;
+		text-align: center;
+		padding : 5px;
+	}
+	
+	.vgt tr:hover td {
+		background-color: #D2FFA1;
+	}
+	
+	.sDiscret {
+		color : gray;
+	}
+	
+	.sDebiteur {
+		background-color: #F0A391;
+	}
+	
+	.sCrediteur {
+		background-color: #C4EEF7;
+	}
+	
+	tr:nth-child(even) {background: #f3f8ff; }
+	tr:nth-child(odd) {background: #FFFAF3; }
+
+	th {
+	  position: -webkit-sticky;
+	  position: sticky;
+	  top: 0;
+	  z-index: 2;
+	  text-align: center;
+	  
+	  border-left : solid 1px gray;
+	  border-right : solid 1px gray;
+	  
+	  background-color: white;
+	}
+	
+	th:not(.no-sort){
+		cursor : pointer;
+	}
+
+</style>
+
+<table class="vgt sortable">
+	<thead>
+		<tr>
+			<th>Nom</th>
+			<th>Prénom</th>
+			<th>Téléphone</th>
+			<th>eMail</th>
+			$pCells$
+			<th>Solde au $now$</th>
+			<th class="no-sort">Profil</th>
+			<th class="no-sort">Inscription</th>
+		</tr>
+	</thead>
+	<tbody>
+		$tbody$
+	</tbody>
+	<tfoot>
+		$tfoot$
+	</tfoot>
+</table>
+
+
+<link href="ressources/sortables.min.css" rel="stylesheet" />
+<script src="ressources/sortable.min.js"></script>

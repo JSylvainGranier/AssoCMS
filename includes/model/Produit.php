@@ -85,4 +85,10 @@ class Produit extends HasMetaData {
         return $ret;
     }
     
+    public function getAll() {
+        $query = "select * from produit order by produitOrdre";
+        $objList = $this->getObjectListFromQuery ( $query );
+        return $objList;
+    }
+    
 }
