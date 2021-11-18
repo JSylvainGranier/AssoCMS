@@ -254,7 +254,7 @@ class Inscription extends HasMetaData {
 		    $prdt = $anIpp->getProduit();
 
 		    $pil = array();
-            $pil["quantite"] = $anIpp->quantite;
+            
 		    
 		    if(array_key_exists($prdt->idProduit, $produitList)){
 		        $pil = $produitList[$prdt->idProduit];
@@ -268,6 +268,7 @@ class Inscription extends HasMetaData {
 		        
 		    }
 		    
+            $pil["quantite"] = $anIpp->quantite;
 		    $pil["personnes"][] = $anIpp->getPersonne();
 		    $produitList[$prdt->idProduit] = $pil;
 		}
@@ -283,7 +284,6 @@ class Inscription extends HasMetaData {
 		usort($produitList, "cmp");
 		
 		foreach($produitList as $pid => $pil){
-            echo print_r($pil);
 
 		    $h .= "<h2>{$pil["produit"]->libelle} </h2>";
 		    
