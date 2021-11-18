@@ -286,7 +286,7 @@ class Inscription extends HasMetaData {
 		    
 		    $h .= "<p class='description'>{$pil["produit"]->description}</p>";
 
-            $h .= "<p class='persInscrites'><u>Quantité souscrite :</u> ".$pil['quantite']."</p>";
+            $h .= "<p class='persInscrites'><u>Quantité souscrite :</u> ".$pil["quantite"]."</p>";
 		    
 		    $h .= "<p class='persInscrites'><u>Personnes inscrites :</u> ";
 		    
