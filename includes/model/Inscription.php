@@ -250,7 +250,7 @@ class Inscription extends HasMetaData {
 		$produitList = array();
 		
 		foreach($ippList as $anIpp){
-            echo print_r($anIpp);
+            
 		    $prdt = $anIpp->getProduit();
 
 		    $pil = array();
@@ -283,6 +283,8 @@ class Inscription extends HasMetaData {
 		usort($produitList, "cmp");
 		
 		foreach($produitList as $pid => $pil){
+            echo print_r($pil);
+
 		    $h .= "<h2>{$pil["produit"]->libelle} </h2>";
 		    
 		    $h .= "<p class='description'>{$pil["produit"]->description}</p>";
