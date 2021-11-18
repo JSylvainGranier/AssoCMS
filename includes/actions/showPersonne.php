@@ -192,6 +192,10 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         */
         
         foreach($ipp->getAllForInscription($iscp->idInscription) as $produitLigne){
+            $qt = "";
+            if($produitLigne->quantite > 1){
+                $qt = " (x ".$produitLigne->quantite.")";
+            }
             $lignes[] = "<li class='produitLigne' >{$produitLigne->getProduit()->libelle} pour {$produitLigne->getPersonne()->prenom}</li>";
         }
         
