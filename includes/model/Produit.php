@@ -67,7 +67,7 @@ class Produit extends HasMetaData {
     }
     
     public function getInscritsOuPasSurCeProduit(){
-        $q = "select pers.idPersonne, pers.idFamille, pers.nom, pers.prenom, ipp.fkProduit, i.etat
+        $q = "select pers.idPersonne, pers.idFamille, pers.nom, pers.prenom, ipp.fkProduit, i.etat, ipp.quantite
         from personne pers
         left outer join inscription_personne_produit ipp on ipp.fkPersonne = pers.idPersonne
         left outer join inscription i on i.idInscription = ipp.fkInscription
