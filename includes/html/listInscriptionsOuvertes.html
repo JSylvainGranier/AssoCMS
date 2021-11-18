@@ -214,6 +214,35 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
     	zoom : 103%;
     }
 
+	/* input radio pour les produits à quantité livre */
+	input[type='radio'] {
+		display: none;
+	}
+
+	input[type='radio'] ~ label  {
+		border-radius: 3pt;
+		box-shadow: 0 0 5px transparent;
+		padding : 0.4em;
+		cursor: pointer;
+		font-weight: bold;
+		width: 1em;
+		height: 1em;
+		transition: background-color 1s;
+	}
+
+	input[type='radio']:checked ~ label  {
+		transition: background-color 1s;
+		box-shadow: 0 0 5px black; 
+		background: rgb(14,121,9);
+		background: radial-gradient(circle, rgba(14,121,9,1) 0%, rgba(180,191,72,1) 100%);
+		color : white;
+	}
+
+
+
+
+
+
 </style>
 
 <div class="requirementNoFullFilled">
@@ -264,6 +293,8 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
         </div>
 </div>
 
+
+
 <template id="produitTemplate">
 	<div class="produitContainer">
 		<h2 produitTitre></h2>
@@ -274,6 +305,7 @@ Si vous rencontrez des difficultés pour vous inscrire, vous pouvez nous adresse
 				<b>Personne(s) à inscrire :</b> 
 				<ul produitPersonnesAInscrire>
 				</ul>
+				
 			</div>
 		</div>
 		<div produitConditions>
@@ -367,6 +399,9 @@ var renderProduitList = function(){
 			};
 			
 			var quantiteLibreEacherator = function(personne){
+
+				/*
+
 				var persCbx = document.createElement("LI");
 				persCbx.innerHTML = "<label><input type='checkbox' name='produitPersonneCbx' value='"+personne.idPersonne+"' idproduit='"+produit.idProduit+"' idproduitrequis='"+produit.produitRequis+"'/> "+personne.prenom+" "+personne.nom+"</label>";
 				persCbx.onchange = function(e){
@@ -383,13 +418,60 @@ var renderProduitList = function(){
 					willUpdateSummary();
 					
 				}
+
+				*/
+
+				if(isPersonneDejaInscriteSurProduit(personne.idPersonne, produit.idProduit)){
+					var persCbx = document.createElement("LI");
+					persCbx.innerHTML = "<i> "+personne.prenom+" "+personne.nom+" a déjà fait une réservation pour ceci.</i>";
+					listPersonnes.appendChild(persCbx);
+					return;
+				}
+
+				var btnGroup = `
+
+				<span>
+					<input id='cbx0-`+produit.idProduit+`' checked="checked" onchange="quantiteLibreInputOnChange(event)" value="0" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx0-`+produit.idProduit+`'>0</label>
+				</span>
+				<span>
+					<input id='cbx1-`+produit.idProduit+`' onchange="quantiteLibreInputOnChange(event)" value="1" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx1-`+produit.idProduit+`'>1</label>
+				</span>
+				<span>
+					<input  id='cbx2-`+produit.idProduit+`' onchange="quantiteLibreInputOnChange(event)" value="2" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx2-`+produit.idProduit+`'>2</label>
+				</span>
+				<span>
+					<input id='cbx3-`+produit.idProduit+`' onchange="quantiteLibreInputOnChange(event)" value="3" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx3-`+produit.idProduit+`'>3</label>
+				</span>
+				<span>
+					<input id='cbx4-`+produit.idProduit+`' onchange="quantiteLibreInputOnChange(event)" value="4" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx4-`+produit.idProduit+`'>4</label>
+				</span>
+				<span>
+					<input id='cbx5-`+produit.idProduit+`' onchange="quantiteLibreInputOnChange(event)" value="5" type="radio" name="produitPersonneCbx" idproduit='`+produit.idProduit+`' idproduitrequis='`+produit.produitRequis+`' idpersonne='`+personne.idPersonne+`'/>
+					<label for='cbx5-`+produit.idProduit+`'>5</label>
+					</span>	
+				`;
+
 				
-				listPersonnes.appendChild(persCbx);
+				
+				var libreInput = document.createElement("LI");
+				libreInput.innerHTML = "Réserver pour " + btnGroup + " personnes au nom de "+personne.prenom+" "+personne.nom;
+				
+				listPersonnes.appendChild(libreInput);
+
 			};
 			
-			
-			
-			config.famille.members.forEach(prod.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
+									
+			//config.famille.members.forEach(produit.quantiteLibre ? quantiteLibreEacherator : quantiteLieAPersonneEacherator);
+			if(produit.quantiteLibre){
+				quantiteLibreEacherator(config.famille.members[0]);
+			} else {
+				config.famille.members.forEach(quantiteLieAPersonneEacherator);
+			}
 			
 			if(produit.conditionsLegales && produit.conditionsLegales.length > 5){
 				var condContainer = clone.querySelector("div[produitConditions]");
@@ -409,6 +491,25 @@ var renderProduitList = function(){
 	
 	
 
+}
+
+var quantiteLibreInputOnChange = function(e){
+	//e.target.value;
+	var quantite = parseInt(e.target.value);
+	var idPersonne = parseInt(e.target.getAttribute("idpersonne"));
+	var idProduit = parseInt(e.target.getAttribute("idproduit"))
+	var inscriptionEtInscriptionProduit = findOrCreateInscriptionForProduit(idPersonne, idProduit);
+	inscriptionEtInscriptionProduit.quantite = quantite;
+	
+	if(e.target.getAttribute("idproduitrequis") !== 'undefined'){
+		if(!isPersonneDejaInscriteSurProduit(idPersonne, e.target.getAttribute("idproduitrequis"))){
+			var produitRequisSouscription = findOrCreateInscriptionForProduit(idPersonne, parseInt(e.target.getAttribute("idproduitrequis")));
+			produitRequisSouscription.quantite = quantite > 0 ? 1 : 0;
+		}
+	}
+	
+	willUpdateSummary();
+	
 }
 
 var isPersonneDejaInscriteSurProduit = function(idPersonne, idProduit){
@@ -787,14 +888,13 @@ if($runJsInit$){
 }
 
 
-
 var findPersonneById = function(idPersonne){
 	return config.famille.members.filter(p => p.idPersonne == idPersonne)[0];
 }
 
 var politiqueTarifaireFixeALaSouscription = function(souscription,libelle, prixUnitaire){
 	return {
-		libelle : libelle + " pour " + findPersonneById(souscription.idPersonne).prenom, 
+		libelle : libelle + (souscription.quantite > 1 ? "(x "+souscription.quantite+")" : " pour " + findPersonneById(souscription.idPersonne).prenom) , 
 		quantite : souscription.quantite, 
 		prixUnitaire : prixUnitaire, 
 		idProduit : souscription.idProduit,
