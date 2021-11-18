@@ -24,8 +24,6 @@ foreach($arr as $i => $rw){
         $arrPersonne["nom"] = $rw["nom"];
         $arrPersonne["prenom"] = $rw["prenom"];
         $arrPersonne["email"] = $rw["email"];
-        $arrPersonne["etat"] = $rw["etat"];
-        $arrPersonne["quantite"] = $rw["quantite"];
         $arrPersonne["telPortable"] = $rw["telPortable"];
         
         
@@ -39,6 +37,9 @@ foreach($arr as $i => $rw){
     }
     if(isset($rw["idProduit"])){
         $arrPersonne["p".$rw["idProduit"]] = true;
+        $arrPersonne["e".$rw["idProduit"]] = $rw["etat"];
+        $arrPersonne["q".$rw["idProduit"]] = $rw["quantite"];
+
     } else {
         
     }
@@ -76,9 +77,9 @@ foreach($tb as $i => $rw){
     foreach($prods as $ap){
         $pchecks .= "<td>";
         $varName = "p".$ap->idProduit;
-        if(array_key_exists($varName, $rw) && $rw["etat"] > 0){
+        if(array_key_exists($varName, $rw) && $rw["e".$rw["idProduit"] > 0){
             
-            for($qt = 0; $qt < $rw["quantite"]; $qt++){
+            for($qt = 0; $qt < $rw["q".$rw["idProduit"]; $qt++){
                 $pchecks .= "X&nbsp;";
                 $ap->count += 1;
             }
