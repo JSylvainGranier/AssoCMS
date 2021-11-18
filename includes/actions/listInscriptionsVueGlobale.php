@@ -25,6 +25,7 @@ foreach($arr as $i => $rw){
         $arrPersonne["prenom"] = $rw["prenom"];
         $arrPersonne["email"] = $rw["email"];
         $arrPersonne["etat"] = $rw["etat"];
+        $arrPersonne["quantite"] = $rw["quantite"];
         $arrPersonne["telPortable"] = $rw["telPortable"];
         
         
