@@ -76,10 +76,15 @@ foreach($tb as $i => $rw){
         $pchecks .= "<td>";
         $varName = "p".$ap->idProduit;
         if(array_key_exists($varName, $rw) && $rw["etat"] > 0){
+            /*
             for($qt = 0; $qt < $rw["quantite"]; $qt++){
                 $pchecks .= "X&nbsp;";
                 $ap->count += 1;
             }
+            */
+
+            $pchecks .= "X (".$rw["quantite"].")";
+            $ap->count += 1;
             
         }
         $pchecks .= "</td>";
