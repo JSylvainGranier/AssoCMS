@@ -196,7 +196,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             if($produitLigne->quantite > 1){
                 $qt = " (x ".$produitLigne->quantite.")";
             }
-            $lignes[] = "<li class='produitLigne' >{$produitLigne->getProduit()->libelle} pour {$produitLigne->getPersonne()->prenom}</li>";
+            $lignes[] = "<li class='produitLigne' >{$produitLigne->getProduit()->libelle} pour {$produitLigne->getPersonne()->prenom}{$qt}</li>";
         }
         
         sort($lignes);
