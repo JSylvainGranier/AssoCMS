@@ -251,8 +251,9 @@ class Inscription extends HasMetaData {
 		
 		foreach($ippList as $anIpp){
 		    $prdt = $anIpp->getProduit();
-		    
+
 		    $pil = array();
+            $pil["quantite"] = $anIpp->quantite;
 		    
 		    if(array_key_exists($prdt->idProduit, $produitList)){
 		        $pil = $produitList[$prdt->idProduit];
@@ -284,6 +285,8 @@ class Inscription extends HasMetaData {
 		    $h .= "<h2>{$pil["produit"]->libelle} </h2>";
 		    
 		    $h .= "<p class='description'>{$pil["produit"]->description}</p>";
+
+            $h .= "<p class='persInscrites'><u>Quantité souscrite :</u> ".$pil['quantite']."</p>";
 		    
 		    $h .= "<p class='persInscrites'><u>Personnes inscrites :</u> ";
 		    
