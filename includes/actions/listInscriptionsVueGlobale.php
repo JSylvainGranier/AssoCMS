@@ -77,9 +77,11 @@ foreach($tb as $i => $rw){
     foreach($prods as $ap){
         $pchecks .= "<td>";
         $varName = "p".$ap->idProduit;
-        if(array_key_exists($varName, $rw) && $rw["e".$rw["idProduit"] > 0){
+        $etat = $rw["e".$rw["idProduit"]];
+        $quantite = $rw["q".$rw["idProduit"]];
+        if(array_key_exists($varName, $rw) && $etat > 0){
             
-            for($qt = 0; $qt < $rw["q".$rw["idProduit"]; $qt++){
+            for($qt = 0; $qt < $quantite; $qt++){
                 $pchecks .= "X&nbsp;";
                 $ap->count += 1;
             }
