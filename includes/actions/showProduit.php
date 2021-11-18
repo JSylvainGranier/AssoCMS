@@ -29,30 +29,30 @@ foreach ( $produit->getInscritsOuPasSurCeProduit() as $data ) {
     //$li = "<li><a href='index.php?list&class=InscriptionsOuvertes&forceFamily={$data['idFamille']}'>{$data['nom']} {$data['prenom']}</a>";
     
     $qt = "";
+    $nbComptabiliser = 1;
     if($data["quantite"] > 1){
         $qt = " (x ".$data["quantite"].")";
-        $nbNonInscrit --; //C'est pour contrebalancer le $nbNonInscrit++; qu'il y a dans chaque blocs suivants.
-        $nbNonInscrit += $data["quantite"];
+        $nbComptabiliser = $data["quantite"];
     }
     
     if(is_null($data["etat"])){
         $target = "nonInscrits";
         $li = "<li><a href='index.php?list&class=InscriptionsOuvertes&forceFamily={$data['idFamille']}'>{$data['nom']} {$data['prenom']}</a> {$qt}";
-        $nbNonInscrit++;
+        $nbNonInscrit += $nbComptabiliser;
         
     } else if($data["etat"] == 20){
         $target = "enCours";
         $li = "<li><a href='index.php?show&class=Personne&id={$data['idPersonne']}'>{$data['nom']} {$data['prenom']}</a> {$qt}";
-        $nbEnCours++;
+        $nbEnCours += $nbComptabiliser;
         
     } else if($data["etat"] == 50){
         $target = "inscrits";
         $li = "<li><a href='index.php?show&class=Personne&id={$data['idPersonne']}'>{$data['nom']} {$data['prenom']}</a> {$qt}";
-        $nbInscrit++;
+        $nbInscrit += $nbComptabiliser;
     } else if($data["etat"] == 70){
         $target = "archive";
         $li = "<li><a href='index.php?show&class=Personne&id={$data['idPersonne']}'>{$data['nom']} {$data['prenom']}</a> {$qt}";
-        $nbArchive++;
+        $nbArchive += $nbComptabiliser;
     }
     
     $page->append($target, $li);
