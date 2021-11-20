@@ -125,6 +125,15 @@ class Personne extends HasMetaData {
 		
 		return $this->getOneObjectOrNullFromQuery ( $sql );
 	}
+	public function matchConnectByLink($email, $directLinkHash){
+
+		
+		//SELECT email, md5(concat(idPersonne, email, passwordHash)) FROM `personne` WHERE 1
+		$sql = "select * from personne where  md5(concat(idPersonne, email, passwordHash))  = '{$directLinkHash}'";
+		
+		return $this->getOneObjectOrNullFromQuery ( $sql );	
+
+	}
 	public function findByEmail($email) {
 		$sql = "select * from personne where email = '{$email}'";
 		

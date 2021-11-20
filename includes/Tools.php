@@ -117,7 +117,7 @@ function secureGet(){
 	$regex = "/-?[0-9]{1,10}|[A-Z_a-z]{1,30}/";
 	
 	$HashRegex = "/-?[0-9_abcdef]{1,70}/";
-	$hashExceptionKeys = array("reactivateAccount","unsuscribe");
+	$hashExceptionKeys = array("reactivateAccount","unsuscribe","connectByLink", "link");
 	
 	$keys = array_keys($_GET);
 	
@@ -188,6 +188,8 @@ function securePost(){
 			$allowedForLoginAndRedirection = "login|visiblepw|pw|requestBeforeLogin";
 			$allowedForPostEndOfRegeneration = "reactivateAccount|idPersonne|visiblenpwa|npwa|visiblenpwb|npwb|mailText";
 			$allowedForContact = "email|message|g-recaptcha-response";
+						
+
 			if(!array_key_exists_r($allowedForLogin, $_POST) 
 			    && !array_key_exists_r($allowedForLoginAndRedirection, $_POST) 
 			    && !array_key_exists_r($allowedForPostEndOfRegeneration, $_POST)

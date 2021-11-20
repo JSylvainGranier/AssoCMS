@@ -32,8 +32,16 @@ if ($isTest) {
 			$token = md5($dest->email);
 			$link = SITE_ROOT."index.php?unsuscribe=".$token;
 			$desabo = "<p>Vous préférez ne plus recevoir d'email ? <a href=".$link.">Cliquez ici.</a> </p>";
+
+			////SELECT email, md5(concat(idPersonne, email, passwordHash)) FROM `personne` WHERE 1
+			$direckLink = md5($dest->idPersonne.$dest->email.$dest->passwordHash);
+			$direckLink = SITE_ROOT."index.php?login&phase=connectByLink&link=".$direckLink;
+
+			$autolink = "<p style='font-family : italic; background-color : #FFAC24; color : #004B91; padding : 5px;'>Vous retrouverez toutes ces informations sur le site de l'association, y compris la possibilité de vous inscrire lorsque cela est nécessaire. <br/>
+			Votre mot de passe personnel vous sera demandé pour accéder à toutes les fonctionnalités du site.  <br />
+			<a href='{$direckLink}'>Mais si vous l'avez perdu, cliquez simplement ici. </a> <br /> Vous arriverez directement connecté à votre compte.</p>";
 			
-			$content = $publipostage->message.$desaboPreamb.$desabo;
+			$content = $publipostage->message.$autolink.$desaboPreamb.$desabo;
 			
 			sendSimpleMail ( "[" . SITE_TITLE . "] " . $publipostage->objet, $content, $email, false );
 			

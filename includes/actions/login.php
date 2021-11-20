@@ -277,6 +277,58 @@ if (! $stopScript) {
 			}
 			
 			break;
+
+		case "connectByLink" :
+
+				if(Roles::isMembre()){
+					
+					$page->appendNotification ( "Vous êtes déjà connecté(e) 😉 " );
+					$ACTIONS [] = array (
+							"home"
+					);
+					return;
+				}
+			
+				$personne = $personne->matchConnectByLink ( $ARGS ["login"], $ARGS ["link"] );
+				
+				if (! is_null ( $personne )) {
+					
+
+					if( isset ($ARGS["g-recaptcha-response"]) && strlen($ARGS["g-recaptcha-response"]) > 30){
+						if($personne->allowedToConnect){
+							prepareUserSession ( $personne );
+							
+							// Maintenant que l'utilisateur est loggué, s'il essayais de faire quelque chose avant, on le fait maintenant.
+							restaureActionBeforeLogin ();
+							
+							$page->appendNotification ( "Bonjour " . $_SESSION ["userName"] . " !" . getTrombiMessageFor($personne), 15 );   
+						} else {
+							$page->appendBody ( file_get_contents ( "includes/html/ath-notLogged.html" ) );
+							$page->asset ( "login", $ARGS ["login"] );
+							$page->appendNotification ( "Vos identifiants sont corrects, mais votre compte n'est pas encore activé. <br />Votre compte sera actif dès que votre inscription sera validée." );
+						}
+					} else {
+
+						$page->appendBody ( file_get_contents ( "includes/html/ath-directLinkCheckRobot.html" ) );
+
+						$date = new MyDateTime();
+						$dfa = intval($date->format("H")) > 17 ? "Bonsoir " : "Bonjour ";
+
+						$page->asset ( "geeting", $dfa.$personne->prenom );
+
+					}
+
+					
+					
+					
+				} else {
+					
+					$page->appendBody ( file_get_contents ( "includes/html/ath-notLogged.html" ) );
+					$page->asset ( "login", $ARGS ["login"] );
+					$page->appendNotification ( "Erreur lors de la connexion avec le lien direct" );
+				}
+				
+				break;
 		
 		default :
 			throw new Exception ( "Erreur dans le processus de connexion : la phase '{$ARGS["phase"]}' n'existe pas." );
