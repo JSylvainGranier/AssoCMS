@@ -1,9 +1,4 @@
-<h1>Règlements en attente de perception au <form method="get" action="index.php">
-	<input type="hidden" name="list" value="u" />
-	<input type="hidden" name="class" value= "Reglement" />
-	<input name="datePerception" value="$datePerception$" type="date" style="font-weight : bold; font-size : 0.8em;" />
-	<input type="submit" value="Ok" name="ok" />
-	</form></h1>
+<h1>Eèglement des inscriptions au <input name="datePerception" value="$datePerception$" type="date" style="font-weight : bold; font-size : 0.8em;" /></h1>
 <script src="ressources/list.js" ></script>
 
 <style>
@@ -66,14 +61,64 @@ form {
 	margin-left: 1em;
 }
 
+.cashScreenMainContainer {
+	display: flex;
+}
+
+.cashScreenPersonnes {
+
+}
+
 </style>
 
+<h1>Caisse</h1>
 
-<div id="reglementsContainer">
+<div class="cashScreenMainContainer">
+
+	<div class="cashScreenPersonnes">
+
+		<div class="filtresContainer">
+			<label><input type="checkbox"> Débit </label>
+			<label><input type="checkbox"> Crédit </label>
+			<label><input type="checkbox"> à 0 </label>
+			<label><input type="search"> </label>
+		</div>
+
+		<div id="reglementsContainer">
 
 
-<ul class="list" searching='false'>
-	$reglements$
-</ul>
+		<ul class="list" searching='false'>
+			$reglements$
+		</ul>
+		</div>
+	</div>
+
+	<div>
+		<div>
+			<h1>Saisie règlement</h1>
+
+			Personne
+
+			Montant et date valeur
+
+			Mode (et saisie anneces)
+
+			Inclure ce règlement à ma prochaine remise en banque
+
+			<input type="submit" value="Enregistrer" class="adminLink">
+		</div>
+		
+		<div>
+			<h1>Ma prochaine remise en banque</h1>
+
+			<input type="submit" value="Consulter" class="adminLink">
+		</div>
+
+
+
+	</div>
+
 </div>
+
+
 
