@@ -9,7 +9,7 @@ if (! Roles::isGestionnaireCategorie()) {
 	die ();
 }
 
-$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, ipp.quantite, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkInscription = i.idInscription LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit ORDER BY p.nom, p.prenom");
+$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, ipp.quantite, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkInscription = i.idInscription  and ipp.fkPersonne = p.idPersonne  LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit ORDER BY p.nom, p.prenom");
 $tb = array();
 
 $regs = Persistant::getDataFromQuery("SELECT * from reglement where dateEcheance < now()");
