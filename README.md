@@ -1,2 +1,2 @@
 # AssoCMS
-CMS pour Association, dédié à VISA30
+CMS pour Association, dédié à une association dans le gard. 

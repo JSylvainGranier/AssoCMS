@@ -44,10 +44,6 @@ foreach($arr as $i => $rw){
         
     }
     
-    
-    
-   
-    
     $tb[$rw["idPersonne"]] = $arrPersonne;
 }
 
