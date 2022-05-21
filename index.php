@@ -51,7 +51,7 @@ $notAthNeedForActions = array (
         "cron",
         "contact",
 		"install",
-		"mailStorage",
+		"mailSessionSpool",
 		"cron",
 		"sitemap",
 		"unsuscribe",

@@ -41,7 +41,7 @@ function callServeur(url, callbackSuccess, callbackError, inGet, postData){
         if (xhr.readyState == 4){
         	if (xhr.status == 200 || xhr.status == 0) {
         		try{
-        			var jsonRep = eval(xhr.responseText);
+        			var jsonRep = JSON.parse(xhr.responseText);
 	        		callbackSuccess(jsonRep);
         		} catch ( i) {
         			callbackError("Oups : "+i);
@@ -102,4 +102,105 @@ function removeOptions(selectbox)
     {
         selectbox.remove(i);
     }
+}
+
+var inMailling = null;
+
+var mailPoolingEffort = function(){
+	var callBackFnc = function(rep){
+		if(rep.emails){
+			inMailling = rep.emails;
+			mailStartTransfert(rep);
+
+			/*
+
+			var url = "/index.php?mailSessionSpool&action=confirm&idMails=0";
+		
+			inMailling.forEach(function(aMail){
+				url += "M"+aMail.idMail;
+			});
+
+
+			callServeur(url, 
+				mailEndConfirm, 
+				mailEndConfirm, 
+				true 
+			)
+			*/
+
+		}
+	};
+	callServeur('/index.php?mailSessionSpool&action=request', 
+			callBackFnc, 
+			callBackFnc, 
+			true 
+			)
+}
+
+function mailEndConfirm(rep){
+
+}
+
+function mailEndTransfert(rep){
+	if (this.readyState == 4 && this.status < 300) {
+ 
+		// Response
+		var response = this.responseText; 
+		
+		console.log(response);
+
+		var url = "/index.php?mailSessionSpool&action=confirm&idMails=0";
+		
+		inMailling.forEach(function(aMail){
+			url += ","+aMail.idMail;
+		});
+
+
+		callServeur(url, 
+			mailEndConfirm, 
+			mailEndConfirm, 
+			true 
+		)
+
+	 }
+}
+
+function mailStartTransfert(dt){
+
+	try {
+		var xhttp = new XMLHttpRequest();
+		xhttp.open("POST", "https://api.sendinblue.com/v3/smtp/email", true);
+		xhttp.setRequestHeader('api-key', dt.key);
+		xhttp.setRequestHeader('accept', 'application/json');
+		xhttp.setRequestHeader('content-type', 'application/json');
+		
+		xhttp.onreadystatechange = mailEndTransfert;
+	
+		var firstMail = dt.emails[0];
+	
+		var dests = [];
+	
+		dt.emails.forEach(function(aMail){
+			dests.push({email: aMail.destinataire ,name: aMail.destinataire});
+		});
+		
+		var data = {
+			sender:{email:"visa30@free.fr",name:"Association VISA30"},
+			subject: firstMail.objet,
+			htmlContent: firstMail.message,
+			messageVersions:[
+				{
+					to: dests,
+					subject : firstMail.objet
+				}
+			]
+		};
+		xhttp.send(JSON.stringify(data));
+	} catch (e){
+		console.log(e);
+	}
+
+	
+
+
 }

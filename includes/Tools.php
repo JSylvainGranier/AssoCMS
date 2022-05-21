@@ -17,6 +17,8 @@ function sendSimpleMail($object, $message, $to, $immediately = false) {
 	}
 	
 	$mail->save ();
+
+	$_SESSION['mailSessionSpool'] = array($mail);
 	
 	/*
 	if ($immediately) {
@@ -108,7 +110,7 @@ function checkClassForAdminRestiction($class){
 	}
 	
 }
-$GET_ALLOW_EXCEPTION = array ("resumableType","resumableIdentifier", "resumableFilename", "resumableRelativePath", "random", "key", "q", "datePerception");
+$GET_ALLOW_EXCEPTION = array ("resumableType","resumableIdentifier", "resumableFilename", "resumableRelativePath", "random", "key", "q", "datePerception", "idMails");
 
 function secureGet(){
 	global $ARGS;

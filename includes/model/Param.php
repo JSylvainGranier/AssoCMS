@@ -17,6 +17,7 @@ final class PKeys {
 	public static $PROPOSITION_ALERT_LAST_EXEC;
 	public static $CONTACT_EMAIL;
 	public static $CONTACT_TEXT;
+	public static $SNB_API_KEY;
 }
 PKeys::$HOME_TITLE = new ParamKey ( "HOME_TITLE" );
 PKeys::$HOME_TEXT = new ParamKey ( "HOME_TEXT" );
@@ -29,6 +30,7 @@ PKeys::$MAIL_RAPPEL_SET_PASSWORD = new ParamKey ( "MAIL_RAPPEL_SET_PASSWORD" );
 PKeys::$PROPOSITION_ALERT_LAST_EXEC = new ParamKey ( "PROPOSITION_ALERT_LAST_EXEC" );
 PKeys::$CONTACT_EMAIL = new ParamKey ( "CONTACT_EMAIL" );
 PKeys::$CONTACT_TEXT = new ParamKey ( "CONTACT_TEXT" );
+PKeys::$SNB_API_KEY = new ParamKey ( "SNB_API_KEY" );
 class Param extends Persistant {
 	public $pKey;
 	public $pValue;
