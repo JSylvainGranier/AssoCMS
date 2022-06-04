@@ -10,18 +10,42 @@ if($ARGS["action"] == "request"){
     //$e = "k";
 
     if( is_null($e) ) {
+        $mDao = new Mail();
+        $oldMails = $mDao->getNextSpoolContent(500, 3, 8);
+        if(!is_null($oldMails) && count($oldMails) > 0){
+            $e = $oldMails;
+        
+            
+        }
+        
+    }
+
+    if( is_null($e) ) {
         $k = null;
+    } else {
+        foreach($e as $sMail){
+           $sMail->nbTentatives++;
+           $sMail->save();
+        }
+    }
+
+    if($_SERVER['SERVER_NAME'] != 'visa30.free.fr'){
+        $results = array("emails" => $e, "key" => $k, "redirect" => "jsylvain.granier@gmail.com");
+    } else {
+        $results = array("emails" => $e, "key" => $k);
+
     }
     
-    $results = array("emails" => $e, "key" => $k);
     
     
 } else if($ARGS["action"] == "confirm"){
     
 
-    $idMails = explode('M',$ARGS["idMails"]);
+    $idMails = explode(',',$ARGS["idMails"]);
 
      //var_dump($idMails);
+
+     $mail = new Mail();
 
      foreach($idMails as $val){
          $idm = intval($val);
@@ -30,14 +54,17 @@ if($ARGS["action"] == "request"){
             continue;
         }
 
-        $mail = new Mail($idm);
+        
 
-        if( is_null($mail)){
+        $sMail = $mail->findById($idm);
+        
+        if( is_null($sMail)){
             continue;
         }
+        
     
-        $mail->sent = 1;
-        $mail->save();
+        $sMail->sent = 1;
+        $sMail->save();
      }
 
      $results["confirm"] = true;

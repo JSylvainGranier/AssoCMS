@@ -44,6 +44,7 @@ function callServeur(url, callbackSuccess, callbackError, inGet, postData){
         			var jsonRep = JSON.parse(xhr.responseText);
 	        		callbackSuccess(jsonRep);
         		} catch ( i) {
+					console.log(i);
         			callbackError("Oups : "+i);
 				}
         	} else {
@@ -79,6 +80,7 @@ function callServeurPostJson(url, callbackSuccess, callbackError, postJson){
         			var jsonRep = JSON.parse(xhr.responseText);
 	        		callbackSuccess(jsonRep);
         		} catch ( i) {
+					console.log(i);
         			callbackError("Oups : "+i);
 				}
         	} else {
@@ -105,44 +107,52 @@ function removeOptions(selectbox)
 }
 
 var inMailling = null;
+var cloRep = null;
+
+var callBackFncPoolingEffortRequest = function(rep){
+	cloRep = JSON.parse(JSON.stringify(rep));
+	console.log(cloRep);
+	if(cloRep.emails){
+
+		cloRep.groups = [];
+
+		for(var i = 0; i < cloRep.emails.length; i++){
+			var email = cloRep.emails[i];
+			//email.hash =  md5(email.message); MD5 renvoie une promesse... odnc arrive trop tard...
+			email.hash = email.message.length * (email.objet.length * 20);
+
+			if(cloRep.groups[email.hash] === undefined){
+				cloRep.groups[email.hash] = JSON.parse(JSON.stringify(email));
+				cloRep.groups[email.hash].destinataire = new Array();
+			}
+
+			cloRep.groups[email.hash].destinataire.push(email.destinataire);
+		}
+
+
+		inMailling = cloRep.emails;
+		mailStartTransfert();
+
+
+
+	}
+};
 
 var mailPoolingEffort = function(){
-	var callBackFnc = function(rep){
-		if(rep.emails){
-			inMailling = rep.emails;
-			mailStartTransfert(rep);
-
-			/*
-
-			var url = "/index.php?mailSessionSpool&action=confirm&idMails=0";
-		
-			inMailling.forEach(function(aMail){
-				url += "M"+aMail.idMail;
-			});
-
-
-			callServeur(url, 
-				mailEndConfirm, 
-				mailEndConfirm, 
-				true 
-			)
-			*/
-
-		}
-	};
+	
 	callServeur('/index.php?mailSessionSpool&action=request', 
-			callBackFnc, 
-			callBackFnc, 
+		callBackFncPoolingEffortRequest, 
+		function(p){console.log("Erreur sur le retours de MailPoolingEffort", p)}, 
 			true 
 			)
 }
 
 function mailEndConfirm(rep){
-
+	console.log(rep);
 }
 
 function mailEndTransfert(rep){
-	if (this.readyState == 4 && this.status < 300) {
+	if (this.readyState == 4 && (true || this.status < 300)) {
  
 		// Response
 		var response = this.responseText; 
@@ -165,17 +175,17 @@ function mailEndTransfert(rep){
 	 }
 }
 
-function mailStartTransfert(dt){
+function mailStartTransfert(){
 
 	try {
 		var xhttp = new XMLHttpRequest();
 		xhttp.open("POST", "https://api.sendinblue.com/v3/smtp/email", true);
-		xhttp.setRequestHeader('api-key', dt.key);
+		xhttp.setRequestHeader('api-key', cloRep.key);
 		xhttp.setRequestHeader('accept', 'application/json');
 		xhttp.setRequestHeader('content-type', 'application/json');
 		
 		xhttp.onreadystatechange = mailEndTransfert;
-	
+	/*
 		var firstMail = dt.emails[0];
 	
 		var dests = [];
@@ -195,6 +205,53 @@ function mailStartTransfert(dt){
 				}
 			]
 		};
+		*/
+
+		var data = {
+			sender:{email:"visa30@free.fr",name:"Association VISA30"},
+			subject: "sujet de base",
+			htmlContent: "<p>Message de base</p>",
+			messageVersions: new Array()
+		};
+
+
+
+		cloRep.groups.forEach(function(aMail){
+
+
+			var destinatairesDuGroupe = new Array();
+
+			if(cloRep.redirect){
+				destinatairesDuGroupe.push({
+					email : cloRep.redirect,
+					name : cloRep.redirect
+				});
+
+				aMail.destinataire.forEach(function(desti){
+					aMail.message += "<p>Email hors production. Destinataire Original = "+desti+"</p>";
+				});
+
+			} else {
+				aMail.destinataire.forEach(function(desti){
+					destinatairesDuGroupe.push({
+						email : desti,
+						name : desti
+					});
+				});
+			}
+
+			
+
+			data.messageVersions.push({
+				htmlContent : aMail.message,
+				subject : aMail.objet,
+				to : destinatairesDuGroupe
+			});
+		});
+
+
+		console.log(data);
+
 		xhttp.send(JSON.stringify(data));
 	} catch (e){
 		console.log(e);

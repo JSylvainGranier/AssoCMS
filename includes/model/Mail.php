@@ -48,8 +48,8 @@ class Mail extends HasMetaData {
 	 *
 	 * @param int $spoolSize        	
 	 */
-	public function getNextSpoolContent($spoolSize, $maxTentatives) {
-		$sql = "select * from mail where sent = false and destinataire is not null and nbTentatives < {$maxTentatives} order by lastUpdateOn asc limit {$spoolSize}";
+	public function getNextSpoolContent($spoolSize, $maxTentatives, $maxAgeInDays) {
+		$sql = "select * from mail where sent = false and destinataire is not null and nbTentatives < {$maxTentatives} and DATE_ADD(lastUpdateOn , INTERVAL 5 MINUTE) < now() and DATE_ADD(lastUpdateOn , INTERVAL {$maxAgeInDays} DAY) > now()  order by lastUpdateOn asc limit {$spoolSize}";
 		return $this->getObjectListFromQuery ( $sql );
 	}
 	
