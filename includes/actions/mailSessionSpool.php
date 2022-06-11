@@ -18,6 +18,8 @@ if($ARGS["action"] == "request"){
             
         }
         
+    } else {
+        unset($_SESSION['mailSessionSpool']);
     }
 
     if( is_null($e) ) {
