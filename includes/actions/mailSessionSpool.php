@@ -11,7 +11,8 @@ if($ARGS["action"] == "request"){
 
     if( is_null($e) ) {
         $mDao = new Mail();
-        $oldMails = $mDao->getNextSpoolContent(500, 3, 8);
+        $spoolSize = Param::getValue ( PKeys::$MAIL_SPOOL_SIZE );
+        $oldMails = $mDao->getNextSpoolContent($spoolSize, 3, 8);
         if(!is_null($oldMails) && count($oldMails) > 0){
             $e = $oldMails;
         
