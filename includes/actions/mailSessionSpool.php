@@ -9,7 +9,7 @@ if($ARGS["action"] == "request"){
     $e = $_SESSION['mailSessionSpool'];
     //$e = "k";
 
-    if( is_null($e) ) {
+    if(true || is_null($e) ) {
         $mDao = new Mail();
         $spoolSize = Param::getValue ( PKeys::$MAIL_SPOOL_SIZE );
         $oldMails = $mDao->getNextSpoolContent($spoolSize, 3, 8);

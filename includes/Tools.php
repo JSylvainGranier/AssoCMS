@@ -18,7 +18,7 @@ function sendSimpleMail($object, $message, $to, $immediately = false) {
 	
 	$mail->save ();
 
-	$_SESSION['mailSessionSpool'] = array($mail);
+	//$_SESSION['mailSessionSpool'] = array($mail);
 	
 	/*
 	if ($immediately) {
