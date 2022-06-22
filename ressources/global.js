@@ -240,13 +240,15 @@ function mailStartTransfert(){
 				});
 			}
 
-			
-
-			data.messageVersions.push({
-				htmlContent : aMail.message,
-				subject : aMail.objet,
-				to : destinatairesDuGroupe
+			destinatairesDuGroupe.forEach(function(desti){
+				data.messageVersions.push({
+					htmlContent : aMail.message,
+					subject : aMail.objet,
+					to : [desti]
+				});
 			});
+
+			
 		});
 
 
