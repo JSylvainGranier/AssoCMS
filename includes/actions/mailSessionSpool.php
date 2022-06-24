@@ -45,8 +45,8 @@ if($ARGS["action"] == "request"){
     
     
     
-} else if($ARGS["action"] == "confirm"){
-    
+} else if(false /* $ARGS["action"] == "confirm" */){
+   
 
     $idMails = explode(',',$ARGS["idMails"]);
 
@@ -70,8 +70,8 @@ if($ARGS["action"] == "request"){
         }
         
     
-        //$sMail->sent = 1;
-        //$sMail->save();
+        $sMail->sent = 1;
+        $sMail->save();
      }
 
      $results["confirm"] = true;
