@@ -28,7 +28,7 @@ if($ARGS["action"] == "request"){
     } else {
         $mDao2 = new Mail();
         foreach($e as $sMail){
-            $mFromDb = $mDao2->findById($sMail->id); 
+            $mFromDb = $mDao2->findById($sMail->idMail); 
 
             $mFromDb->nbTentatives++;
             $mFromDb->save();
