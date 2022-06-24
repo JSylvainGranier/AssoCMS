@@ -16,7 +16,7 @@ function sendSimpleMail($object, $message, $to, $immediately = false) {
 		$mail->expediteur = $personne->email;
 	}
 	
-	$mail->save ();
+	return $mail->save ();
 
 	//$_SESSION['mailSessionSpool'] = array($mail);
 	

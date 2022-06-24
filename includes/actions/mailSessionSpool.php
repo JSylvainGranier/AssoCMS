@@ -26,9 +26,12 @@ if($ARGS["action"] == "request"){
     if( is_null($e) ) {
         $k = null;
     } else {
+        $mDao2 = new Mail();
         foreach($e as $sMail){
-           $sMail->nbTentatives++;
-           $sMail->save();
+            $mFromDb = $mDao2->findById($sMail->id); 
+
+            $mFromDb->nbTentatives++;
+            $mFromDb->save();
         }
     }
 
