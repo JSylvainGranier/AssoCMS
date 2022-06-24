@@ -1,4 +1,5 @@
 <?php
+unset($_SESSION['mailSessionSpool']);
 
 $results = array();
 
