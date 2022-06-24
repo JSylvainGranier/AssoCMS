@@ -30,8 +30,9 @@ if($ARGS["action"] == "request"){
         foreach($e as $sMail){
             $mFromDb = $mDao2->findById($sMail->idMail); 
 
-            //$mFromDb->nbTentatives++;
-            //$mFromDb->save();
+            $mFromDb->nbTentatives = 1;
+            $mFromDb->sent = true;
+            $mFromDb->save();
         }
     }
 
@@ -69,8 +70,8 @@ if($ARGS["action"] == "request"){
         }
         
     
-        $sMail->sent = 1;
-        $sMail->save();
+        //$sMail->sent = 1;
+        //$sMail->save();
      }
 
      $results["confirm"] = true;
