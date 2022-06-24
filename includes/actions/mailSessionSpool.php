@@ -30,8 +30,8 @@ if($ARGS["action"] == "request"){
         foreach($e as $sMail){
             $mFromDb = $mDao2->findById($sMail->idMail); 
 
-            $mFromDb->nbTentatives++;
-            $mFromDb->save();
+            //$mFromDb->nbTentatives++;
+            //$mFromDb->save();
         }
     }
 
