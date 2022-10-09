@@ -6,6 +6,7 @@ if(!Roles::isSuperAdmin()){
 
 $iscp = new Inscription();
 $iscp->clearOldBrouillons();
+$iscp->clearOldDeleted();
 $page->appendNotification ( "Purge des brouillons effectuée" );
 
 $ACTIONS [] = array (
