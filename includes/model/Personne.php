@@ -266,6 +266,15 @@ class Personne extends HasMetaData {
 	    }
 	    
 	}
+
+	public function getMaxIdPersonne(){
+		$q = "select max(idPersonne) from personne";
+	    
+	    $resultSet = $this->ask($q);
+	    while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
+	        return $data["max(idPersonne)"];
+	    }
+	}
 	
 	/**
 	 * Retourne la liste des object CategoriesAffilies pour cette personne.

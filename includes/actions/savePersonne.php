@@ -15,8 +15,22 @@ if(strlen($email) > 0){
 }
 
 if(!$stopSave){
+
     try {
     	include 'includes/actions/saveGeneric.php';
+
+		$pers = new Personne($ARGS ["id"]);
+
+		$lastId = $pers->getMaxIdPersonne();
+
+		if($pers->idPersonne == $lastId){
+			//C'est une nouvelle personne, faut la mettre dans une famille à part.
+			$pers->idFamille = $pers->getNextIdFamilleAvailable();
+			$pers->save();
+		}
+
+		
+
     } catch (Exception $e){
         $page->appendNotification ( "Erreur lors de l'enregistrement : ".$e->getMessage() );
         
