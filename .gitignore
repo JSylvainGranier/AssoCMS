@@ -9,3 +9,7 @@
 includes/config.php
 /.settings/
 /.settings/*
+db.sql.gz
+documents/ipexclusion.php
+graphiques/*
+documents/ipexclusion.php
