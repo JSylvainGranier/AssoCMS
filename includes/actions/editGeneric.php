@@ -100,6 +100,9 @@ function buildEditionField($aColumn, $valueObject) {
 			case 'integer' :
 				$r .= "<input type='number' name='{$inputNameId}' id='{$inputNameId}' value='{$valueObject}'>";
 				break;
+			case 'numeric' :
+				$r .= "<input type='number' name='{$inputNameId}' id='{$inputNameId}' value='{$valueObject}'>";
+				break;
 			default :
 				throw new Exception ( "Le type sql {$aColumn->sqlType} n'est pas pris en charge par l'éditeur générique." );
 		}
