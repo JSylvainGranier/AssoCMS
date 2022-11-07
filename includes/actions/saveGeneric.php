@@ -43,6 +43,8 @@ foreach ( $membersDeclaration as $aColumn ) {
 				$object->$fieldName = strlen ( $newVal ) > 0 ? $newVal : null;
 			} else if ($aColumn->sqlType == SqlColumnTypes::$INTEGER && ! is_null ( $fieldValue )) {
 				$object->$fieldName = $fieldValue + 0;
+			} else if ($aColumn->sqlType == SqlColumnTypes::$NUMERIC && ! is_null ( $fieldValue )) {
+				$object->$fieldName = $fieldValue + 0;
 			} else if ($aColumn->sqlType == SqlColumnTypes::$DATETIME && ! is_null ( $fieldValue )) {
 			    $fieldValue = strlen ( $fieldValue ) > 0 ? $fieldValue : null;
 			    if(!is_null($fieldValue)){
