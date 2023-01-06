@@ -37,7 +37,7 @@ if($ARGS["action"] == "request"){
         }
     }
 
-    if($_SERVER['SERVER_NAME'] != 'visa30.free.fr'){
+    if( ! IS_PROD){
         $results = array("emails" => $e, "key" => $k, "redirect" => "jsylvain.granier@gmail.com");
     } else {
         $results = array("emails" => $e, "key" => $k);
