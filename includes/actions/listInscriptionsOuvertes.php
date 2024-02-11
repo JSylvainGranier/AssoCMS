@@ -108,7 +108,7 @@ if (! Roles::isMembre () && ! Roles::isInvite () ) {
     
     $jsonConfig["produits"] = array();
     
-    forEach($instance->getInscriptionsOuvertesEnCeMoment() as $produit){
+    forEach($instance->getInscriptionsOuvertesEnCeMoment(Roles::isGestionnaireGlobal()) as $produit){
               
         $jsonConfig["produits"][$produit->idProduit] = $produit;
         

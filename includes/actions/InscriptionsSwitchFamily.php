@@ -18,4 +18,6 @@ forEach($pers->getAllPersonnesByFamille() as $aFamille){
 
 </ul>
 
+<a class="adminLink" href="index.php?edit&class=Personne&createNewUser">Ajouter une nouvelle personne</a>
+
 </article>
