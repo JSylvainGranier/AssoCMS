@@ -205,3 +205,6 @@ if ($hideControls) {
 }
 
 
+if (Roles::isGestionnaireGlobal () ) {
+	$page->appendActionButton ( "Ajouter un rendez-vous", "edit&class=Evenement" );
+}

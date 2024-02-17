@@ -20,10 +20,34 @@ if (array_key_exists ( "id", $ARGS )) {
 } else {
 	$page->setTitle ( "Création d'un nouveau rendez-vous" );
 	$page->asset ( "titrePage", "Création d'un nouveau rendez-vous" );
-	$cat = $cat->findById ( $ARGS ["fkCategorie"] );
+	
+	if(array_key_exists ( "fkCategorie", $ARGS )){
+		$cat = $cat->findById ( $ARGS ["fkCategorie"] );
+	} else {
+		$cat = $cat->findById ( 1 );
+	}
 }
 
-$page->setCategorie ( $cat );
+/*
+'$categorie$' <input type='hidden'
+			name="categorieClassement" value="$idCategorie$">
+			$page->setCategorie ( $cat );
+*/
+
+$catList = array ();
+$catId = 1;
+foreach ( $cat->getAll () as $aCat ) {
+	$catList [$aCat->getPrimaryKey ()] = $aCat->nom;
+}
+
+if (is_null ( $pEvt->getCategorieClassement () )) {
+	$catId = $cat->getPrimaryKey ();
+} else {
+	$catId = $pEvt->getCategorieClassement ()->getPrimaryKey ();
+}
+
+$page->asset ( "categorieSelect", getSelectHtml ( "categorieClassement", $catList, $catId, true ) );
+
 
 $page->asset ( "titre", protectInputValueApostrophe ( $pEvt->titre ) );
 $page->asset ( "emplacement", protectInputValueApostrophe ( $evt->emplacement ) );
