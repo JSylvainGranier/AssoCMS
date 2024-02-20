@@ -4,6 +4,7 @@ class RemiseEnBanque extends HasMetaData {
     public $dateRemise;
     public $libelle;
     public $montantTotal;
+    public $depositaire;
     
     public function getPrimaryKey() {
         return $this->idRemiseEnBanque;
@@ -17,12 +18,15 @@ class RemiseEnBanque extends HasMetaData {
             $pk = new SqlColumnMappgin ( "idRemiseEnBanque", null, SqlColumnTypes::$INTEGER );
             $pk->setPrimaryKey ( true );
             
+            $depositaireCol = new SqlColumnMappgin ( "depositaire", "Personne qui gère cette remise en banque", SqlColumnTypes::$INTEGER );
+			$depositaireCol->setForeing ( new Personne (), "depositaire", false, true );
             
             RemiseEnBanque::$memberDeclaration = array (
                 $pk,
                 new SqlColumnMappgin ( "dateRemise", "Date du dépot à la banque", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "libelle", "Libelle", SqlColumnTypes::$VARCHAR, 255),
-                new SqlColumnMappgin ( "montantTotal", "Montant total de la remise en banque", SqlColumnTypes::$NUMERIC )
+                new SqlColumnMappgin ( "montantTotal", "Montant total de la remise en banque", SqlColumnTypes::$NUMERIC ),
+                $depositaireCol
             );
             
             RemiseEnBanque::$memberDeclaration = array_merge ( RemiseEnBanque::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -42,10 +46,19 @@ class RemiseEnBanque extends HasMetaData {
         return "remise_en_banque";
     }
     
-    public function getAllForFamille($idFamille) {
-        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat >= 20 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
-			union 
-			select rgl.* from reglement rgl where  rgl.fkInscription is null and  rgl.idFamille = ".$idFamille;
+
+    public function getAllActivesForActiveUser() {
+        $q = "select * from remise_en_banque where depositaire = ".thisUserId()." and dateRemise is null order by lastUpdateOn DESC";
+        return $this->getObjectListFromQuery ( $q );
+    }
+
+    public function getAllActives() {
+        $q = "select * from remise_en_banque where dateRemise is null order by lastUpdateOn DESC";
+        return $this->getObjectListFromQuery ( $q );
+    }
+
+    public function getLastInactivated() {
+        $q = "select * from remise_en_banque where dateRemise > now - interval '13 months' order by lastUpdateOn DESC";
         return $this->getObjectListFromQuery ( $q );
     }
     

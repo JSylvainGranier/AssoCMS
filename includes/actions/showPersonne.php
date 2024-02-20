@@ -434,8 +434,20 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
         
         $saisieReglementFormConfig["montant"] = $montantDuACeJour;
         $saisieReglementFormConfig["datePerception"] = $now->format("Y-m-d");
+
+        //ici, il faut populer listRemisesBqActives, avec une option selected si on en trouve une qui correspond à l'utilisateur courant. 
         
         if (Roles::canAdministratePersonne ()) {
+
+            $rbq = new RemiseEnBanque();
+            $remiseActives = $rbq->getAllActivesForActiveUser();
+            $options = "";
+            foreach($remiseActives as $rbqa){
+                $options .= "<option value='{$rbqa->idRemise}'>{$rbqa->libelle}</option>";
+            }
+
+            $saisieReglementFormConfig["listRemisesBqActives"] = $options;
+
             include 'includes/actions/saisieReglementForm.php';
         }
         

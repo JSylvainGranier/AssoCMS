@@ -10,6 +10,7 @@ class Reglement extends HasMetaData {
     public $inscription;
     public $idFamille;
     public $produit;
+    public $remisebq;
     
     public function getPrimaryKey() {
         return $this->idReglement;
@@ -26,6 +27,10 @@ class Reglement extends HasMetaData {
             $inscription = new SqlColumnMappgin ( "fkInscription", "Inscription que cela règle", SqlColumnTypes::$INTEGER );
             $inscription->setForeing ( new Inscription (), "inscription", true, true );
             $inscription->isNullable = true;
+
+            $rbq = new SqlColumnMappgin ( "fkRemiseEnBanque", "Remise en banque", SqlColumnTypes::$INTEGER );
+            $rbq->setForeing ( new RemiseEnBanque (), "remisebq", true, true );
+            $rbq->isNullable = true;
             
             $produit = new SqlColumnMappgin ( "fkProduit", "Produit que cela règle", SqlColumnTypes::$INTEGER );
             $produit->setForeing ( new Produit (), "produit", true, true );
@@ -42,7 +47,8 @@ class Reglement extends HasMetaData {
                 new SqlColumnMappgin ( "montant", "Montant du règlement", SqlColumnTypes::$NUMERIC ),
                 new SqlColumnMappgin ( "idFamille", "Famille en rapport avec ce reglement", SqlColumnTypes::$INTEGER ),
                 $inscription,
-                $produit
+                $produit,
+                $rbq
             );
             
             Reglement::$memberDeclaration = array_merge ( Reglement::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -67,6 +73,11 @@ class Reglement extends HasMetaData {
     
     public function getAllForInscription($idInscription) {
         $q = "select * from reglement where fkInscription = ".$idInscription;
+        return $this->getObjectListFromQuery ( $q );
+    }
+
+    public function findReglementsSurRemise($idRemiseEnBanque){
+        $q = "select * from reglement where fkRemiseEnBanque = ".$idRemiseEnBanque;
         return $this->getObjectListFromQuery ( $q );
     }
     

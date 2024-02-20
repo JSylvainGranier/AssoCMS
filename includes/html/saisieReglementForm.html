@@ -11,9 +11,18 @@
 	
 	<p id="perceptionDetails">
 	
-	<label>Intitulé : <input type="text" name="libelle" value="$libelle$" placeholder="Titulaire du compte, pour les chèques" /> </label>
+		<label>Titulaire du compte : <input type="text" name="libelle" value="$libelle$" placeholder="Titulaire du compte, pour les chèques" /> </label>
+		<br />
+		<label>Banque : <input type="text" name="refPerception" value="$refPerception$" placeholder="Banque"/> </label>
+	 </p>
 
-	<label>Référence : <input type="text" name="refPerception" value="$refPerception$" placeholder="Numéro de chèque"/> </label> </p>
+	
+	 <label>Remise en banque : <select name="remisebq">
+		$listRemisesBqActives$
+		<option value="-1">-- Débuter une nouvelle remise en banque --</option>
+		<option value="0">-- Pas de remise en banque --</option>
+		</select>
+	 </label>
 	
 	<input type="hidden" name="idFamille" value="$idFamille$" />
 	<input type="hidden" name="idInscription" value="$idInscription$" />

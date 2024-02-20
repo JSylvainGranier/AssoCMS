@@ -58,6 +58,8 @@ foreach ($result as $rnum => $cols){
     
     $saisieReglementFormConfig["datePerception"] = $dateReglementAttendu->format("Y-m-d");
     
+    ici, il faut populer listRemisesBqActives, avec une option selected si on en trouve une qui correspond à l'utilisateur courant. 
+
     if (Roles::canAdministratePersonne ()) {
         include 'includes/actions/saisieReglementForm.php';
     }
