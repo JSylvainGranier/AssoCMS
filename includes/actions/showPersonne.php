@@ -443,7 +443,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
             $remiseActives = $rbq->getAllActivesForActiveUser();
             $options = "";
             foreach($remiseActives as $rbqa){
-                $options .= "<option value='{$rbqa->idRemise}'>{$rbqa->libelle}</option>";
+                $options .= "<option value='{$rbqa->idRemiseEnBanque}'>{$rbqa->libelle}</option>";
             }
 
             $saisieReglementFormConfig["listRemisesBqActives"] = $options;

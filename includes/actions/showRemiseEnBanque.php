@@ -27,14 +27,18 @@ $reglements = $rgl->findReglementsSurRemise($rbq->idRemiseEnBanque);
 $totalCount = 0;
 $totalAmount = 0;
 
-
+$familyLink = new Personne();
 
 foreach($reglements as $reglement){
 
     $montant = money_format('%i', $reglement->montant);
 
+    $familleMembres = $familyLink->getAllPersonnesInFamily($reglement->idFamille);
+
+    $link = "index.php?show&class=Personne&id=".$familleMembres[0]->idPersonne;
+
     $row = "<tr>";
-    $row .= "<td>{$reglement->libelle}</td>";
+    $row .= "<td><a href='{$link}'>{$reglement->libelle}</td>";
     $row .= "<td>{$reglement->refPerception}</td>";
     $row .= "<td>{$montant} €</td>";
     $row .= "</tr>";

@@ -22,8 +22,6 @@ if($idRemiseBq < 0){
 	$ARGS["remisebq"] = $idRemiseBq;
 }
 
-$ARGS["remisebq"] = $idRemiseBq;
-
 try {
 	include 'includes/actions/saveGeneric.php';
 	
