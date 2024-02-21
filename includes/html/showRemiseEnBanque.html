@@ -1,23 +1,88 @@
 <h1>Remise en banque</h1>
 
-<p>Tenue par $depositaire$ depuis le $ouverture$.</p>
+<style>
+    .container {
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: space-between;
+        align-items: stretch;
+        align-content: stretch;
+    }
 
-<p>Déposé en banque $depotEnBanque$</p>
+    .container div {
+        width: 100%;
+    }
 
-<h2>Bénéficiaire</h2>
+    .listCheques table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-Raison Sociale : $raisonSocialeBanque$
-N° de compte : $numCompteBanque$
+    .listCheques table td, .listCheques table th  {
+        border : solid 1px gray;
+        padding : 5px;
+    }
 
-<table>
-    <tr>
-        <th>Banque</th>
-        <th>Nom de l'emetteur</th>
-        <th>Montant en euros</th>
-    </tr>
+    .listCheques td:nth-child(3) {
+        text-align: right;
+    }
 
-    $listeReglements$
-    
-</table>
+    .listCheques th {
+        text-align: center;
+    }
 
-<p>Total : $stCheques$ €, $nbCheques$ chèques.</p>
+    .totalCell {
+        text-align: right;
+        border-top : solid 3px black;
+        font-weight: bold;
+    }
+
+    .superlisible {
+        padding : 10px;
+        font-family: 'Courier New', Courier, monospace;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+</style>
+
+<div class="container">
+    <div class="assocIdentity">
+        
+        <h2>Bénéficiaire</h2>
+
+        <p>Raison Sociale : <span class="superlisible">$raisonSocialeBanque$</span></p>
+        <p>N° de compte : <span class="superlisible" style="letter-spacing: 2px;">$numCompteBanque$</span></p>
+
+        <p>Collecte tenue par $depositaire$ depuis le $ouverture$.</p>
+
+        <p>Déposé en banque $depotEnBanque$</p>
+    </div>
+    <div class="listCheques">
+        <table>
+            <tr>
+                <th>Banque</th>
+                <th>Nom de l'emetteur</th>
+                <th>Montant en euros</th>
+            </tr>
+        
+            $listeReglements$
+            
+            <tr>
+                <td colspan="2" class="totalCell">Total</td>
+                <td class="totalCell">$stCheques$</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="totalCell">Nombre de chèques</td>
+                <td class="totalCell">$nbCheques$</td>
+            </tr>
+        </table>
+        
+      
+    </div>
+
+</div>
+
+
+

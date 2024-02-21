@@ -18,6 +18,8 @@ final class PKeys {
 	public static $CONTACT_EMAIL;
 	public static $CONTACT_TEXT;
 	public static $SNB_API_KEY;
+	public static $REM_BANQUE_TITULAIRE;
+	public static $REM_BANQUE_NUM_COMPTE;
 }
 PKeys::$HOME_TITLE = new ParamKey ( "HOME_TITLE" );
 PKeys::$HOME_TEXT = new ParamKey ( "HOME_TEXT" );
@@ -31,6 +33,9 @@ PKeys::$PROPOSITION_ALERT_LAST_EXEC = new ParamKey ( "PROPOSITION_ALERT_LAST_EXE
 PKeys::$CONTACT_EMAIL = new ParamKey ( "CONTACT_EMAIL" );
 PKeys::$CONTACT_TEXT = new ParamKey ( "CONTACT_TEXT" );
 PKeys::$SNB_API_KEY = new ParamKey ( "SNB_API_KEY" );
+PKeys::$REM_BANQUE_TITULAIRE = new ParamKey ( "REM_BANQUE_TITULAIRE" );
+PKeys::$REM_BANQUE_NUM_COMPTE = new ParamKey ( "REM_BANQUE_NUM_COMPTE" );
+
 class Param extends Persistant {
 	public $pKey;
 	public $pValue;

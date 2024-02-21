@@ -63,7 +63,11 @@ foreach ( $membersDeclaration as $aColumn ) {
 			                        try {
 			                            $object->$fieldName = MyDateTime::createFromFormat ( "Y-m-d H:i", $fieldValue." 00:00" );
 			                        } catch (Exception $p){
-			                            throw $p;
+			                            try {
+											$object->$fieldName = MyDateTime::createFromFormat ( "Ymd H:i", $fieldValue." 00:00" );
+										} catch (Exception $p){
+											throw $p;
+										}
 			                        }
 			                    }
 			                }

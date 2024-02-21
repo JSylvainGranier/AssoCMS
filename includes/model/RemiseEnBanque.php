@@ -58,9 +58,13 @@ class RemiseEnBanque extends HasMetaData {
     }
 
     public function getLastInactivated() {
-        $q = "select * from remise_en_banque where dateRemise > now - interval '13 months' order by lastUpdateOn DESC";
+        $q = "select * from remise_en_banque where dateRemise > DATE_SUB(CURDATE(),INTERVAL 365 DAY) order by lastUpdateOn DESC";
         return $this->getObjectListFromQuery ( $q );
     }
+
+    public function getDepositaire() {
+		return $this->fetchLasyObject ( "depositaire", "Personne" );
+	}
     
    
 }

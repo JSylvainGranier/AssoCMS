@@ -8,8 +8,12 @@ $rbq = new RemiseEnBanque($ARGS["id"]);
 $page->appendBody ( file_get_contents ( "includes/html/showRemiseEnBanque.html" ) );
 
 
-$page->asset("depositaire", $rbq->depositaire);
+$page->asset("depositaire", $rbq->getDepositaire()->nom." ".$rbq->getDepositaire()->prenom);
 $page->asset("ouverture", $rbq->lastUpdateOn->format("d/m/Y"));
+
+
+$page->asset ( "raisonSocialeBanque", Param::getValue ( PKeys::$REM_BANQUE_TITULAIRE ) );
+$page->asset ( "numCompteBanque", Param::getValue ( PKeys::$REM_BANQUE_NUM_COMPTE ) );
 
 if(isset($rbq->dateRemise)){
     $page->asset("depotEnBanque", $rbq->dateRemise->format("d/m/Y"));
@@ -23,11 +27,16 @@ $reglements = $rgl->findReglementsSurRemise($rbq->idRemiseEnBanque);
 $totalCount = 0;
 $totalAmount = 0;
 
+
+
 foreach($reglements as $reglement){
+
+    $montant = money_format('%i', $reglement->montant);
+
     $row = "<tr>";
     $row .= "<td>{$reglement->libelle}</td>";
     $row .= "<td>{$reglement->refPerception}</td>";
-    $row .= "<td>{$reglement->montant}</td>";
+    $row .= "<td>{$montant} €</td>";
     $row .= "</tr>";
 
     $page->append("listeReglements", $row);
@@ -37,15 +46,15 @@ foreach($reglements as $reglement){
 }
 
 $page->asset("nbCheques", $totalCount);
-$page->asset("stCheques", $totalAmount);
+$page->asset("stCheques", money_format('%i', $totalAmount)." €");
 
 
 if(isset($rbq->dateRemise)){
     
 } else {
     $dt = new MyDateTime();
-    $dt = $dt->format("Y-m-d");
-    $page->appendActionButton ( "Clôturer cette remise", "save?class=RemiseEnBanque&dateRemise={$dt}&id=" . $rbq->idRemiseEnBanque );
+    $dt = $dt->format("Ymd");
+    $page->appendActionButton ( "Clôturer cette remise", "save&class=RemiseEnBanque&dateRemise={$dt}&id=" . $rbq->idRemiseEnBanque );
 }
 
 /*
