@@ -6,6 +6,10 @@ $page->appendBody("<p>Cette page regroupe tous les rendez-vous où des photos on
 $page->appendBody("<p>Chaque rendez-vous comporte une indication sur le nombre de photo : '33 <i class='fa fa-camera'></i>, 1<i class='fa fa-video-camera'></i>' correspond à 33 photos et une vidéo. </p>");
 
 $page->appendBody("<p>Bon visionnage ;-)</p>");
+
+$page->appendBody("<p><a href='index.php?photobookUpload'>Envoyer mes photos</a></p>");
+
+
 $page->setTitle("Album Photo");
 
 

@@ -82,6 +82,17 @@ class Evenement extends HasMetaData {
 		$sql = "select evt.* from evenement evt where dateDebut >= CURDATE( ) order by dateDebut asc";
 		return $this->getObjectListFromQuery ( $sql );
 	}
+
+	/**
+	 * Retourne tous les évenements qui sont passés et qui sont pas trop vieux
+	 *
+	 * @return Ambigous <multitype:, multitype:Persistant >
+	 */
+	public function getAllInPast($nbMonth) {
+		$sql = "select evt.* from evenement evt where dateDebut <= CURDATE( ) and dateDebut >= DATE_SUB(CURDATE(),INTERVAL {$nbMonth} MONTH) order by dateDebut desc";
+		return $this->getObjectListFromQuery ( $sql );
+	}
+
 	public function getCountInFuture() {
 		$sql = "select count(*) as 'count' from evenement evt where dateDebut >= CURDATE( )";
 		$return = $this->getDataFromQuery ( $sql );

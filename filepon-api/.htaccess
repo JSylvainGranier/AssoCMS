@@ -1,0 +1,8 @@
+
+Options -Indexes -FollowSymLinks
+
+<Files "*.php"> 
+     Order Deny,Allow 
+     Allow from All 
+</Files>
+ 
