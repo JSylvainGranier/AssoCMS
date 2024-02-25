@@ -37,37 +37,7 @@ function handle_file_post($files) {
     foreach($files as $file) {
        FilePond\move_file($file, UPLOAD_DIR);
 
-        $order++;
-        /*
-
-         $idPage = $_POST['idPage'];
-
-        $sql = "INSERT INTO visa30.attachment
-        (fkPage,
-        originalFileName,
-        serverFileName,
-        typeMime,
-        ordre,
-        lastUpdateOn,
-        fkLastUpdateBy,
-        isPublic)
-        VALUES
-        ({$idPage}>,
-        {originalFileName: },
-        {serverFileName: },
-        {typeMime: },
-        {$order},
-        now(),
-        {fkLastUpdateBy: },
-        0);";
-
-        echo var_dump(UPLOAD_DIR);
-        echo var_dump($file);
-        echo var_dump($sql);
-
-
-        */
-      
+              
 
     }
 
@@ -108,7 +78,7 @@ function handle_base64_encoded_file_post($files) {
 
 function handle_transfer_ids_post($ids) {
 
-    
+    $order = 0;
    
     foreach ($ids as $id) {
         
@@ -123,7 +93,7 @@ function handle_transfer_ids_post($ids) {
 
         if($files != null){
 
-            $order = 0;
+           
             
             $idPage = $_POST['idPage'];
 
@@ -135,7 +105,7 @@ function handle_transfer_ids_post($ids) {
 
                 FilePond\move_file($file, $uploadDir);
 
-                $order++;
+                $order = $order + 1;
                 
 
                 $fkUserId = $_POST['fkUserId'];
