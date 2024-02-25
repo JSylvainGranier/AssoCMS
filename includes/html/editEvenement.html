@@ -1,6 +1,11 @@
 <script src="ressources/tinymce/tinymce.min.js"></script>
 <script src="ressources/tinymce/langs/fr_FR.js"></script>
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
 <h3>$titrePage$</h3>
 
 <form method="POST" action="index.php?save">
@@ -18,12 +23,17 @@
 	</p>
 
 	<p>
-		<label for='dateDebut'>Début</label> <input type="datetime"
+		<label for='dateDebut'>Début et Fin</label> 
+		
+		<input type="text" id="unifiedDateTimeRange" value="$dateDebut$ - $dateFin$" style="width: 250px;">
+		<div style="display: none;">
+			<input type="datetime"
 			name='dateDebut' id='dateDebut' value='$dateDebut$'>
-		&nbsp;&nbsp;&nbsp; <label for='dateFin'>Fin</label><input
+			&nbsp;&nbsp;&nbsp; <label for='dateFin'>Fin</label><input
 			type="datetime" name='dateFin' id='dateFin' value='$dateFin$'>
-
-		<br /> <i>Note : s'il n'y a pas d'heure, mettre '00:00';</i>
+			
+			<br /> <i>Note : s'il n'y a pas d'heure, mettre '00:00';</i>
+		</div>
 
 	</p>
 
@@ -96,55 +106,53 @@
 	
 
 
-    var picker1 = new Pikaday(
-    {
-        numberOfMonths: 1,
-        format: 'D/MM/YYYY HH:mm',
-        field: document.getElementById('dateDebut'),
-        firstDay: 1,
-        showTime: true,
-        showSeconds: false,
-        use24hour: true,
-        i18n: {
-            previousMonth : 'Avant',
-            nextMonth     : 'Après',
-            months        : ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
-            weekdays      : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
-            weekdaysShort : ['DI','LU','MA','ME','JE','VE','SA'],
-            midnight      : 'Minuit',
-            noon          : 'Midi'
-        },
-	    onClose : function(){
-	    	if(picker2.getDate() == null || picker2.getDate().getTime() < this.getDate().getTime()){
-	    		picker2.setDate(this.getDate())
-	    		
-	    	}
-	    }
-    });
-    
-    var picker2 = new Pikaday(
-    	    {
-    	        numberOfMonths: 1,
-    	        format: 'D/MM/YYYY HH:mm',
-    	        field: document.getElementById('dateFin'),
-    	        firstDay: 1,
-    	        showTime: true,
-    	        showSeconds: false,
-    	        use24hour: true,
-    	        i18n: {
-    	            previousMonth : 'Avant',
-    	            nextMonth     : 'Après',
-    	            months        : ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Décembre'],
-    	            weekdays      : ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'],
-    	            weekdaysShort : ['DI','LU','MA','ME','JE','VE','SA'],
-    	            midnight      : 'Minuit',
-    	            noon          : 'Midi'
-    	        }
-    	    
-    	    });
-
        
-    
+$('#unifiedDateTimeRange').daterangepicker({
+    "timePicker": true,
+    "timePicker24Hour": true,
+    "timePickerIncrement": 15,
+    "locale": {
+        "format": "DD/MM/YYYY HH:mm",
+        "separator": " - ",
+        "applyLabel": "Appliquer",
+        "cancelLabel": "Annuler",
+        "fromLabel": "Du",
+        "toLabel": "Au",
+        "customRangeLabel": "Custom",
+        "weekLabel": "S",
+        "daysOfWeek": [
+            "Dim",
+            "Lun",
+            "Mar",
+            "Mer",
+            "Jeu",
+            "Ven",
+            "Sam"
+        ],
+        "monthNames": [
+            "Janvier",
+            "Fevrier",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre"
+        ],
+        "firstDay": 1
+    },
+    "startDate": "$dateDebut$",
+    "endDate": "$dateFin$",
+    "drops": "auto"
+}, function(start, end, label) {
+  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  document.getElementById('dateDebut').value = start.format('DD/MM/YYYY HH:mm');
+  document.getElementById('dateFin').value = end.format('DD/MM/YYYY HH:mm');
+});
 	
 	</script>
 
