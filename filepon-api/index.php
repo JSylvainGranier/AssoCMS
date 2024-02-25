@@ -96,8 +96,12 @@ function handle_file_transfer($transfer) {
     $metadata = $transfer->getMetadata();
     $files = $transfer->getFiles();
 
+   
+
     // something went wrong, most likely a field name mismatch
     if ($files !== null && count($files) === 0) return http_response_code(400);
+
+    if (is_null($files)) return http_response_code(400);
 
     // test if server had trouble copying files
     $file_transfers_with_errors = array_filter($files, function($file) { return $file['error'] !== 0; });

@@ -24,6 +24,7 @@ FilePond\route_form_post(ENTRY_FIELD, array(
 ));
 
 
+
 function handle_file_post($files) {
     
    
@@ -175,7 +176,7 @@ function handle_transfer_ids_post($ids) {
         FilePond\remove_transfer_directory(TRANSFER_DIR, $id);
     }
 
-    echo "Fin handle_transfer_ids_post";
+    header('Location: ../index.php?show&class=Page&idPage='.$idPage);
 
 }
 
