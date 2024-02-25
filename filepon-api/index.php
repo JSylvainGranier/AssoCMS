@@ -93,6 +93,8 @@ FilePond\route_api_request(ENTRY_FIELD, array(
 
 function handle_file_transfer($transfer) {
 
+    //echo "file transfert";
+
     $metadata = $transfer->getMetadata();
     $files = $transfer->getFiles();
 
@@ -101,25 +103,27 @@ function handle_file_transfer($transfer) {
     // something went wrong, most likely a field name mismatch
     if ($files !== null && count($files) === 0) return http_response_code(400);
 
-    if (is_null($files)) return http_response_code(400);
-
-    // test if server had trouble copying files
-    $file_transfers_with_errors = array_filter($files, function($file) { return $file['error'] !== 0; });
-    if (count($file_transfers_with_errors)) {
-        foreach ($file_transfers_with_errors as $file) {
-            trigger_error(sprintf("Uploading file \"%s\" failed with code \"" . $file['error'] . "\".", $file['name']), E_USER_WARNING);
+    if ( ! is_null($files)){
+         // test if server had trouble copying files
+        $file_transfers_with_errors = array_filter($files, function($file) { return $file['error'] !== 0; });
+        if (count($file_transfers_with_errors)) {
+            foreach ($file_transfers_with_errors as $file) {
+                trigger_error(sprintf("Uploading file \"%s\" failed with code \"" . $file['error'] . "\".", $file['name']), E_USER_WARNING);
+            }
+            return http_response_code(500);
         }
-        return http_response_code(500);
+
+        // test if files are of invalid format
+        $file_transfers_with_invalid_file_type = count(ALLOWED_FILE_FORMATS()) ? array_filter($files, function($file) { return !in_array($file['type'], ALLOWED_FILE_FORMATS()); }) : array();
+        if (count($file_transfers_with_invalid_file_type)) {
+            foreach ($file_transfers_with_invalid_file_type as $file) {
+                trigger_error(sprintf("Uploading file \"%s\" failed with code \"" . $file['type'] . " is not allowed.\".", $file['name']), E_USER_WARNING);
+            }
+            return http_response_code(415);
+        }
     }
 
-    // test if files are of invalid format
-    $file_transfers_with_invalid_file_type = count(ALLOWED_FILE_FORMATS()) ? array_filter($files, function($file) { return !in_array($file['type'], ALLOWED_FILE_FORMATS()); }) : array();
-    if (count($file_transfers_with_invalid_file_type)) {
-        foreach ($file_transfers_with_invalid_file_type as $file) {
-            trigger_error(sprintf("Uploading file \"%s\" failed with code \"" . $file['type'] . " is not allowed.\".", $file['name']), E_USER_WARNING);
-        }
-        return http_response_code(415);
-    }
+   
 
     // store data
     FilePond\store_transfer(TRANSFER_DIR, $transfer);
@@ -135,6 +139,8 @@ function handle_file_transfer($transfer) {
 }
 
 function handle_patch_file_transfer($id) {
+
+    //echo "patch file transfert";
 
     // location of patch files
     $dir = TRANSFER_DIR . DIRECTORY_SEPARATOR . $id . DIRECTORY_SEPARATOR;
@@ -235,6 +241,8 @@ function handle_patch_file_transfer($id) {
 
 function handle_revert_file_transfer($id) {
 
+    //echo "revert file transfert";
+
     // test if id was supplied
     if (!isset($id) || !FilePond\is_valid_transfer_id($id)) return http_response_code(400);
 
@@ -246,6 +254,8 @@ function handle_revert_file_transfer($id) {
 }
 
 function handle_restore_file_transfer($id) {
+
+    //echo "restaure file transfert";
 
     // Stop here if no id supplied
     if (empty($id) || !FilePond\is_valid_transfer_id($id)) return http_response_code(400);
@@ -280,6 +290,7 @@ function handle_load_local_file($ref) {
 }
 
 function handle_fetch_remote_file($url) {
+
 
     // Stop here if no data supplied
     if (empty($url)) return http_response_code(400);
