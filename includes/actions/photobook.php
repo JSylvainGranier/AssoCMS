@@ -7,7 +7,7 @@ $page->appendBody("<p>Chaque rendez-vous comporte une indication sur le nombre d
 
 $page->appendBody("<p>Bon visionnage ;-)</p>");
 
-$page->appendBody("<p><a href='index.php?photobookUpload'>Envoyer mes photos</a></p>");
+$page->appendBody("<p><br /><a class='adminLink' href='index.php?photobookUpload'>Envoyer mes photos</a><br /><br /></p>");
 
 
 $page->setTitle("Album Photo");

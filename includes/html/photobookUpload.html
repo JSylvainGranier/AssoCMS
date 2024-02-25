@@ -1,21 +1,58 @@
 <h1>Envoyer mes photos</h1>
 
-<p>Les photos doivent être liées à un rendez-vous du calendrier de l'association. Indiquez à quel RDV correspondent les photos que vous souhaitez envoyer.</p>
 
-<select name="idEvenement">
-    $listEvenement$
-</select>
+
+<style>
+    .filepond--list {
+        width : 380px;
+        
+    }
+
+    form {
+        display: flex;
+        width: 100%;
+
+    }
+
+    form .formPart {
+        border : solid 1px gray;
+        width: 50%;
+        padding : 1em;
+    }
+
+</style>
 
 <link href="https://unpkg.com/filepond/dist/filepond.css" rel="stylesheet">
 <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
-
+ 
 
 <form action="filepon-api/submit.php" method="post" enctype="multipart/form-data">
 
-    <input type="file" name="filepond[]" multiple>
+    <div class="formPart">
+       
+        <p>Les photos doivent être liées à un rendez-vous du calendrier de l'association. Indiquez à quel RDV correspondent les photos que vous souhaitez envoyer.</p>
+        
+        <select name="idPage">
+            $listEvenement$
+        </select>
 
-    <button type="submit">Submit</button>
+        <input type="hidden" name="fkUserId" value="$fkUserId$" />
+        
+        <p>Le photos que vous envoyez ne doivent pas porter préjudice aux personnes qui y figurent, ni aux valeurs de l'association. Dans le cas contraire, un membre du bureau pourait décider de les supprimer sans avertir.</p>
+        
+        <p>
+            $persDroitImage$
+        </p>
+        
+        <button type="submit">Envoyer</button>
+    </div>
 
+    <div class="formPart">
+
+        <input type="file" name="filepond[]" multiple>
+        
+    </div>
+        
 </form>
 
 <!-- Babel polyfill, contains Promise -->
@@ -52,16 +89,39 @@ FilePond.registerPlugin(
 FilePond.setOptions({
 
     // maximum allowed file size
-    maxFileSize: '5MB',
+    maxFileSize: '10MB',
 
     // crop the image to a 1:1 ratio
-    imageCropAspectRatio: '1:1',
+    //imageCropAspectRatio: '1:1',
 
     // resize the image
-    imageResizeTargetWidth: 200,
+    imageResizeTargetWidth: 1536,
 
     // upload to this server end point
-    server: 'filepon-api/'
+    server: 'filepon-api/',
+
+    acceptedFileTypes: ['image/*'],
+
+    allowReorder : true,
+    chunkUploads : true,
+    chunkSize : 1000000,
+
+    labelIdle : "Glissez & Déposez vos photos ici, ou <span class='filepond--label-action'> recherchez sur votre ordinateur </span>",
+    labelInvalidField : "Il ya des fichiers invalides",
+    labelFileLoading : "Chargement",
+    labelFileLoadError : "Erreur de chargement",
+    labelFileProcessing : "Envoi en cours...",
+    labelFileProcessingComplete : "Envoi terminé",
+    labelFileProcessingAborted : "Envoi annulé",
+    labelFileProcessingError : "Erreur durant le transfert",
+    labelTapToCancel : "Annuler",
+    labelTapToRetry : "Essayer à nouveau",
+    labelButtonRemoveItem : 'Supprimer',
+    labelButtonAbortItemLoad : "Annuler",
+    labelButtonProcessItem : "Envoyer",
+    labelTapToUndo : "Retirer",
+
+    
 });
 
 // Turn a file input into a file pond
