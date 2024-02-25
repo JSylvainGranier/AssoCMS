@@ -129,7 +129,7 @@ function handle_transfer_ids_post($ids) {
 
             $uploadDir = "../documents/pages/{$idPage}";
 
-            mkdir($uploadDir, 777, true);
+            mkdir($uploadDir, 0777, true);
             
            foreach($files as $file) {
 
@@ -159,10 +159,7 @@ function handle_transfer_ids_post($ids) {
                 {$fkUserId },
                 0);";
 
-                echo var_dump(UPLOAD_DIR);
-                echo var_dump($file);
-                echo var_dump($sql);
-
+                
                 insertInDatabase($sql);
 
                 mignature($file['type'], $uploadDir."/".$file['name']);
@@ -176,7 +173,7 @@ function handle_transfer_ids_post($ids) {
         FilePond\remove_transfer_directory(TRANSFER_DIR, $id);
     }
 
-    header('Location: ../index.php?show&class=Page&idPage='.$idPage);
+    header('Location: ../index.php?show&class=Page&id='.$idPage);
 
 }
 
