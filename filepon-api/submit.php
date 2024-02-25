@@ -71,7 +71,7 @@ function handle_file_post($files) {
 
     }
 
-    echo "Fin Handle Post";
+  
 
 }
 
@@ -102,7 +102,7 @@ function handle_base64_encoded_file_post($files) {
         );
     }
 
-    echo "Fin Handle Encoded Post";
+    
 
 }
 
@@ -140,7 +140,7 @@ function handle_transfer_ids_post($ids) {
 
                 $fkUserId = $_POST['fkUserId'];
 
-                $sql = "INSERT INTO visa30.attachment
+                $sql = "INSERT INTO attachment
                 (fkPage,
                 originalFileName,
                 serverFileName,
