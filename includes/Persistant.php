@@ -478,7 +478,12 @@ abstract class Persistant {
 		$query = "select * from {$this->getTableName()}";
 		$order = $this->getNaturalOrderColumn ();
 		if (! is_null ( $order )) {
-			$query .= " order by {$order} ASC ";
+			$query .= " order by {$order} ";
+			if(strpos(strtolower($order), ' desc')){
+
+			} else {
+				$query .= ' ASC ';
+			}
 		}
 		$objList = $this->getObjectListFromQuery ( $query );
 		return $objList;

@@ -15,7 +15,7 @@ class Publipostage extends HasMetaData {
 		return $this->objet;
 	}
 	public function getNaturalOrderColumn() {
-		return "lastUpdateOn";
+		return "lastUpdateOn desc";
 	}
 	private static $memberDeclaration = null;
 	static function getMembersDeclaration() {

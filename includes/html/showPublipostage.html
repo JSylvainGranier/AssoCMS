@@ -11,10 +11,6 @@ $message$
 
 <hr />
 <h1>Destinataires</h1>
-<h2>
-	<a href="index.php?edit&class=PublipostageDestinataire&id=$id$">Modifier
-		les destinataires</a>
-</h2>
 
 <p>$total$ personnes au total, avec :
 <ul>
@@ -25,24 +21,30 @@ $message$
 	$noContactMode$
 </ul>
 </p>
-<a href="index.php?export&class=PublipostageDestinataire&id=$id$"
+<a class="adminLink" href="index.php?edit&class=PublipostageDestinataire&id=$id$">Modifier les destinataires</a>
+<p>
+	<a href="index.php?export&class=PublipostageDestinataire&id=$id$"
 	target="_blank">Exporter les destinataires</a>
-(Pour une utilisation à l'extérieur du site)
+	(Pour une utilisation à l'extérieur du site)
+</p>
 
 <h1>Expédition</h1>
 
 <p>Le publipostage a été envoyé par eMail : $sentByEmail$</p>
 <p>
-	<a href="index.php?export&class=Publipostage&mode=email&id=$id$">Tester
+	<a class="adminLink" href="index.php?export&class=Publipostage&mode=email&id=$id$">Tester
 		par email avec moi</a>
 </p>
+<br />
 <p>
-	<a
+	<a class="adminLink"
 		href="index.php?export&class=Publipostage&mode=email&realExpedition=true&id=$id$"
 		onclick="return confirm('Envoyer cette publication à $totalEmail$ personnes ?')">Envoyer
 		les email</a>
 </p>
+<br />
 <p>
-	<a href="index.php?export&class=Publipostage&mode=mail&id=$id$"
+	<a class="adminLink" href="index.php?export&class=Publipostage&mode=mail&id=$id$"
 		target="_blank">Voir le courrier postal</a>
 </p>
+<br />

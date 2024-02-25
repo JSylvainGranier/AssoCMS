@@ -2,7 +2,8 @@
 $id = $ARGS ["id"];
 
 if(strlen($ARGS["objet"]) == 0){
-	$ARGS["objet"] = "!! Vous avez oublié l'objet du message !!";
+	$now = new MyDateTime();
+	$ARGS["objet"] = "Message du ".$now->format('d/m/Y');
 }
 
 include 'includes/actions/saveGeneric.php';
