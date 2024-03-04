@@ -5,6 +5,7 @@ class RemiseEnBanque extends HasMetaData {
     public $libelle;
     public $montantTotal;
     public $depositaire;
+    public $archive = false;
     
     public function getPrimaryKey() {
         return $this->idRemiseEnBanque;
@@ -26,6 +27,7 @@ class RemiseEnBanque extends HasMetaData {
                 new SqlColumnMappgin ( "dateRemise", "Date du dépot à la banque", SqlColumnTypes::$DATETIME ),
                 new SqlColumnMappgin ( "libelle", "Libelle", SqlColumnTypes::$VARCHAR, 255),
                 new SqlColumnMappgin ( "montantTotal", "Montant total de la remise en banque", SqlColumnTypes::$NUMERIC ),
+                new SqlColumnMappgin ( "archive", "Est un élément archivé", SqlColumnTypes::$BOOLEAN ),
                 $depositaireCol
             );
             
@@ -48,12 +50,12 @@ class RemiseEnBanque extends HasMetaData {
     
 
     public function getAllActivesForActiveUser() {
-        $q = "select * from remise_en_banque where depositaire = ".thisUserId()." and dateRemise is null order by lastUpdateOn DESC";
+        $q = "select * from remise_en_banque where archive = false and depositaire = ".thisUserId()." and dateRemise is null order by lastUpdateOn DESC";
         return $this->getObjectListFromQuery ( $q );
     }
 
     public function getAllActives() {
-        $q = "select * from remise_en_banque where dateRemise is null order by lastUpdateOn DESC";
+        $q = "select * from remise_en_banque where archive = false and  dateRemise is null order by lastUpdateOn DESC";
         return $this->getObjectListFromQuery ( $q );
     }
 

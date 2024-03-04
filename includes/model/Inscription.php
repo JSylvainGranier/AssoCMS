@@ -25,6 +25,7 @@ class Inscription extends HasMetaData {
     public $commentaire;
     public $etat;
     public $idFamille;
+    public $archive = false;
     
     public function getPrimaryKey() {
         return $this->idInscription;
@@ -45,6 +46,7 @@ class Inscription extends HasMetaData {
                 new SqlColumnMappgin ( "commentaire", "Commentaire", SqlColumnTypes::$LONGTEXT ),
                 new SqlColumnMappgin ( "etat", "Etat de l'inscription", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "idFamille", "idFamille", SqlColumnTypes::$INTEGER ),
+                new SqlColumnMappgin ( "archive", "Est un élément archivé", SqlColumnTypes::$BOOLEAN )
             );
             
             Inscription::$memberDeclaration = array_merge ( Inscription::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -60,7 +62,7 @@ class Inscription extends HasMetaData {
     }
     
     public function getInscriptionsForFamille($idFamille){
-        $query = "select * from inscription where idFamille = ".$idFamille;
+        $query = "select * from inscription where archive = false and idFamille = ".$idFamille;
         $order = $this->getNaturalOrderColumn ();
         if (! is_null ( $order )) {
             $query .= " order by {$order} DESC ";

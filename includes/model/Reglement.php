@@ -11,6 +11,7 @@ class Reglement extends HasMetaData {
     public $idFamille;
     public $produit;
     public $remisebq;
+    public $archive = false;
     
     public function getPrimaryKey() {
         return $this->idReglement;
@@ -46,6 +47,7 @@ class Reglement extends HasMetaData {
                 new SqlColumnMappgin ( "libelle", "Libelle", SqlColumnTypes::$VARCHAR, 255),
                 new SqlColumnMappgin ( "montant", "Montant du règlement", SqlColumnTypes::$NUMERIC ),
                 new SqlColumnMappgin ( "idFamille", "Famille en rapport avec ce reglement", SqlColumnTypes::$INTEGER ),
+                new SqlColumnMappgin ( "archive", "Est un élément archivé", SqlColumnTypes::$BOOLEAN ),
                 $inscription,
                 $produit,
                 $rbq
@@ -82,9 +84,9 @@ class Reglement extends HasMetaData {
     }
     
     public function getAllForFamille($idFamille) {
-        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where  iscp.etat >= 20 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
+        $q = "select rgl.* from reglement rgl join inscription iscp on iscp.idInscription = rgl.fkInscription  where iscp.archive = false and  iscp.etat >= 20 and iscp.etat < 70 and rgl.idFamille = ".$idFamille."
 			union 
-			select rgl.* from reglement rgl where  rgl.fkInscription is null and  rgl.idFamille = ".$idFamille;
+			select rgl.* from reglement rgl where rgl.archive = false and  rgl.fkInscription is null and  rgl.idFamille = ".$idFamille;
         return $this->getObjectListFromQuery ( $q );
     }
     
@@ -95,13 +97,13 @@ class Reglement extends HasMetaData {
             from (
                 select sum(montant) as mnt, reglement.idFamille  from reglement
                 join inscription on inscription.idInscription = reglement.fkInscription
-                where reglement.modePerception = 'debit'
+                where inscription.archive = false and reglement.archive = false and reglement.modePerception = 'debit'
                 and inscription.etat >= 20 and inscription.etat < 70
                 and reglement.dateEcheance <= '{$dateReglementAttendu->formatMySql()}'
                 group by reglement.idFamille
             union 
                 select 0-sum(montant) as mnt, reglement.idFamille  from reglement
-                where reglement.modePerception <> 'debit'
+                where reglement.archive = false and reglement.modePerception <> 'debit'
                 and reglement.dateEcheance <= '{$dateReglementAttendu->formatMySql()}'
                 group by reglement.idFamille
             ) as uni

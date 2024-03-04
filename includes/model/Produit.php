@@ -13,6 +13,7 @@ class Produit extends HasMetaData {
     public $accesDirect = 0;
     public $quantiteLibre = 0;
     public $idCategorieAffecter = 0;
+    public $archive = false;
     
     public function getPrimaryKey() {
         return $this->idProduit;
@@ -38,7 +39,8 @@ class Produit extends HasMetaData {
                 new SqlColumnMappgin ( "produitRequis", "Produit requis pour avoir droit à ce produit", SqlColumnTypes::$INTEGER ),
                 new SqlColumnMappgin ( "produitOrdre", "Ordre du produit dans le groupe", SqlColumnTypes::$INTEGER, 0 ),
                 new SqlColumnMappgin ( "accesDirect", "Produit que l'utilisateur peut cocher lui-même", SqlColumnTypes::$BOOLEAN, false ),
-                new SqlColumnMappgin ( "quantiteLibre", "L'utilisateur peut lui-même choisir la quantité qu'il commande", SqlColumnTypes::$BOOLEAN, false )
+                new SqlColumnMappgin ( "quantiteLibre", "L'utilisateur peut lui-même choisir la quantité qu'il commande", SqlColumnTypes::$BOOLEAN, false ),
+                new SqlColumnMappgin ( "archive", "Est un élément archivé", SqlColumnTypes::$BOOLEAN )
             );
             
             Produit::$memberDeclaration = array_merge ( Produit::$memberDeclaration, HasMetaData::getMembersDeclaration () );
@@ -53,8 +55,13 @@ class Produit extends HasMetaData {
         return "debutDisponibilite";
     }
     
+    public function getAllActive(){
+        $q = "select * from produit where archive = false";
+        return $this->getObjectListFromQuery ( $q );
+    }
+
     public function hasInscriptionsOuvertesEnCeMoment(){
-        $q = "select count(*) from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1;";
+        $q = "select count(*) from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 and archive = false";
         $resultSet = $this->ask($q);
         while ( $data = mysql_fetch_assoc ( $resultSet ) ) {
             return $data["count(*)"] > 0;
@@ -62,10 +69,10 @@ class Produit extends HasMetaData {
     }
     
     public function getInscriptionsOuvertesEnCeMoment($adminMode){
-        $q = "select * from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 order by produitOrdre desc;";
+        $q = "select * from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 and archive = false order by produitOrdre desc;";
 
         if($adminMode == true){
-            $q = "select * from produit where debutDisponibilite < now() and finDisponibilite  + interval 280 day  > now() and accesDirect = 1 order by produitOrdre desc;";    
+            $q = "select * from produit where archive = false and debutDisponibilite < now() and finDisponibilite  + interval 280 day  > now() and accesDirect = 1 order by produitOrdre desc;";    
         }
 
         return $this->getObjectListFromQuery ( $q );
