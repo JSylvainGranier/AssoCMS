@@ -1,17 +1,3 @@
-<IfDefine Free>
-php 1
-
-PerlSetVar AuthFile /.htpassword
-AuthName "Bonjour :-) \nLe temps de quelques travaux, le site de VISA30 est inaccessible."
-AuthType Basic
-require valid-user
-
-Satisfy    any
-Order      deny,allow
-Deny from  all
-Allow from env=NO_AUTH
-
-</IfDefine>
 
 
 

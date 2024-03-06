@@ -1,4 +1,6 @@
 <?php
+
+
 // Tous les warnings PHP sont stockés ici, puis mis à la fin de la page s'il en exite.
 $PHP_ERRORS = array ();
 function errHandler($errno, $errstr, $errfile, $errline) {
@@ -9,6 +11,8 @@ function errHandler($errno, $errstr, $errfile, $errline) {
 			$errfile,
 			$errline 
 	);
+
+	
 }
 set_error_handler ( "errHandler" );
 //Et là, on traite les erreurs fatales de PHP.
@@ -22,7 +26,7 @@ function fatalErrHandler()
 		$html = str_ireplace("--err--", print_r($error, true), $html);
 		
 		echo $html;
-		die;
+		exit;
 		
 	}
 }
@@ -35,6 +39,8 @@ require_once 'documents/ipexclusion.php';
 header ( 'Content-Type: text/html; charset=utf-8' );
 
 $method = $_SERVER ['REQUEST_METHOD'];
+
+
 
 
 $ACTIONS = array (
@@ -186,5 +192,4 @@ try {
 	include 'includes/actions/exception.php';
 	echo $page->buildPage ( false );
 }
-
 
