@@ -18,6 +18,7 @@ if(array_key_exists("confirm", $ARGS)){
 } else {
     $page->appendBody("<p>Vous allez archiver tous les éléments qui permettent de gérer les adhésions des membres de l'association.</p>");
     $page->appendBody("<p>Vous ne devriez avoir à faire ça qu'en préparation d'une nouvelle année, entre juin et la mi-aout.</p>");
+    $page->appendBody("<p>Assurez-vous d'avoir perçu toutes les sommes en attente, et d'avoir fait les remises en banque AVANT de procéder à l'archivage.</p>");
 
     $page->appendBody("<p><a class='adminLink' href='index.php?inscriptionArchive&confirm'>Je suis sûr(e) de vouloir tout envoyer aux oubliettes</a></p>");
 }

@@ -1,6 +1,12 @@
 <h3>Modification du profil</h3>
 
 
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
 
 <form method="POST" action="index.php?save">
 
@@ -30,8 +36,8 @@
 	</p>
 	
 	<p>
-		<label for='dateNaissance'>Date de naissance</label><input type='date' name='dateNaissance'
-			id='dateNaissance' value='$dateNaissance$'> <i>(Format jj/mm/aaaa)</i>
+		<label for='dateNaissance'>Date de naissance</label><input name='dateNaissance'
+			id='dateNaissance' value='$dateNaissance$'>
 	</p>
 
 	<fieldset>
@@ -147,3 +153,57 @@
 	<input type="submit" value="Enregistrer">
 
 </form>
+
+<script>
+
+$('#dateNaissance').daterangepicker({
+    "timePicker": false,
+	"singleDatePicker": true,
+    "timePicker24Hour": false,
+    "timePickerIncrement": 15,
+	"minYear": parseInt(moment().format('YYYY'),10) - 100,
+    "maxYear": parseInt(moment().format('YYYY'),10) - 5,
+    "locale": {
+        "format": "DD/MM/YYYY",
+        "separator": " - ",
+        "applyLabel": "Appliquer",
+        "cancelLabel": "Annuler",
+        "fromLabel": "Le",
+        "toLabel": "Au",
+        "customRangeLabel": "Custom",
+        "weekLabel": "S",
+        "daysOfWeek": [
+            "Dim",
+            "Lun",
+            "Mar",
+            "Mer",
+            "Jeu",
+            "Ven",
+            "Sam"
+        ],
+        "monthNames": [
+            "Janvier",
+            "Fevrier",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre"
+        ],
+        "firstDay": 1
+    },
+    "startDate": "$dateNaissance$",
+    "drops": "auto",
+	"showDropdowns": true,
+}, function(start, end, label) {
+  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  document.getElementById('dateNaissance').value = start.format('DD/MM/YYYY');
+  document.getElementById('dateNaissance').value = end.format('DD/MM/YYYY');
+});
+
+</script>

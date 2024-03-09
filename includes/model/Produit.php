@@ -60,6 +60,11 @@ class Produit extends HasMetaData {
         return $this->getObjectListFromQuery ( $q );
     }
 
+    public function getAllInactive(){
+        $q = "select * from produit where archive = true";
+        return $this->getObjectListFromQuery ( $q );
+    }
+
     public function hasInscriptionsOuvertesEnCeMoment(){
         $q = "select count(*) from produit where debutDisponibilite < now() and finDisponibilite > now() and accesDirect = 1 and archive = false";
         $resultSet = $this->ask($q);

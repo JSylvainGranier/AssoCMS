@@ -1,0 +1,109 @@
+<h3>Modification du profil</h3>
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+
+
+
+<form method="POST" action="index.php?save">
+
+	<input type="hidden" name="class" value="Produit"> 
+    <input type="hidden" name="id" value="$idProduit$"> 
+    <input type="hidden" name="redirectAction" value="show"> 
+
+<p><label for="libelle">Libellé du produit</label>
+        <input type="text" name="libelle" id="libelle" value="$libelle$">
+</p>
+
+<p><label for="description">Description du produit</label>
+    <textarea type="text" name="description" id="description" aria-hidden="true">
+    $description$</textarea></p>
+
+<p><label for="politiqueTarifaire">Politique tarifaire</label>
+    <textarea type="text" name="politiqueTarifaire" id="politiqueTarifaire"  aria-hidden="true">
+        $politiqueTarifaire$
+    </textarea></p>
+
+<p><label for="conditionsLegales">Conditions légales à accepter lors de la souscription</label>
+     <textarea type="text" name="conditionsLegales" id="conditionsLegales" aria-hidden="true">
+        $conditionsLegales$
+     </textarea></p>
+
+<p><label for="debutDisponibilite">Disponible durant </label>
+    <input type="hidden" name="debutDisponibilite" id="debutDisponibilite" value="$debutDisponibilite$">
+    <input type="hidden" name="finDisponibilite" id="finDisponibilite" value="$finDisponibilite$">
+    <div id="unifiedDateTimeRange"></div>
+
+</p>
+
+
+<p><label for="quantiteDisponible">Quantité disponible</label><input type="number" name="quantiteDisponible" id="quantiteDisponible" value="$quantiteDisponible$"></p>
+
+<p><label for="produitRequis">Produit requis pour avoir droit à ce produit</label><input type="number" name="produitRequis" id="produitRequis" value="1"></p>
+
+<p><label for="produitOrdre">Ordre du produit dans le groupe</label><input type="number" name="produitOrdre" id="produitOrdre" value="$produitOrdre$"></p>
+
+<p><label for="accesDirect">Produit que l'utilisateur peut cocher lui-même</label><label for="accesDirectTRUE">OUI</label><input type="radio" checked="checked" name="accesDirect" id="accesDirectTRUE" value="1">&nbsp;&nbsp;<label for="accesDirectFALSE">NON</label><input type="radio" name="accesDirect" id="accesDirectFALSE" value="0">&nbsp;&nbsp;</p>
+
+<p><label for="quantiteLibre">L'utilisateur peut lui-même choisir la quantité qu'il commande</label><label for="quantiteLibreTRUE">OUI</label><input type="radio" name="quantiteLibre" id="quantiteLibreTRUE" value="1">&nbsp;&nbsp;<label for="quantiteLibreFALSE">NON</label><input type="radio" checked="checked" name="quantiteLibre" id="quantiteLibreFALSE" value="0">&nbsp;&nbsp;</p>
+
+<p><label for="archive">Est un élément archivé</label><label for="archiveTRUE">OUI</label><input type="radio" checked="checked" name="archive" id="archiveTRUE" value="1">&nbsp;&nbsp;<label for="archiveFALSE">NON</label><input type="radio" name="archive" id="archiveFALSE" value="0">&nbsp;&nbsp;</p>
+
+ <input type="submit" value="Envoyer">
+</form>
+
+<script>
+
+$('#unifiedDateTimeRange').daterangepicker({
+    "timePicker": false,
+    "timePicker24Hour": true,
+    "timePickerIncrement": 15,
+    "locale": {
+        "format": "DD/MM/YYYY HH:mm",
+        "separator": " - ",
+        "applyLabel": "Appliquer",
+        "cancelLabel": "Annuler",
+        "fromLabel": "Du",
+        "toLabel": "Au",
+        "customRangeLabel": "Custom",
+        "weekLabel": "S",
+        "daysOfWeek": [
+            "Dim",
+            "Lun",
+            "Mar",
+            "Mer",
+            "Jeu",
+            "Ven",
+            "Sam"
+        ],
+        "monthNames": [
+            "Janvier",
+            "Fevrier",
+            "Mars",
+            "Avril",
+            "Mai",
+            "Juin",
+            "Juillet",
+            "Août",
+            "Septembre",
+            "Octobre",
+            "Novembre",
+            "Décembre"
+        ],
+        "firstDay": 1
+    },
+    "startDate": "$dateDebut$",
+    "endDate": "$dateFin$",
+    "drops": "auto"
+}, function(start, end, label) {
+  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
+  document.getElementById('disponibiliteDebut').value = start.format('DD/MM/YYYY HH:mm');
+  document.getElementById('disponibiliteFin').value = end.format('DD/MM/YYYY HH:mm');
+});
+	
+	</script>
