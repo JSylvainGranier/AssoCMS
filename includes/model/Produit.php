@@ -10,8 +10,8 @@ class Produit extends HasMetaData {
     public $quantiteDisponible;
     public $produitRequis;
     public $produitOrdre = 0;
-    public $accesDirect = 0;
-    public $quantiteLibre = 0;
+    public $accesDirect = false;
+    public $quantiteLibre = false;
     public $idCategorieAffecter = 0;
     public $archive = false;
     

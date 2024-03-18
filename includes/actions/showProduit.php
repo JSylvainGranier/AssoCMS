@@ -9,6 +9,7 @@ $page->appendBody ( file_get_contents ( "includes/html/showProduit.html" ) );
 
 $page->asset("produitTitre", $produit->libelle);
 $page->asset("description", $produit->description);
+$page->asset("idProduit", $produit->idProduit);
 
 if($produit->produitRequis > 0){
     $prq = new Produit($produit->produitRequis);

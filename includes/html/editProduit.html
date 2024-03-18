@@ -1,14 +1,24 @@
-<h3>Modification du profil</h3>
+<h3>Modification d'une activité / éléments de souscription</h3>
+
+<script src="ressources/tinymce/tinymce.min.js"></script>
+<script src="ressources/tinymce/langs/fr_FR.js"></script>
+
+<script type="text/javascript" src="ressources/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="ressources/moment-with-locales.js"></script>
+<script type="text/javascript" src="ressources/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="ressources/daterangepicker/daterangepicker.css" />
 
 
-<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+<style>
+    label {
+        font-weight: bold;
+    }
 
+    form p {
+        margin-bottom: 2em;
+    }
 
-
-
+</style>
 
 <form method="POST" action="index.php?save">
 
@@ -16,45 +26,79 @@
     <input type="hidden" name="id" value="$idProduit$"> 
     <input type="hidden" name="redirectAction" value="show"> 
 
-<p><label for="libelle">Libellé du produit</label>
+<p><label for="libelle">Intitulé</label>
         <input type="text" name="libelle" id="libelle" value="$libelle$">
 </p>
 
-<p><label for="description">Description du produit</label>
+<p><label for="description">Description</label>
     <textarea type="text" name="description" id="description" aria-hidden="true">
     $description$</textarea></p>
 
-<p><label for="politiqueTarifaire">Politique tarifaire</label>
-    <textarea type="text" name="politiqueTarifaire" id="politiqueTarifaire"  aria-hidden="true">
-        $politiqueTarifaire$
-    </textarea></p>
+
 
 <p><label for="conditionsLegales">Conditions légales à accepter lors de la souscription</label>
      <textarea type="text" name="conditionsLegales" id="conditionsLegales" aria-hidden="true">
         $conditionsLegales$
      </textarea></p>
 
-<p><label for="debutDisponibilite">Disponible durant </label>
+<p><label for="debutDisponibilite">Période durant laquelle il est possible de s'inscrire</label>
     <input type="hidden" name="debutDisponibilite" id="debutDisponibilite" value="$debutDisponibilite$">
     <input type="hidden" name="finDisponibilite" id="finDisponibilite" value="$finDisponibilite$">
-    <div id="unifiedDateTimeRange"></div>
+    <input type="text" id="unifiedDateTimeRange" value="$disponibiliteUnifiee$"></div>
 
 </p>
 
+<p><label for="produitRequis">L'inscription à cette activité / élément impose de s'inscrire à </label>
+    <br />
+    <select>
+        <option>-- Aucun crontrôle --</option>
+        $optionsProduitRequis$
+    </select>
+</p>
 
-<p><label for="quantiteDisponible">Quantité disponible</label><input type="number" name="quantiteDisponible" id="quantiteDisponible" value="$quantiteDisponible$"></p>
 
-<p><label for="produitRequis">Produit requis pour avoir droit à ce produit</label><input type="number" name="produitRequis" id="produitRequis" value="1"></p>
+<p><label for="quantiteDisponible">Quantité disponible</label>
+    <input type="number" name="quantiteDisponible" id="quantiteDisponible" value="$quantiteDisponible$">
+    <br /><i>Si le nombre de places / articles est limité, utilisez ce contrôle.</i>
+    <br /><i>Laisser 0 pour désactiver ce contrôle</i>
+</p>
 
-<p><label for="produitOrdre">Ordre du produit dans le groupe</label><input type="number" name="produitOrdre" id="produitOrdre" value="$produitOrdre$"></p>
+<p><label for="quantiteLibre">L'utilisateur peut lui-même choisir la quantité qu'il commande</label>
+    <label for="quantiteLibreTRUE">OUI</label><input type="radio" $autoQuantifiableOui$ name="quantiteLibre" id="quantiteLibreTRUE" value="1">&nbsp;&nbsp;
+    <label for="quantiteLibreFALSE">NON</label><input type="radio" $autoQuantifiableNon$ name="quantiteLibre" id="quantiteLibreFALSE" value="0">&nbsp;&nbsp;
+    <br /><i>Pour des inscription a des activités, indiquer Non. <br />Pour un buffet, des commandes d'articles, indiquer Oui</i>
+</p>
 
-<p><label for="accesDirect">Produit que l'utilisateur peut cocher lui-même</label><label for="accesDirectTRUE">OUI</label><input type="radio" checked="checked" name="accesDirect" id="accesDirectTRUE" value="1">&nbsp;&nbsp;<label for="accesDirectFALSE">NON</label><input type="radio" name="accesDirect" id="accesDirectFALSE" value="0">&nbsp;&nbsp;</p>
 
-<p><label for="quantiteLibre">L'utilisateur peut lui-même choisir la quantité qu'il commande</label><label for="quantiteLibreTRUE">OUI</label><input type="radio" name="quantiteLibre" id="quantiteLibreTRUE" value="1">&nbsp;&nbsp;<label for="quantiteLibreFALSE">NON</label><input type="radio" checked="checked" name="quantiteLibre" id="quantiteLibreFALSE" value="0">&nbsp;&nbsp;</p>
 
-<p><label for="archive">Est un élément archivé</label><label for="archiveTRUE">OUI</label><input type="radio" checked="checked" name="archive" id="archiveTRUE" value="1">&nbsp;&nbsp;<label for="archiveFALSE">NON</label><input type="radio" name="archive" id="archiveFALSE" value="0">&nbsp;&nbsp;</p>
 
- <input type="submit" value="Envoyer">
+<p><label for="produitOrdre">Ordre de l'activité dans la page d'inscription</label>
+    <input type="number" name="produitOrdre" id="produitOrdre" value="$produitOrdre$">
+</p>
+
+<p><label for="accesDirect">Produit que l'utilisateur peut cocher lui-même</label>
+    <label for="accesDirectTRUE">OUI</label><input type="radio" $autoUtilisableOui$ name="accesDirect" id="accesDirectTRUE" value="1">&nbsp;&nbsp;
+    <label for="accesDirectFALSE">NON</label><input type="radio" $autoUtilisableNon$ name="accesDirect" id="accesDirectFALSE" value="0">&nbsp;&nbsp;
+</p>
+
+
+
+<p><label for="archive">Est un élément archivé</label>
+    <label for="archiveTRUE">OUI</label><input type="radio" $archiveOui$ name="archive" id="archiveTRUE" value="1">&nbsp;&nbsp;
+    <label for="archiveFALSE">NON</label><input type="radio" $archiveNon$ name="archive" id="archiveFALSE" value="0">&nbsp;&nbsp;
+</p>
+
+<p><label for="politiqueTarifaire">Politique tarifaire</label>
+    <br />
+    
+    <textarea type="text" name="politiqueTarifaire" id="politiqueTarifaire"  aria-hidden="true" rows="5" cols="128">
+        $politiqueTarifaire$
+    </textarea><br />
+    <i>Ceci est un bout de programme qui sera exécuté lorsque la personne s'inscrit à cette activité. <br />
+        Si vous faites un modification, testez bien le formulaire des inscriptions pour vous assurer de ne pas faire d'erreur ! </i>
+    </p>
+
+ <input type="submit" value="Envoyer" class="adminLink">
 </form>
 
 <script>
@@ -64,7 +108,7 @@ $('#unifiedDateTimeRange').daterangepicker({
     "timePicker24Hour": true,
     "timePickerIncrement": 15,
     "locale": {
-        "format": "DD/MM/YYYY HH:mm",
+        "format": "DD/MM/YYYY",
         "separator": " - ",
         "applyLabel": "Appliquer",
         "cancelLabel": "Annuler",
@@ -97,13 +141,31 @@ $('#unifiedDateTimeRange').daterangepicker({
         ],
         "firstDay": 1
     },
-    "startDate": "$dateDebut$",
-    "endDate": "$dateFin$",
+    "startDate": "$debutDisponibilite$",
+    "endDate": "$finDisponibilite$",
     "drops": "auto"
 }, function(start, end, label) {
   console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-  document.getElementById('disponibiliteDebut').value = start.format('DD/MM/YYYY HH:mm');
-  document.getElementById('disponibiliteFin').value = end.format('DD/MM/YYYY HH:mm');
+  document.getElementById('disponibiliteDebut').value = start.format('DD/MM/YYYY')+ '00:00';
+  document.getElementById('disponibiliteFin').value = end.format('DD/MM/YYYY')+ '23:59';
 });
+
+
+
+tinymce.init({selector:'#description, #conditionsLegales',  
+		menubar : false, 
+		statusbar : true, 
+		document_base_url: "$SITE_ROOT$",
+		remove_script_host: false,
+		relative_urls: false,
+		browser_spellcheck : true,
+		resize: true,
+		plugins: ["preview","link","image" ],
+		toolbar: [
+		          "undo redo | styleselect fontsizeselect | bold italic underline | image | link unlink | preview",
+		          "alignleft aligncenter alignright alignjustify | bullist numlist outdent indent blockquote | removeformat"
+		      ]
+	}
+	);
 	
 	</script>
