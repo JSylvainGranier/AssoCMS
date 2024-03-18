@@ -146,8 +146,8 @@ $('#unifiedDateTimeRange').daterangepicker({
     "drops": "auto"
 }, function(start, end, label) {
   console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-  document.getElementById('disponibiliteDebut').value = start.format('DD/MM/YYYY')+ '00:00';
-  document.getElementById('disponibiliteFin').value = end.format('DD/MM/YYYY')+ '23:59';
+  document.getElementById('debutDisponibilite').value = start.format('DD/MM/YYYY')+ ' 00:00';
+  document.getElementById('finDisponibilite').value = end.format('DD/MM/YYYY')+ ' 23:59';
 });
 
 

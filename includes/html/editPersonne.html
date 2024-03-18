@@ -156,6 +156,13 @@
 
 <script>
 
+var dn = '$dateNaissance$';
+if(dn.length > 0){
+
+} else {
+	dn = moment().add(-50, 'years').format('DD/MM/YYYY');
+}
+
 $('#dateNaissance').daterangepicker({
     "timePicker": false,
 	"singleDatePicker": true,
@@ -197,7 +204,7 @@ $('#dateNaissance').daterangepicker({
         ],
         "firstDay": 1
     },
-    "startDate": "$dateNaissance$",
+    "startDate": dn,
     "drops": "auto",
 	"showDropdowns": true,
 }, function(start, end, label) {
