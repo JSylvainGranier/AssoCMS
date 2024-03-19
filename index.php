@@ -26,6 +26,7 @@ function fatalErrHandler()
 		$html = str_ireplace("--err--", print_r($error, true), $html);
 		
 		echo $html;
+		print_r($error);
 		exit;
 		
 	}
