@@ -8,7 +8,7 @@ $idToEdit = -1;
 if(array_key_exists("id", $ARGS)){
     $produit = new Produit($ARGS["id"]);
     $idToEdit = $produit->idProduit;
-} if (array_key_exists("cloneId", $ARGS)) {
+} else if (array_key_exists("cloneId", $ARGS)) {
     $pc = new Produit($ARGS["cloneId"]);
     $produit->libelle = $pc->libelle . " Cloné ";
     $produit->description = $pc->description;
