@@ -2,6 +2,26 @@
 $page->appendBody ( file_get_contents ( "includes/html/inscriptionsVueGlobale.html" ) );
 $page->setTitle("Vue globale des inscriptions");
 
+$start = new MyDateTime();
+$end = new MyDateTime();
+$yearStart = intval ($start->format("Y"));
+
+if(array_key_exists("wayBack", $ARGS)){
+    $yearStart -= intval($ARGS["wayBack"]);
+}
+
+if( intval ( $start->format("m") < 8 ) ){
+    $start = new MyDateTime(($yearStart-1)."-09-01 00:00:00");
+    $end = new MyDateTime("{$yearStart}-08-31 00:00:00");
+    
+} else {
+    $start = new MyDateTime("{$yearStart}-09-01 00:00:00");
+    $end = new MyDateTime(($yearStart+1)."-08-31 00:00:00");
+}
+
+
+
+$page->asset("periode", "entre le ".$start->format("d/m/Y")." et le ".$end->format("d/m/Y"));
 
 if (! Roles::isGestionnaireCategorie()) {
 	header ( "HTTP/1.0 403 Forbidden" );
@@ -9,10 +29,13 @@ if (! Roles::isGestionnaireCategorie()) {
 	die ();
 }
 
-$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, ipp.quantite, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille and i.archive = false LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkInscription = i.idInscription  and ipp.fkPersonne = p.idPersonne   LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit ORDER BY p.nom, p.prenom");
+$strStart = $start->format("Y-m-d");
+$strEnd = $end->format("Y-m-d");
+
+$arr = Persistant::getDataFromQuery("SELECT i.idInscription, i.etat, ipp.quantite, p.idPersonne, p.idFamille, p.nom, p.prenom, p.email, p.telPortable, prt.idProduit, prt.libelle, prt.quantiteLibre FROM personne p LEFT OUTER JOIN inscription i ON p.idFamille = i.idFamille and i.debut >= '{$strStart}' and i.debut <= '{$strEnd}' LEFT OUTER JOIN inscription_personne_produit ipp ON ipp.fkInscription = i.idInscription  and ipp.fkPersonne = p.idPersonne   LEFT OUTER JOIN produit prt ON prt.idProduit = ipp.fkProduit  ORDER BY p.nom, p.prenom");
 $tb = array();
 
-$regs = Persistant::getDataFromQuery("SELECT * from reglement where dateEcheance < now() and archive = false");
+$regs = Persistant::getDataFromQuery("SELECT * from reglement where dateEcheance < now() and dateEcheance >= '{$strStart}' and dateEcheance <= '{$strEnd}'  ");
 
 
 foreach($arr as $i => $rw){
@@ -38,7 +61,8 @@ foreach($arr as $i => $rw){
     if(isset($rw["idProduit"])){
         $arrPersonne["p".$rw["idProduit"]] = true;
         $arrPersonne["e".$rw["idProduit"]] = $rw["etat"];
-        $arrPersonne["q".$rw["idProduit"]] = $rw["quantite"];
+        $arrPersonne["q".$rw["idProduit"]] = $rw["quantite"] ;
+        $arrPersonne["qLibre".$rw["idProduit"]] = $rw["quantiteLibre"];
 
     } else {
         
@@ -48,10 +72,15 @@ foreach($arr as $i => $rw){
 }
 
 $p = new Produit();
-$tmpProds = $p->getAllActive();
+$tmpProds = $p->getAll();
 $prods = array();
 foreach($tmpProds as $ap){
-    $prods[$ap->idProduit] = $ap;
+    if($ap->debutDisponibilite->date >= $start->date
+        && $ap->finDisponibilite->date <= $end->date ){
+         
+            $prods[$ap->idProduit] = $ap;
+
+        }
 }
 
 $pCells = "";
@@ -75,12 +104,16 @@ foreach($tb as $i => $rw){
         $varName = "p".$ap->idProduit;
         $etat = $rw["e".$ap->idProduit];
         $quantite = $rw["q".$ap->idProduit];
+        $quantiteLibre = $rw["qLibre".$ap->idProduit];
         
-        if(array_key_exists($varName, $rw) && $etat > 0){
+        if(array_key_exists($varName, $rw) && $etat > 20){
             
             for($qt = 0; $qt < $quantite; $qt++){
                 $pchecks .= "X&nbsp;";
                 $ap->count += 1;
+                if( $quantiteLibre == 0){
+                    break;
+                }
             }
             
         }
