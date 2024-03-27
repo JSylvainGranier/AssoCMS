@@ -348,6 +348,11 @@ var renderProduitList = function(){
 	}
 	
 	sortableProduits.sort(function(a, b) {
+		if(!a)
+			return -1;
+		if(!b)
+			return 1;
+
 	    return a.produitOrdre - b.produitOrdre;
 	});
 	
@@ -355,6 +360,8 @@ var renderProduitList = function(){
 		for (var i = 0; i < sortableProduits.length; i++) {
 	    	var produit = sortableProduits[i];
 	    	
+			
+
 	    	if(!produit.accesDirect){
 				continue;
 			}
@@ -847,10 +854,16 @@ var initPolitiqueTarifaireFunction = function(){
 	
 	try {
 		
+		let index = 0;
 		for (var prod in config.produits) {
+			index++;
 		    if (Object.prototype.hasOwnProperty.call(config.produits, prod)) {
 		    	var produit = config.produits[prod];
 		
+				if(!produit){
+					delete config.produits[prod];
+					continue;
+				}
 			
 				if(produit.politiqueTarifaire && produit.politiqueTarifaire.length > 15){
 					var politique =  produit.politiqueTarifaire
