@@ -5,10 +5,19 @@ $page->setTitle ( "Remises en banque");
 
 $rbqDao = new RemiseEnBanque();
 
-$list = $rbqDao->getAllActives();
+$list = $rbqDao->getAllActivesForActiveUser();
 
 if (count ( $list ) > 0) {
 	$tag = "remisesActives";
+	foreach ( $list as $rbq ) {
+		include 'includes/actions/showRemiseEnBanqueInList.php';
+	}
+}
+
+$list = $rbqDao->getLastInactivated();
+
+if (count ( $list ) > 0) {
+	$tag = "remisesInactives";
 	foreach ( $list as $rbq ) {
 		include 'includes/actions/showRemiseEnBanqueInList.php';
 	}

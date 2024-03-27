@@ -306,7 +306,7 @@ if (Roles::isGestionnaireCategorie () || $sameUserAsActor) {
                 
                 if (Roles::canAdministratePersonne ()) {
                     $actions = "<a href='index.php?edit&class=Reglement&id={$aReglement->idReglement}'><i class='fa fa-pencil' aria-hidden='true'></i></a>";
-                    $actions .= "&nbsp;&nbsp;<a href='index.php?delete&class=Reglement&id={$aReglement->idReglement}'><i class='fa fa-trash-o' aria-hidden='true'></i></a>";
+                    $actions .= "&nbsp;&nbsp;<a href='index.php?delete&class=Reglement&id={$aReglement->idReglement}&thenAction=show&thenClass=Personne&thenIdName=idPersonne&thenIdValue={$user->getPrimaryKey()}'><i class='fa fa-trash-o' aria-hidden='true'></i></a>";
                 }
                
                 

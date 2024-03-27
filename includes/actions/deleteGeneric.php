@@ -6,6 +6,11 @@ $arr = array (
 		"list",
 		"class" => $class 
 );
+
+
+
+
+
 if ($object instanceof Page) {
 	/* @var $oldPage Page */
 	$oldPage = $object;
@@ -14,7 +19,18 @@ if ($object instanceof Page) {
 	) );
 }
 		
-$ACTIONS [] = $arr;
+
+
+if(array_key_exists("thenAction", $ARGS)){
+	$redirection = array (
+		$ARGS["thenAction"],
+		"class" => $ARGS["thenClass"],
+		$ARGS["thenIdName"] => $ARGS["thenIdValue"]
+	);
+	$ACTIONS[] = $redirection;
+} else {
+	$ACTIONS [] = $arr;
+}
 
 
 
