@@ -48,14 +48,19 @@ if (is_null ( $pEvt->getCategorieClassement () )) {
 
 $page->asset ( "categorieSelect", getSelectHtml ( "categorieClassement", $catList, $catId, true ) );
 
+$now = new MyDateTime();
 
 $page->asset ( "titre", protectInputValueApostrophe ( $pEvt->titre ) );
 $page->asset ( "emplacement", protectInputValueApostrophe ( $evt->emplacement ) );
 if (! is_null ( $evt->dateDebut )) {
 	$page->asset ( "dateDebut", $evt->dateDebut->format ( "d/m/Y H:i" ) );
+} else {
+	$page->asset ( "dateDebut", $now->format ( "d/m/Y 00:00" ) );
 }
 if (! is_null ( $evt->dateFin )) {
 	$page->asset ( "dateFin", $evt->dateFin->format ( "d/m/Y H:i" ) );
+} else {
+	$page->asset ( "dateFin", $now->format ( "d/m/Y 00:00" ) );
 }
 
 $page->asset ( "categorie", $cat->nom );
