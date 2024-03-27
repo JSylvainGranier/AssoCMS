@@ -649,7 +649,9 @@ var updateSummary = function(){
 	
 	config.inscriptionPersonneProduit[config.currentInscription.idInscription].forEach(function(souscription){
 		
-		if(souscription.quantite > 0 && config.produits[souscription.idProduit].politiqueTarifaire){
+		if(souscription.quantite > 0 
+			&& config.produits[souscription.idProduit] 
+			&& config.produits[souscription.idProduit].politiqueTarifaire){
 			var reponsePolitiqueTarifaire = config.produits[souscription.idProduit].politiqueTarifaire(souscription);
 			
 			if(Array.isArray(reponsePolitiqueTarifaire)){
@@ -915,6 +917,35 @@ var politiqueTarifaireFixeALaSouscription = function(souscription,libelle, prixU
 		dateEcheance : moment().format("YYYY-MM-DD"), 
 		uniqueId : souscription.uniqueId
 	}
+}
+
+var politiqueTarifaireMoinsCherPourAdherents = function(souscription, libelle, prixUnitaireAdherent, prixUnitaireExterne){
+	console.log(souscription.quantite, souscription.quantite - 1, prixUnitaireExterne, ((souscription.quantite -1) * prixUnitaireExterne));
+
+	let arrReponse = new Array();
+	arrReponse.push({
+		libelle : libelle + " pour " + findPersonneById(souscription.idPersonne).prenom , 
+		quantite : 1, 
+		prixUnitaire : prixUnitaireAdherent, 
+		idProduit : souscription.idProduit,
+		idPersonne : souscription.idPersonne,
+		dateEcheance : moment().format("YYYY-MM-DD"), 
+		uniqueId : souscription.uniqueId
+	});
+
+	if(souscription.quantite > 1){
+		arrReponse.push({
+			libelle : libelle + " pour " + (souscription.quantite -1 ) + " personne(s) externe(s) accompagnante(s), à "+prixUnitaireExterne+"€", 
+			quantite : souscription.quantite -1, 
+			prixUnitaire : prixUnitaireExterne, 
+			idProduit : souscription.idProduit,
+			idPersonne : souscription.idPersonne,
+			dateEcheance : moment().format("YYYY-MM-DD"), 
+			uniqueId : souscription.uniqueId
+		});
+	}
+
+	return arrReponse;
 }
 
 var politiqueAdhesionAssociation = function(souscription, pol){
