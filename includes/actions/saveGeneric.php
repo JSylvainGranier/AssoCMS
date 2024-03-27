@@ -98,6 +98,17 @@ if ($haveChanged) {
 	$object->save ();
 	$ARGS ["id"] = $object->getPrimaryKey ();
 	$page->appendNotification ( "Enregistré !", 10 );
+
+
+	if(array_key_exists("thenAction", $ARGS)){
+		$redirection = array (
+			$ARGS["thenAction"],
+			"class" => $ARGS["thenClass"],
+			$ARGS["thenIdName"] => $ARGS["thenIdValue"]
+		);
+		$ACTIONS[] = $redirection;
+	} 
+
 }
 
 

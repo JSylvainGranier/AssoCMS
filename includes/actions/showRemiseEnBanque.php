@@ -58,7 +58,9 @@ if(isset($rbq->dateRemise)){
 } else {
     $dt = new MyDateTime();
     $dt = $dt->format("Ymd");
-    $page->appendActionButton ( "Clôturer cette remise", "save&class=RemiseEnBanque&dateRemise={$dt}&id=" . $rbq->idRemiseEnBanque );
+    $thenArgs = "&thenAction=show&thenClass=RemiseEnBanque&thenIdName=id&thenIdValue={$rbq->idRemiseEnBanque}";
+
+    $page->appendActionButton ( "Clôturer cette remise", "save&class=RemiseEnBanque&dateRemise={$dt}&id=" . $rbq->idRemiseEnBanque.$thenArgs );
 }
 
 /*
